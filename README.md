@@ -1,67 +1,295 @@
- <div align="center">
- <img align="center" width="230" src="https://i.imgur.com/iHgtvmg.png" />
-  <h2>Typescript Library Boilerplate Basic</h2>
-  <blockquote>Minimal Library Starter Kit for your Typescript projects</blockquote>
- 
- <a href="https://www.npmjs.com/package/@hodgef/ts-library-boilerplate-basic"><img src="https://badgen.net/npm/v/@hodgef/ts-library-boilerplate-basic?color=blue" alt="npm version"></a> <a href="https://github.com/hodgef/ts-library-boilerplate"><img src="https://img.shields.io/github/last-commit/hodgef/ts-library-boilerplate" alt="latest commit"></a> <a href="https://github.com/hodgef/ts-library-boilerplate-basic/actions"><img alt="Build Status" src="https://github.com/hodgef/ts-library-boilerplate-basic/workflows/Build/badge.svg?color=green" /></a> <a href="https://github.com/hodgef/ts-library-boilerplate-basic/actions"> <img alt="Publish Status" src="https://github.com/hodgef/ts-library-boilerplate-basic/workflows/Publish/badge.svg?color=green" /></a>
+# React Material Table Component
 
-<strong>For a plain Javascript alternative, check out [js-library-boilerplate-basic](https://github.com/hodgef/js-library-boilerplate-basic).</strong>
+[![npm version](https://badgen.net/npm/v/@keyvalue/material-table-component?color=blue)](https://www.npmjs.com/package/@keyvalue/material-table-component)
+[![Downloads](https://img.shields.io/npm/dw/@keyvalue/material-table-component?label=Downloads)](https://www.npmjs.com/package/@keyvalue/material-table-component)
+[![CI/CD](https://github.com/KeyValueSoftwareSystems/material-table-component/actions/workflows/deploy.yml/badge.svg)](https://github.com/KeyValueSoftwareSystems/material-table-component)
 
+<div align="center">
+<!-- TODO: Add screenshot of the table component in action -->
+<img src="./src/assets/material-table-example.png" alt="Material Table Component Example" width="800" height="400"/>
 </div>
 
-## ⭐️ Features
+>A customizable & responsive Material Design table component for React projects with advanced features like multi-level data display, sorting, filtering, pagination, and row selection.
 
-- Webpack 5
-- Babel 7
-- Hot reloading (`npm start`)
-- Automatic Types file generation (index.d.ts)
-- UMD exports, so your library works everywhere.
-- Jest unit testing
-- Customizable file headers for your build [(Example 1)](https://github.com/hodgef/ts-library-boilerplate-basic/blob/master/build/index.js) [(Example2)](https://github.com/hodgef/ts-library-boilerplate-basic/blob/master/build/css/index.css)
-- Daily [dependabot](https://dependabot.com) dependency updates
+Try the live demo using this codesandbox link [here](https://codesandbox.io/s/material-table-example)
 
-## 📦 Getting Started
+## Installation
 
-```
-git clone https://github.com/hodgef/ts-library-boilerplate-basic.git myLibrary
-npm install
+The easiest way to use material-table-component is to install it from npm and build it into your app with Webpack.
+
+```bash
+npm install @keyvalue/material-table-component
 ```
 
-## 💎 Customization
+You'll need to install React and Material-UI separately since they aren't included in the package.
 
-> Before shipping, make sure to:
+## Usage
 
-1. Edit `LICENSE` file
-2. Edit `package.json` information (These will be used to generate the headers for your built files)
-3. Edit `library: "MyLibrary"` with your library's export name in `./webpack.config.js`
+Material Table Component can be used in its basic form by providing the `columns` and `data` props:
 
-## 🚀 Deployment
+```jsx
+import { GenericTable } from '@keyvalue/material-table-component';
 
-1. `npm publish`
-2. Your users can include your library as usual
-
-### npm
-
-```
-import MyLibrary from 'my-library';
-const libraryInstance = new MyLibrary();
-...
+<GenericTable
+  columns={columns}
+  data={data}
+/>
 ```
 
-### self-host/cdn
+The columns prop is an array of column definitions with the following structure:
 
+```jsx
+const columns = [
+  {
+    key: "name",
+    label: "Name",
+  },
+  {
+    key: "age",
+    label: "Age",
+  }
+];
 ```
-<script src="build/index.js"></script>
 
-const MyLibrary = window.MyLibrary.default;
-const libraryInstance = new MyLibrary();
-...
+The data prop should be an array of objects matching the column keys:
+
+```jsx
+const data = [
+  {
+    id: "row-1",
+    name: 'John Doe',
+    age: 30,
+    children: [] // Optional children for multi-level tables
+  },
+  {
+    id: "row-2",
+    name: 'Jane Smith',
+    age: 25,
+    children: []
+  }
+];
 ```
 
-## ✅ Libraries built with this boilerplate
+### Multi-Level Table Example
 
-> Made a library using this starter kit? Share it here by [submitting a pull request](https://github.com/hodgef/ts-library-boilerplate-basic/pulls)!
+The component supports multi-level data display with parent-child relationships:
 
-- [simple-keyboard](https://github.com/hodgef/simple-keyboard) - Javascript Virtual Keyboard
-- [react-simple-keyboard](https://github.com/hodgef/react-simple-keyboard) - React Virtual Keyboard
-- [simple-keyboard-layouts](https://github.com/hodgef/simple-keyboard-layouts) - Keyboard layouts for simple-keyboard
+```jsx
+<GenericTable
+  data={[
+    {
+      id: "parent-1",
+      investor: "Parent Company",
+      grossInvestment: -1000000,
+      children: [
+        {
+          id: "child-1",
+          investor: "Subsidiary A",
+          grossInvestment: -600000,
+          children: []
+        },
+        {
+          id: "child-2",
+          investor: "Subsidiary B",
+          grossInvestment: -400000,
+          children: []
+        }
+      ]
+    }
+  ]}
+  columns={[
+    {
+      key: "investor",
+      label: "Investor",
+    },
+    {
+      key: "grossInvestment",
+      label: "Investment",
+    }
+  ]}
+  meta={{
+    chartType: "MULTI_LEVEL_TABLE",
+    columns: [
+      {
+        id: "investor",
+        name: "Investor",
+        type: "string",
+      },
+      {
+        id: "grossInvestment",
+        name: "Investment",
+        type: "currency",
+        currencyFormat: {
+          currency: "dollar",
+          scale: 2,
+        },
+      }
+    ]
+  }}
+/>
+```
+
+## Props
+
+Props that can be passed to the component are listed below:
+
+<table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><b>data:</b> Row&lt;T&gt;[]</code></td>
+<td>An array of data objects to be displayed in the table. Each row can have a `children` array for multi-level tables.</td>
+<td><code>[]</code></td>
+</tr>
+<tr>
+<td><code><b>columns:</b> Column&lt;T&gt;[]</code></td>
+<td>An array of column definition objects with `key` and `label` properties</td>
+<td><code>[]</code></td>
+</tr>
+<tr>
+<td><code><b>meta?:</b> object</code></td>
+<td>Metadata for the table including column types and formatting options</td>
+<td><code>undefined</code></td>
+</tr>
+<tr>
+<td><code><b>actions?:</b> RowAction[]</code></td>
+<td>Array of action objects for row-level operations</td>
+<td><code>[]</code></td>
+</tr>
+<tr>
+<td><code><b>onViewRow?:</b> function</code></td>
+<td>Callback function triggered when a row is clicked</td>
+<td><code>undefined</code></td>
+</tr>
+<tr>
+<td><code><b>isLoading?:</b> boolean</code></td>
+<td>Flag to indicate if data is being loaded</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code><b>depth?:</b> number | null</code></td>
+<td>Controls the depth of expanded rows in multi-level tables</td>
+<td><code>null</code></td>
+</tr>
+<tr>
+<td><code><b>showTotal?:</b> boolean</code></td>
+<td>Whether to show totals for numeric columns</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code><b>tableHeaderStyles?:</b> React.CSSProperties</code></td>
+<td>Custom styles for the table header</td>
+<td><code>undefined</code></td>
+</tr>
+<tr>
+<td><code><b>tableCellStyles?:</b> React.CSSProperties</code></td>
+<td>Custom styles for table cells</td>
+<td><code>undefined</code></td>
+</tr>
+<tr>
+<td><code><b>rowColors?:</b> string[]</code></td>
+<td>Array of colors to be used for alternating rows</td>
+<td><code>undefined</code></td>
+</tr>
+</tbody>
+</table>
+
+## Column Types and Formatting
+
+The `meta.columns` property allows you to specify the type and formatting for each column:
+
+```jsx
+meta={{
+  chartType: "MULTI_LEVEL_TABLE",
+  columns: [
+    {
+      id: "name",
+      name: "Name",
+      type: "string",
+    },
+    {
+      id: "amount",
+      name: "Amount",
+      type: "currency",
+      currencyFormat: {
+        currency: "dollar",
+        scale: 2,
+      },
+    },
+    {
+      id: "percentage",
+      name: "Percentage",
+      type: "percentage",
+      scale: 2,
+    },
+    {
+      id: "date",
+      name: "Date",
+      type: "date",
+      dateFormat: "MM/DD/YYYY",
+    }
+  ]
+}}
+```
+
+Supported column types include:
+- `string` - Text data
+- `number` - Numeric data
+- `currency` - Monetary values with currency formatting
+- `percentage` - Percentage values
+- `date` - Date values with formatting options
+- `boolean` - True/false values
+
+## Row Actions
+
+You can define actions that appear for each row:
+
+```jsx
+actions={[
+  {
+    label: "View Details",
+    icon: "visibility",
+    action: (rowId) => handleViewDetails(rowId),
+    condition: (rowId) => hasDetails(rowId)
+  },
+  {
+    label: "Edit",
+    icon: "edit",
+    action: (rowId) => handleEdit(rowId)
+  }
+]}
+```
+
+## Style Customizations
+
+You can customize the appearance of the table using the style props:
+
+```jsx
+<GenericTable
+  columns={columns}
+  data={data}
+  tableHeaderStyles={{
+    background: "#1a237e",
+    color: "#ffffff",
+    fontSize: "1rem",
+  }}
+  tableCellStyles={{
+    padding: "12px 16px",
+  }}
+  rowColors={["#f5f5f5", "#ffffff"]}
+/>
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
