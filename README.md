@@ -21,7 +21,7 @@ The easiest way to use material-table-component is to install it from npm and bu
 npm install @keyvalue/material-table-component
 ```
 
-You'll need to install React and Material-UI separately since they aren't included in the package.
+This package includes Material-UI as a dependency, so you don't need to install it separately. However, you'll need to install React since it isn't included in the package.
 
 ## Usage
 
