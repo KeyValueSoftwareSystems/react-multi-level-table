@@ -1,5 +1,5 @@
 {
-  "name": "material-table-component",
+  "name": "@keyvalue/material-table-component",
   "version": "0.1.7",
   "description": "A flexible and customizable table component built with React and Material-UI",
   "main": "build/index.js",
