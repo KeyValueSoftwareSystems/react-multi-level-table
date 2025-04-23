@@ -6,7 +6,7 @@
 
 <div align="center">
 <!-- TODO: Add screenshot of the table component in action -->
-<img src="./src/assets/material-table-example.png" alt="Material Table Component Example" width="800" height="400"/>
+<img src="./src/assets/table-example.png" alt="Material Table Component Example" width="800" height="400"/>
 </div>
 
 >A customizable & responsive Material Design table component for React projects with advanced features like multi-level data display, sorting, filtering, pagination, and row selection.
