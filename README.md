@@ -1,7 +1,7 @@
 # React Material Table Component
 
-[![npm version](https://badgen.net/npm/v/@keyvalue/material-table-component?color=blue)](https://www.npmjs.com/package/@keyvalue/material-table-component)
-[![Downloads](https://img.shields.io/npm/dw/@keyvalue/material-table-component?label=Downloads)](https://www.npmjs.com/package/@keyvalue/material-table-component)
+[![npm version](https://badgen.net/npm/v/@keyvaluesystems/material-table-component?color=blue)](https://www.npmjs.com/package/@keyvaluesystems/material-table-component)
+[![Downloads](https://img.shields.io/npm/dw/@keyvaluesystems/material-table-component?label=Downloads)](https://www.npmjs.com/package/@keyvaluesystems/material-table-component)
 [![CI/CD](https://github.com/KeyValueSoftwareSystems/material-table-component/actions/workflows/deploy.yml/badge.svg)](https://github.com/KeyValueSoftwareSystems/material-table-component)
 
 <div align="center">
@@ -11,24 +11,62 @@
 
 >A customizable & responsive Material Design table component for React projects with advanced features like multi-level data display, sorting, filtering, pagination, and row selection.
 
-Try the live demo using this codesandbox link [here](https://codesandbox.io/s/material-table-example)
+## ✨ Features
+
+- 🎨 Material Design styled table with modern UI
+- 📊 Nested (multi-level) data support with expandable rows
+- 🎯 Customizable headers, cells, and row styles
+- 🔄 Sorting, filtering, and pagination capabilities
+- ✅ Row selection and custom actions
+- 💰 Column formatting (currency, percentage, dates)
+- 📱 Responsive design for all screen sizes
+- 🎭 Custom cell rendering support
+- 🔢 Numeric column totals
+- 🎮 Interactive row expansion/collapse
+
+## 📋 Table of Contents
+
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Usage](#usage)
+  - [Basic Usage](#basic-usage)
+  - [Multi-Level Table Example](#multi-level-table-example)
+- [Props](#props)
+- [Column Types and Formatting](#column-types-and-formatting)
+- [Row Actions](#row-actions)
+- [Style Customizations](#style-customizations)
+- [Contributing](#contributing)
+- [License](#license)
+
+## 🚀 Quick Start
+
+Try the live demo:
+[![Edit material-table-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/material-table-example)
+
+[![Demo Video](https://img.youtube.com/vi/YOUR_VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
 
 ## Installation
 
 The easiest way to use material-table-component is to install it from npm and build it into your app with Webpack.
 
 ```bash
-npm install @keyvalue/material-table-component
+npm install @keyvaluesystems/material-table-component
 ```
 
-This package includes Material-UI as a dependency, so you don't need to install it separately. However, you'll need to install React since it isn't included in the package.
+### Peer Dependencies
+
+This package includes Material-UI as a dependency. However, React (^18.0.0) is a peer dependency and must be installed separately:
+
+```bash
+npm install react@^18.0.0 react-dom@^18.0.0
+```
 
 ## Usage
 
 Material Table Component can be used in its basic form by providing the `columns` and `data` props:
 
 ```jsx
-import { GenericTable } from '@keyvalue/material-table-component';
+import { GenericTable } from '@keyvaluesystems/material-table-component';
 
 <GenericTable
   columns={columns}
@@ -288,7 +326,37 @@ You can customize the appearance of the table using the style props:
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/YourFeature`
+3. Install dependencies: `npm install`
+4. Make your changes
+5. Run tests: `npm test`
+6. Commit your changes: `git commit -am 'Add new feature'`
+7. Push to the branch: `git push origin feature/YourFeature`
+8. Open a Pull Request
+
+Please ensure your code follows our coding standards and includes appropriate tests. For more detailed guidelines, see our [CONTRIBUTING.md](./CONTRIBUTING.md) file.
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/KeyValueSoftwareSystems/material-table-component.git
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+
+# Build the package
+npm run build
+```
 
 ## License
 
