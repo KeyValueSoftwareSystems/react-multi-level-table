@@ -26,11 +26,11 @@
 
 ## 📋 Table of Contents
 
-- [Installation](#installation)
 - [Quick Start](#quick-start)
+- [Installation](#installation)
 - [Usage](#usage)
-  - [Basic Usage](#basic-usage)
   - [Multi-Level Table Example](#multi-level-table-example)
+  - [Pivot Table Example](#pivot-table-example)
 - [Props](#props)
 - [Column Types and Formatting](#column-types-and-formatting)
 - [Row Actions](#row-actions)
@@ -38,7 +38,7 @@
 - [Contributing](#contributing)
 - [License](#license)
 
-## 🚀 Quick Start
+## Quick Start
 
 Try the live demo:
 [![Edit material-table-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/material-table-example)
@@ -166,6 +166,127 @@ The component supports multi-level data display with parent-child relationships:
   }}
 />
 ```
+
+### Pivot Table Example
+
+The component also supports pivot table functionality for data aggregation and analysis:
+
+```jsx
+<GenericTable
+  data={[
+    {
+      id: "row-1",
+      region: "North",
+      product: "Product A",
+      sales: 15000,
+      profit: 3000,
+      quarter: "Q1"
+    },
+    {
+      id: "row-2",
+      region: "North",
+      product: "Product B",
+      sales: 12000,
+      profit: 2400,
+      quarter: "Q1"
+    },
+    {
+      id: "row-3",
+      region: "South",
+      product: "Product A",
+      sales: 18000,
+      profit: 3600,
+      quarter: "Q1"
+    }
+  ]}
+  columns={[
+    {
+      key: "region",
+      label: "Region",
+    },
+    {
+      key: "product",
+      label: "Product",
+    },
+    {
+      key: "sales",
+      label: "Sales",
+    },
+    {
+      key: "profit",
+      label: "Profit",
+    },
+    {
+      key: "quarter",
+      label: "Quarter",
+    }
+  ]}
+  meta={{
+    chartType: "PIVOT_TABLE",
+    columns: [
+      {
+        id: "region",
+        name: "Region",
+        type: "string",
+        pivot: true
+      },
+      {
+        id: "product",
+        name: "Product",
+        type: "string",
+        pivot: true
+      },
+      {
+        id: "sales",
+        name: "Sales",
+        type: "currency",
+        currencyFormat: {
+          currency: "dollar",
+          scale: 2,
+        },
+        aggregation: "sum"
+      },
+      {
+        id: "profit",
+        name: "Profit",
+        type: "currency",
+        currencyFormat: {
+          currency: "dollar",
+          scale: 2,
+        },
+        aggregation: "sum"
+      },
+      {
+        id: "quarter",
+        name: "Quarter",
+        type: "string",
+        pivot: true
+      }
+    ],
+    pivotConfig: {
+      rows: ["region", "product"],
+      columns: ["quarter"],
+      values: ["sales", "profit"],
+      aggregations: {
+        sales: "sum",
+        profit: "sum"
+      }
+    }
+  }}
+/>
+```
+
+This pivot table example demonstrates:
+- Row grouping by Region and Product
+- Column grouping by Quarter
+- Value aggregation for Sales and Profit
+- Currency formatting for monetary values
+- Sum aggregation for numeric columns
+
+The resulting table will show:
+- Sales and Profit totals for each Region-Product combination
+- Quarterly breakdown of the totals
+- Grand totals for each metric
 
 ## Props
 
