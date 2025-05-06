@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -7,8 +7,8 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+} from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import {
   DEFAULT_ROW_COLORS,
   TABLE_TYPES,
@@ -16,13 +16,13 @@ import {
   ACTION_TYPES,
   DEFAULT_TABLE_CELL_STYLES,
   DEFAULT_TABLE_HEADER_STYLES,
-} from './constants';
+} from "./constants";
 import {
   checkCellValueType,
-  getCellValueAllignment,
+  getCellValueAlignment,
   isAllRowsExpanded,
-} from './utils';
-import { GenericTableProps, Row, RowAction } from './types';
+} from "./utils";
+import { GenericTableProps, Row, RowAction } from "./types";
 
 function GenericTable<T>({
   data,
@@ -36,7 +36,7 @@ function GenericTable<T>({
   tableHeaderStyles,
   tableCellStyles,
   rowColors = DEFAULT_ROW_COLORS,
-}: GenericTableProps<T>) {
+}: GenericTableProps<T>): ReactNode {
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
   const [allExpanded, setAllExpanded] = useState(false);
   const [updatingRowId, setUpdatingRowId] = useState<string | null>(null);
@@ -51,17 +51,18 @@ function GenericTable<T>({
 
   const isShowActionColumn = Boolean(actions?.length);
 
-  const columnMetadata = meta?.columns?.reduce((obj, item) => {
-    obj[item.id] = item;
-    return obj;
-  }, {} as Record<string, any>) ?? {};
+  const columnMetadata =
+    meta?.columns?.reduce((obj, item) => {
+      obj[item.id] = item;
+      return obj;
+    }, {} as Record<string, any>) ?? {};
 
-  const handleExpandAllRows = () => {
+  const handleExpandAllRows = (): void => {
     const newExpandState = !allExpanded;
     setAllExpanded(newExpandState);
 
     const updatedExpandedRows: Record<string, boolean> = {};
-    const setAllRowState = (rows: Row<T>[]) => {
+    const setAllRowState = (rows: Row<T>[]): void => {
       rows.forEach((row) => {
         updatedExpandedRows[row.id] = newExpandState;
         if (row.children) {
@@ -73,7 +74,7 @@ function GenericTable<T>({
     setExpandedRows(updatedExpandedRows);
   };
 
-  const handleExpandRowClick = (id: string) => {
+  const handleExpandRowClick = (id: string): void => {
     setExpandedRows((prev) => ({
       ...prev,
       [id]: !prev[id],
@@ -84,7 +85,7 @@ function GenericTable<T>({
     rowIndex: number,
     row: Row<T>,
     e: React.MouseEvent
-  ) => {
+  ): Promise<void> => {
     e.stopPropagation();
     if (
       dynamicNestedRows?.dynamicRows?.length &&
@@ -101,7 +102,11 @@ function GenericTable<T>({
     }
   };
 
-  const handleRowActionClick = (rowId: string, action: RowAction, el?: any) => {
+  const handleRowActionClick = (
+    rowId: string,
+    action: RowAction,
+    el?: any
+  ): void => {
     if (!action || !isShowActionColumn) return;
 
     const { renderUpdateComponent, action: actionHandler } = action;
@@ -117,11 +122,19 @@ function GenericTable<T>({
     const value = row[key];
     const columnType = columnMetadata[key]?.type;
 
-    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "boolean"
+    ) {
       const renderValue = checkCellValueType(columnType, value);
       const pivotColumnType = meta?.columns?.[2]?.type;
 
-      if (!renderValue && meta?.chartType === TABLE_TYPES.PIVOT && pivotColumnType) {
+      if (
+        !renderValue &&
+        meta?.chartType === TABLE_TYPES.PIVOT &&
+        pivotColumnType
+      ) {
         return checkCellValueType(pivotColumnType, value);
       }
 
@@ -130,36 +143,43 @@ function GenericTable<T>({
       let rightIcon: ReactNode = null;
 
       if (icons?.length) {
-        icons.forEach((icon: { type: string; condition: any; location: any; position: string; }) => {
-          if (
-            icon.type === ACTION_TYPES.CONDITIONAL &&
-            icon.condition &&
-            new Function('row', `return ${icon.condition};`)(row)
-          ) {
-            const iconElement = (
-              <img
-                src={require(`${icon.location}`)}
-                alt={`${icon.position}_icon`}
-                className="table-icon"
-              />
-            );
-            if (icon.position === ICON_POSITIONS.LEFT) {
-              leftIcon = iconElement;
-            } else if (icon.position === ICON_POSITIONS.RIGHT) {
-              rightIcon = iconElement;
+        icons.forEach(
+          (icon: {
+            type: string;
+            condition: any;
+            location: any;
+            position: string;
+          }) => {
+            if (
+              icon.type === ACTION_TYPES.CONDITIONAL &&
+              icon.condition &&
+              new Function("row", `return ${icon.condition};`)(row)
+            ) {
+              const iconElement = (
+                <img
+                  src={require(`${icon.location}`)}
+                  alt={`${icon.position}_icon`}
+                  className="table-icon"
+                />
+              );
+              if (icon.position === ICON_POSITIONS.LEFT) {
+                leftIcon = iconElement;
+              } else if (icon.position === ICON_POSITIONS.RIGHT) {
+                rightIcon = iconElement;
+              }
             }
           }
-        });
+        );
       }
 
-      if (value === 'null') {
+      if (value === "null") {
         return (
           <span
             style={{
               width: "100%",
               minWidth: "3rem",
               display: "flex",
-              justifyContent: getCellValueAllignment(columnType),
+              justifyContent: getCellValueAlignment(columnType),
             }}
           >
             N/A
@@ -173,7 +193,7 @@ function GenericTable<T>({
             width: "100%",
             minWidth: columnType === "currency" ? "6rem" : "3rem",
             display: "flex",
-            justifyContent: getCellValueAllignment(columnType),
+            justifyContent: getCellValueAlignment(columnType),
             ...(columnType === "currency" || pivotColumnType === "currency"
               ? { whiteSpace: "nowrap" }
               : {}),
@@ -192,7 +212,7 @@ function GenericTable<T>({
           width: "100%",
           minWidth: "3rem",
           display: "flex",
-          justifyContent: getCellValueAllignment(columnType),
+          justifyContent: getCellValueAlignment(columnType),
         }}
       >
         -
@@ -200,7 +220,7 @@ function GenericTable<T>({
     );
   };
 
-  const getRowCellBackGround = (index: number) => {
+  const getRowCellBackGround = (index: number): string => {
     if (depth && depth === index) {
       return "#FFFFFF";
     } else {
@@ -208,7 +228,7 @@ function GenericTable<T>({
     }
   };
 
-  const renderDynamicRows = (dynamicRows: Row<T>[]) => {
+  const renderDynamicRows = (dynamicRows: Row<T>[]): ReactNode => {
     return dynamicRows.map((row) => (
       <React.Fragment key={`${row.id}`}>
         <TableRow style={{ backgroundColor: "#FFFFFF" }}>
@@ -227,9 +247,9 @@ function GenericTable<T>({
                 borderTopLeftRadius: colIndex === 0 ? "8px" : "0px",
                 borderBottomLeftRadius: colIndex === 0 ? "8px" : "0px",
                 borderTopRightRadius:
-                colIndex === columns.length - 1 ? "8px" : "0px",
+                  colIndex === columns.length - 1 ? "8px" : "0px",
                 borderBottomRightRadius:
-                colIndex === columns.length - 1 ? "8px" : "0px",
+                  colIndex === columns.length - 1 ? "8px" : "0px",
               }}
             >
               {column.render
@@ -260,7 +280,7 @@ function GenericTable<T>({
                 border: "none",
                 borderBottom: "1px solid #2F736E1F",
               }}
-              onClick={() => onViewRow?.(row)}
+              onClick={(): void => onViewRow?.(row)}
             >
               {meta?.chartType === TABLE_TYPES.MULTI_LEVEL && (
                 <TableCell
@@ -278,7 +298,7 @@ function GenericTable<T>({
                   }}
                 ></TableCell>
               )}
-              {columns.map((column, colIndex) => (
+              {columns.map((column) => (
                 <TableCell
                   key={String(column.key)}
                   sx={{
@@ -290,7 +310,11 @@ function GenericTable<T>({
                   }}
                 >
                   {column.render
-                    ? column.render(row[column.key as keyof Row<T>], row as T, level)
+                    ? column.render(
+                        row[column.key as keyof Row<T>],
+                        row as T,
+                        level
+                      )
                     : renderCellContent(row, column.key as string)}
                 </TableCell>
               ))}
@@ -334,12 +358,12 @@ function GenericTable<T>({
           <TableRow
             style={{
               backgroundColor:
-              rowIndex === rows.length - 1 && showTotal
+                rowIndex === rows.length - 1 && showTotal
                   ? "#2F736E"
                   : "#F0F0F1",
               cursor: onViewRow ? "pointer" : "default",
             }}
-            onClick={() => onViewRow?.(row)}
+            onClick={(): void => onViewRow?.(row)}
           >
             {meta?.chartType === TABLE_TYPES.MULTI_LEVEL && (
               <TableCell
@@ -356,7 +380,7 @@ function GenericTable<T>({
               >
                 {row.children && (
                   <button
-                    onClick={() => handleExpandRowClick(row.id)}
+                    onClick={(): void => handleExpandRowClick(row.id)}
                     style={{
                       border: "none",
                       background: "none",
@@ -374,7 +398,7 @@ function GenericTable<T>({
                 )}
                 {!row.children && row.getChildren && (
                   <button
-                    onClick={(e) =>
+                    onClick={async (e: React.MouseEvent): Promise<void> =>
                       handleExpandDynamicChildrenRowClick(rowIndex, row, e)
                     }
                     style={{
@@ -388,7 +412,7 @@ function GenericTable<T>({
                       style={{
                         color: "#162C36",
                         rotate:
-                        dynamicNestedRows?.index === rowIndex || isExpanded
+                          dynamicNestedRows?.index === rowIndex || isExpanded
                             ? "0deg"
                             : "-90deg",
                       }}
@@ -405,20 +429,24 @@ function GenericTable<T>({
                   ...tableCellStyles,
                   border: "none",
                   borderLeft:
-                  colIndex === 0 || level === depth
+                    colIndex === 0 || level === depth
                       ? "none"
                       : "1px solid #2F736E1F",
                   background: getRowCellBackGround(level),
                   borderTopLeftRadius: colIndex === 0 ? "8px" : "0px",
                   borderBottomLeftRadius: colIndex === 0 ? "8px" : "0px",
                   borderTopRightRadius:
-                  colIndex === columns.length - 1 ? "8px" : "0px",
+                    colIndex === columns.length - 1 ? "8px" : "0px",
                   borderBottomRightRadius:
-                  colIndex === columns.length - 1 ? "8px" : "0px",
+                    colIndex === columns.length - 1 ? "8px" : "0px",
                 }}
               >
                 {column.render
-                  ? column.render(row[column.key as keyof Row<T>], row as T, level)
+                  ? column.render(
+                      row[column.key as keyof Row<T>],
+                      row as T,
+                      level
+                    )
                   : renderCellContent(row, column.key as string)}
               </TableCell>
             ))}
@@ -439,7 +467,7 @@ function GenericTable<T>({
                   return (
                     <button
                       key={String(`${row.id}_${rowIndex}_${index}_action`)}
-                      onClick={(e) => {
+                      onClick={(e: React.MouseEvent): void => {
                         handleRowActionClick(row.id, action);
                         e.stopPropagation();
                       }}
@@ -514,7 +542,7 @@ function GenericTable<T>({
             borderCollapse: "separate",
           }}
         >
-        <TableHead>
+          <TableHead>
             <TableRow
               sx={{
                 borderRadius: "20px",
@@ -539,8 +567,8 @@ function GenericTable<T>({
                     paddingRight: depth === 1 ? "0px" : "1rem",
                   }}
                 >
-                <button
-                  onClick={handleExpandAllRows}
+                  <button
+                    onClick={handleExpandAllRows}
                     style={{
                       border: "none",
                       background: "none",
@@ -548,22 +576,22 @@ function GenericTable<T>({
                       fontWeight: "bold",
                       color: "#6C6C6C",
                     }}
-                >
-                  <ArrowDropDownIcon
+                  >
+                    <ArrowDropDownIcon
                       style={{
                         color: "#9AD6D1",
                         rotate: allExpanded ? "0deg" : "-90deg",
                       }}
-                  />
-                </button>
-              </TableCell>
-            )}
-            {columns.map((column, i) => (
-              <TableCell
-                key={String(column.key)}
+                    />
+                  </button>
+                </TableCell>
+              )}
+              {columns.map((column, i) => (
+                <TableCell
+                  key={String(column.key)}
                   sx={{
                     borderTopRightRadius:
-                  i === columns.length - 1 && !isShowActionColumn
+                      i === columns.length - 1 && !isShowActionColumn
                         ? "8px"
                         : "0px",
                     borderBottomRightRadius:
@@ -578,15 +606,17 @@ function GenericTable<T>({
                       meta.chartType !== "MULTI_LEVEL_TABLE" && i === 0
                         ? "8px"
                         : "0px",
-                    textAlign: getCellValueAllignment(
+                    textAlign: getCellValueAlignment(
                       columnMetadata[String(column.key)]?.type
                     ),
                   }}
-              >
-                {column.renderHeader ? column.renderHeader(column) : column.label}
-              </TableCell>
-            ))}
-            {isShowActionColumn && (
+                >
+                  {column.renderHeader
+                    ? column.renderHeader(column)
+                    : column.label}
+                </TableCell>
+              ))}
+              {isShowActionColumn && (
                 <TableCell
                   sx={{
                     borderTopRightRadius: "8px",
@@ -594,14 +624,14 @@ function GenericTable<T>({
                     textAlign: "center",
                   }}
                 >
-                Actions
-              </TableCell>
-            )}
-          </TableRow>
-        </TableHead>
-        <TableBody>{renderRows(data)}</TableBody>
-      </Table>
-    </TableContainer>
+                  Actions
+                </TableCell>
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody>{renderRows(data)}</TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 }

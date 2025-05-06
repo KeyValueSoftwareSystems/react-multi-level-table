@@ -40,7 +40,8 @@ module.exports = {
   },
   externals: {
     'react': 'react',
-    'react-dom': 'react-dom'
+    'react-dom': 'react-dom',
+    'react/jsx-runtime': 'react/jsx-runtime'
   },
   optimization: {
     minimize: true,

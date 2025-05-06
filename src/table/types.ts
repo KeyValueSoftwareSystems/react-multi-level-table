@@ -1,5 +1,5 @@
 import { ReactElement, ReactNode } from 'react';
-import { TABLE_TYPES, ICON_POSITIONS, ACTION_TYPES, CellValueType } from './constants';
+import { TABLE_TYPES, ICON_POSITIONS, ACTION_TYPES } from './constants';
 
 export interface Column<T> {
   key: keyof T;
