@@ -1,5 +1,5 @@
-import { Row } from "./types";
-import { CELL_VALUE_TYPES, CellValueType } from './constants';
+import { Row } from "../types";
+import { CELL_VALUE_TYPES, CellValueType } from '../constants';
 
 export const formatCurrency = (value: any) => {
   const formattedValue = Math.abs(Number(value)).toLocaleString("en-US", {
@@ -25,7 +25,7 @@ export const checkCellValueType = (type: string, value: any) => {
   }
 };
 
-export const getCellValueAllignment = (type: CellValueType | undefined): 'left' | 'center' | 'right' => {
+export const getCellValueAlignment = (type: CellValueType | undefined): 'left' | 'center' | 'right' => {
   switch (type) {
     case CELL_VALUE_TYPES.PERCENTAGE:
     case CELL_VALUE_TYPES.CURRENCY:

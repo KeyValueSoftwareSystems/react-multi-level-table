@@ -4,13 +4,13 @@
   "description": "A flexible and customizable table component built with React and Material-UI",
   "main": "build/index.js",
   "module": "build/index.js",
-  "types": "build/types/lib/index.d.ts",
-  "source": "src/lib/index.tsx",
+  "types": "build/types/index.d.ts",
+  "source": "src/index.tsx",
   "exports": {
     ".": {
       "import": "./build/index.js",
       "require": "./build/index.js",
-      "types": "./build/types/lib/index.d.ts"
+      "types": "./build/types/index.d.ts"
     }
   },
   "scripts": {

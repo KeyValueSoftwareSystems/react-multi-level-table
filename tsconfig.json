@@ -17,6 +17,6 @@
       "resolveJsonModule": true,
       "declarationDir": "build/types"
     },
-    "include": ["src/lib/**/*.tsx", "src/lib/**/*.ts", "src/table/**/*.tsx", "src/table/**/*.ts"],
-    "exclude": ["src/lib/**/tests", "node_modules"]
+    "include": ["src/**/*.tsx", "src/**/*.ts", "src/components/table/**/*.tsx", "src/components/table/**/*.ts", "src/constants/index.ts", "src/types.ts", "src/index.d.ts", "src/index.tsx"],
+    "exclude": ["src/**/tests", "node_modules"]
 }
