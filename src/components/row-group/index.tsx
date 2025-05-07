@@ -1,26 +1,20 @@
-import React, { ReactNode, useState } from 'react';
-import {
-  TableCell,
-  TableRow,
-  Typography,
-} from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import {
-  TABLE_TYPES,
-  DEFAULT_TABLE_CELL_STYLES,
-} from './constants';
-import { GenericTableProps, Row, RowAction } from './types';
+import React, { ReactNode, useState } from "react";
+import { TableCell, TableRow, Typography } from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { TABLE_TYPES, DEFAULT_TABLE_CELL_STYLES } from "../../constants";
+import { GenericTableProps, Row, RowAction } from "../../types";
+import "./styles.css";
 
 interface RowGroupProps<T> {
   rows: Row<T>[];
   level?: number;
-  columns: GenericTableProps<T>['columns'];
-  meta: GenericTableProps<T>['meta'];
-  actions?: GenericTableProps<T>['actions'];
-  onViewRow?: GenericTableProps<T>['onViewRow'];
+  columns: GenericTableProps<T>["columns"];
+  meta: GenericTableProps<T>["meta"];
+  actions?: GenericTableProps<T>["actions"];
+  onViewRow?: GenericTableProps<T>["onViewRow"];
   depth?: number;
   showTotal?: boolean;
-  tableCellStyles?: GenericTableProps<T>['tableCellStyles'];
+  tableCellStyles?: GenericTableProps<T>["tableCellStyles"];
   rowColors?: string[];
   columnMetadata: Record<string, any>;
   renderCellContent: (row: Row<T>, key: string) => ReactNode;
@@ -36,7 +30,7 @@ function RowGroup<T>({
   depth,
   showTotal = false,
   tableCellStyles,
-  rowColors = ['#F0F0F1', '#FFFFFF'],
+  rowColors = ["#F0F0F1", "#FFFFFF"],
   columnMetadata,
   renderCellContent,
 }: RowGroupProps<T>) {
@@ -116,9 +110,9 @@ function RowGroup<T>({
                 borderTopLeftRadius: colIndex === 0 ? "8px" : "0px",
                 borderBottomLeftRadius: colIndex === 0 ? "8px" : "0px",
                 borderTopRightRadius:
-                colIndex === columns.length - 1 ? "8px" : "0px",
+                  colIndex === columns.length - 1 ? "8px" : "0px",
                 borderBottomRightRadius:
-                colIndex === columns.length - 1 ? "8px" : "0px",
+                  colIndex === columns.length - 1 ? "8px" : "0px",
               }}
             >
               {column.render
@@ -144,27 +138,18 @@ function RowGroup<T>({
           return (
             <React.Fragment key={`${row.id}_${rowIndex}`}>
               <TableRow
+                className="row-group-table-row"
                 style={{
                   backgroundColor: "#FFFFFF",
                   cursor: onViewRow ? "pointer" : "default",
-                  border: "none",
-                  borderBottom: "1px solid #2F736E1F",
                 }}
                 onClick={() => onViewRow?.(row)}
               >
                 {meta?.chartType === TABLE_TYPES.MULTI_LEVEL && (
                   <TableCell
+                    className="row-group-level-cell"
                     style={{
-                      width: "5px",
                       paddingLeft: `${level * 20 + 10}px`,
-                      paddingTop: 0,
-                      paddingBottom: 0,
-                      backgroundColor: "#2F736E1F",
-                      lineHeight: "1rem",
-                      paddingRight: "0px",
-                      border: "none",
-                      borderTopLeftRadius: "8px",
-                      borderBottomLeftRadius: "8px",
                     }}
                   ></TableCell>
                 )}
@@ -180,22 +165,21 @@ function RowGroup<T>({
                     }}
                   >
                     {column.render
-                      ? column.render(row[column.key as keyof Row<T>], row as T, level)
+                      ? column.render(
+                          row[column.key as keyof Row<T>],
+                          row as T,
+                          level
+                        )
                       : renderCellContent(row, column.key as string)}
                   </TableCell>
                 ))}
                 {isShowActionColumn && level === 0 && (
                   <TableCell
                     key={String(`${row.id}_${rowIndex}_actions`)}
+                    className="row-group-action-cell"
                     sx={{
                       ...DEFAULT_TABLE_CELL_STYLES,
                       ...tableCellStyles,
-                      paddingY: "0.75rem",
-                      border: "none",
-                      borderLeft: "1px solid #2F736E1F",
-                      background: "#2F736E1F",
-                      borderTopRightRadius: "8px",
-                      borderBottomRightRadius: "8px",
                     }}
                   ></TableCell>
                 )}
@@ -203,12 +187,7 @@ function RowGroup<T>({
               <TableRow key={`selected_${row.id}`}>
                 <TableCell
                   colSpan={columns.length + 2}
-                  style={{
-                    padding: 0,
-                    backgroundColor: "#2F736E1F",
-                    borderBottom: "none",
-                    borderRadius: "16px",
-                  }}
+                  className="row-group-update-cell"
                 >
                   {actionWithRenderUpdate.renderUpdateComponent(row, () =>
                     setUpdatingRowId(null)
@@ -224,7 +203,7 @@ function RowGroup<T>({
             <TableRow
               style={{
                 backgroundColor:
-                rowIndex === rows.length - 1 && showTotal
+                  rowIndex === rows.length - 1 && showTotal
                     ? "#2F736E"
                     : "#F0F0F1",
                 cursor: onViewRow ? "pointer" : "default",
@@ -246,13 +225,14 @@ function RowGroup<T>({
                 >
                   {row.children && (
                     <button
-                      onClick={() => handleExpandRowClick(row.id)}
+                      className="row-group-expand-button"
                       style={{
                         border: "none",
                         background: "none",
                         cursor: "pointer",
                         padding: 0,
                       }}
+                      onClick={() => handleExpandRowClick(row.id)}
                     >
                       <ArrowDropDownIcon
                         style={{
@@ -264,21 +244,22 @@ function RowGroup<T>({
                   )}
                   {!row.children && row.getChildren && (
                     <button
-                      onClick={(e) =>
-                        handleExpandDynamicChildrenRowClick(rowIndex, row, e)
-                      }
+                      className="row-group-expand-button"
                       style={{
                         border: "none",
                         background: "none",
                         cursor: "pointer",
                         padding: 0,
                       }}
+                      onClick={(e) =>
+                        handleExpandDynamicChildrenRowClick(rowIndex, row, e)
+                      }
                     >
                       <ArrowDropDownIcon
                         style={{
                           color: "#162C36",
                           rotate:
-                          dynamicNestedRows?.index === rowIndex || isExpanded
+                            dynamicNestedRows?.index === rowIndex || isExpanded
                               ? "0deg"
                               : "-90deg",
                         }}
@@ -295,20 +276,24 @@ function RowGroup<T>({
                     ...tableCellStyles,
                     border: "none",
                     borderLeft:
-                    colIndex === 0 || level === depth
+                      colIndex === 0 || level === depth
                         ? "none"
                         : "1px solid #2F736E1F",
                     background: getRowCellBackGround(level),
                     borderTopLeftRadius: colIndex === 0 ? "8px" : "0px",
                     borderBottomLeftRadius: colIndex === 0 ? "8px" : "0px",
                     borderTopRightRadius:
-                    colIndex === columns.length - 1 ? "8px" : "0px",
+                      colIndex === columns.length - 1 ? "8px" : "0px",
                     borderBottomRightRadius:
-                    colIndex === columns.length - 1 ? "8px" : "0px",
+                      colIndex === columns.length - 1 ? "8px" : "0px",
                   }}
                 >
                   {column.render
-                    ? column.render(row[column.key as keyof Row<T>], row as T, level)
+                    ? column.render(
+                        row[column.key as keyof Row<T>],
+                        row as T,
+                        level
+                      )
                     : renderCellContent(row, column.key as string)}
                 </TableCell>
               ))}
@@ -329,20 +314,20 @@ function RowGroup<T>({
                     return (
                       <button
                         key={String(`${row.id}_${rowIndex}_${index}_action`)}
+                        className="row-group-action-button"
                         onClick={(e) => {
                           handleRowActionClick(row.id, action);
                           e.stopPropagation();
                         }}
-                        className="table-button table-button--action"
                       >
                         {action.icon && (
                           <img
                             src={require(`${action.icon}`)}
                             alt="action_icon"
-                            className="table-icon"
+                            className="row-group-action-icon"
                           />
                         )}
-                        <Typography className="table-cell--action-label">
+                        <Typography className="row-group-action-label">
                           {action.label}
                         </Typography>
                       </button>
@@ -379,4 +364,4 @@ function RowGroup<T>({
   );
 }
 
-export default RowGroup; 
+export default RowGroup;
