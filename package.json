@@ -4,13 +4,13 @@
   "description": "A flexible and customizable table component built with React and Material-UI",
   "main": "build/index.js",
   "module": "build/index.js",
-  "types": "build/types/lib/index.d.ts",
-  "source": "src/lib/index.tsx",
+  "types": "build/types/index.d.ts",
+  "source": "src/index.tsx",
   "exports": {
     ".": {
       "import": "./build/index.js",
       "require": "./build/index.js",
-      "types": "./build/types/lib/index.d.ts"
+      "types": "./build/types/index.d.ts"
     }
   },
   "scripts": {
@@ -79,8 +79,6 @@
     "husky": "^8.0.3",
     "jest": "^29.4.2",
     "mini-css-extract-plugin": "^2.7.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.3.5",
@@ -91,8 +89,8 @@
     "webpack-dev-server": "4.11.1"
   },
   "peerDependencies": {
-    "react": ">=18.2.0",
-    "react-dom": ">=18.2.0"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   },
   "files": [
     "build"

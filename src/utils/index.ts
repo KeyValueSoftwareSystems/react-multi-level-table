@@ -1,5 +1,5 @@
-import { Row } from "./types";
-import { CELL_VALUE_TYPES, CellValueType } from './constants';
+import { Row } from "../types";
+import { CELL_VALUE_TYPES, CellValueType } from '../constants';
 
 export const formatCurrency = (value: any): string => {
   const formattedValue = Math.abs(Number(value)).toLocaleString("en-US", {
