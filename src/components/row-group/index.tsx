@@ -1,27 +1,20 @@
-import React, { ReactNode, useState } from 'react';
-import {
-  TableCell,
-  TableRow,
-  Typography,
-} from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import {
-  TABLE_TYPES,
-  DEFAULT_TABLE_CELL_STYLES,
-} from '../../constants';
-import { GenericTableProps, Row, RowAction } from '../../types';
-import './styles.css';
+import React, { ReactNode, useState } from "react";
+import { TableCell, TableRow, Typography } from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { TABLE_TYPES, DEFAULT_TABLE_CELL_STYLES } from "../../constants";
+import { GenericTableProps, Row, RowAction } from "../../types";
+import "./styles.css";
 
 interface RowGroupProps<T> {
   rows: Row<T>[];
   level?: number;
-  columns: GenericTableProps<T>['columns'];
-  meta: GenericTableProps<T>['meta'];
-  actions?: GenericTableProps<T>['actions'];
-  onViewRow?: GenericTableProps<T>['onViewRow'];
+  columns: GenericTableProps<T>["columns"];
+  meta: GenericTableProps<T>["meta"];
+  actions?: GenericTableProps<T>["actions"];
+  onViewRow?: GenericTableProps<T>["onViewRow"];
   depth?: number;
   showTotal?: boolean;
-  tableCellStyles?: GenericTableProps<T>['tableCellStyles'];
+  tableCellStyles?: GenericTableProps<T>["tableCellStyles"];
   rowColors?: string[];
   columnMetadata: Record<string, any>;
   renderCellContent: (row: Row<T>, key: string) => ReactNode;
@@ -37,7 +30,7 @@ function RowGroup<T>({
   depth,
   showTotal = false,
   tableCellStyles,
-  rowColors = ['#F0F0F1', '#FFFFFF'],
+  rowColors = ["#F0F0F1", "#FFFFFF"],
   columnMetadata,
   renderCellContent,
 }: RowGroupProps<T>) {
@@ -117,9 +110,9 @@ function RowGroup<T>({
                 borderTopLeftRadius: colIndex === 0 ? "8px" : "0px",
                 borderBottomLeftRadius: colIndex === 0 ? "8px" : "0px",
                 borderTopRightRadius:
-                colIndex === columns.length - 1 ? "8px" : "0px",
+                  colIndex === columns.length - 1 ? "8px" : "0px",
                 borderBottomRightRadius:
-                colIndex === columns.length - 1 ? "8px" : "0px",
+                  colIndex === columns.length - 1 ? "8px" : "0px",
               }}
             >
               {column.render
@@ -172,7 +165,11 @@ function RowGroup<T>({
                     }}
                   >
                     {column.render
-                      ? column.render(row[column.key as keyof Row<T>], row as T, level)
+                      ? column.render(
+                          row[column.key as keyof Row<T>],
+                          row as T,
+                          level
+                        )
                       : renderCellContent(row, column.key as string)}
                   </TableCell>
                 ))}
@@ -206,7 +203,7 @@ function RowGroup<T>({
             <TableRow
               style={{
                 backgroundColor:
-                rowIndex === rows.length - 1 && showTotal
+                  rowIndex === rows.length - 1 && showTotal
                     ? "#2F736E"
                     : "#F0F0F1",
                 cursor: onViewRow ? "pointer" : "default",
@@ -262,7 +259,7 @@ function RowGroup<T>({
                         style={{
                           color: "#162C36",
                           rotate:
-                          dynamicNestedRows?.index === rowIndex || isExpanded
+                            dynamicNestedRows?.index === rowIndex || isExpanded
                               ? "0deg"
                               : "-90deg",
                         }}
@@ -279,20 +276,24 @@ function RowGroup<T>({
                     ...tableCellStyles,
                     border: "none",
                     borderLeft:
-                    colIndex === 0 || level === depth
+                      colIndex === 0 || level === depth
                         ? "none"
                         : "1px solid #2F736E1F",
                     background: getRowCellBackGround(level),
                     borderTopLeftRadius: colIndex === 0 ? "8px" : "0px",
                     borderBottomLeftRadius: colIndex === 0 ? "8px" : "0px",
                     borderTopRightRadius:
-                    colIndex === columns.length - 1 ? "8px" : "0px",
+                      colIndex === columns.length - 1 ? "8px" : "0px",
                     borderBottomRightRadius:
-                    colIndex === columns.length - 1 ? "8px" : "0px",
+                      colIndex === columns.length - 1 ? "8px" : "0px",
                   }}
                 >
                   {column.render
-                    ? column.render(row[column.key as keyof Row<T>], row as T, level)
+                    ? column.render(
+                        row[column.key as keyof Row<T>],
+                        row as T,
+                        level
+                      )
                     : renderCellContent(row, column.key as string)}
                 </TableCell>
               ))}
@@ -363,4 +364,4 @@ function RowGroup<T>({
   );
 }
 
-export default RowGroup; 
+export default RowGroup;
