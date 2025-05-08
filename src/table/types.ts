@@ -52,4 +52,5 @@ export interface GenericTableProps<T> {
   tableHeaderStyles?: React.CSSProperties;
   tableCellStyles?: React.CSSProperties;
   rowColors?: string[];
+  sortable?: boolean;
 } 

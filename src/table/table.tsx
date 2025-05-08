@@ -6,6 +6,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableSortLabel,
   Typography,
 } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -36,6 +37,7 @@ function GenericTable<T>({
   tableHeaderStyles,
   tableCellStyles,
   rowColors = DEFAULT_ROW_COLORS,
+  sortable = false,
 }: GenericTableProps<T>) {
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
   const [allExpanded, setAllExpanded] = useState(false);
@@ -44,6 +46,8 @@ function GenericTable<T>({
     index: number;
     dynamicRows: Row<T>[] | null;
   }>({ index: -1, dynamicRows: null });
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [orderBy, setOrderBy] = useState<string>('');
 
   useEffect(() => {
     setAllExpanded(isAllRowsExpanded(data, expandedRows));
@@ -112,6 +116,37 @@ function GenericTable<T>({
       actionHandler(rowId, el);
     }
   };
+
+  const handleRequestSort = (property: string) => {
+    if (!sortable) return;
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const sortedData = React.useMemo(() => {
+    if (!orderBy) return data;
+
+    return [...data].sort((a, b) => {
+      const aValue = a[orderBy];
+      const bValue = b[orderBy];
+
+      if (aValue === null || aValue === undefined) return 1;
+      if (bValue === null || bValue === undefined) return -1;
+
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return order === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return order === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+
+      return 0;
+    });
+  }, [data, order, orderBy]);
 
   const renderCellContent = (row: Row<T>, key: string): ReactNode => {
     const value = row[key];
@@ -415,6 +450,7 @@ function GenericTable<T>({
                   colIndex === columns.length - 1 ? "8px" : "0px",
                   borderBottomRightRadius:
                   colIndex === columns.length - 1 ? "8px" : "0px",
+                  cursor: sortable ? 'pointer' : 'default',
                 }}
               >
                 {column.render
@@ -514,7 +550,7 @@ function GenericTable<T>({
             borderCollapse: "separate",
           }}
         >
-        <TableHead>
+          <TableHead>
             <TableRow
               sx={{
                 borderRadius: "20px",
@@ -524,7 +560,7 @@ function GenericTable<T>({
                 },
               }}
             >
-              {meta.chartType === TABLE_TYPES.MULTI_LEVEL && (
+              {meta?.chartType === TABLE_TYPES.MULTI_LEVEL && (
                 <TableCell
                   sx={{
                     padding: 0,
@@ -539,8 +575,8 @@ function GenericTable<T>({
                     paddingRight: depth === 1 ? "0px" : "1rem",
                   }}
                 >
-                <button
-                  onClick={handleExpandAllRows}
+                  <button
+                    onClick={handleExpandAllRows}
                     style={{
                       border: "none",
                       background: "none",
@@ -548,22 +584,22 @@ function GenericTable<T>({
                       fontWeight: "bold",
                       color: "#6C6C6C",
                     }}
-                >
-                  <ArrowDropDownIcon
+                  >
+                    <ArrowDropDownIcon
                       style={{
                         color: "#9AD6D1",
                         rotate: allExpanded ? "0deg" : "-90deg",
                       }}
-                  />
-                </button>
-              </TableCell>
-            )}
-            {columns.map((column, i) => (
-              <TableCell
-                key={String(column.key)}
+                    />
+                  </button>
+                </TableCell>
+              )}
+              {columns.map((column, i) => (
+                <TableCell
+                  key={String(column.key)}
                   sx={{
                     borderTopRightRadius:
-                  i === columns.length - 1 && !isShowActionColumn
+                      i === columns.length - 1 && !isShowActionColumn
                         ? "8px"
                         : "0px",
                     borderBottomRightRadius:
@@ -571,22 +607,33 @@ function GenericTable<T>({
                         ? "8px"
                         : "0px",
                     borderTopLeftRadius:
-                      meta.chartType !== "MULTI_LEVEL_TABLE" && i === 0
+                      meta?.chartType !== TABLE_TYPES.MULTI_LEVEL && i === 0
                         ? "8px"
                         : "0px",
                     WebkitBorderBottomLeftRadius:
-                      meta.chartType !== "MULTI_LEVEL_TABLE" && i === 0
+                      meta?.chartType !== TABLE_TYPES.MULTI_LEVEL && i === 0
                         ? "8px"
                         : "0px",
                     textAlign: getCellValueAllignment(
                       columnMetadata[String(column.key)]?.type
                     ),
+                    cursor: sortable ? 'pointer' : 'default',
                   }}
-              >
-                {column.renderHeader ? column.renderHeader(column) : column.label}
-              </TableCell>
-            ))}
-            {isShowActionColumn && (
+                >
+                  {sortable ? (
+                    <TableSortLabel
+                      active={orderBy === String(column.key)}
+                      direction={orderBy === String(column.key) ? order : 'asc'}
+                      onClick={() => handleRequestSort(String(column.key))}
+                    >
+                      {column.renderHeader ? column.renderHeader(column) : column.label}
+                    </TableSortLabel>
+                  ) : (
+                    column.renderHeader ? column.renderHeader(column) : column.label
+                  )}
+                </TableCell>
+              ))}
+              {isShowActionColumn && (
                 <TableCell
                   sx={{
                     borderTopRightRadius: "8px",
@@ -594,14 +641,14 @@ function GenericTable<T>({
                     textAlign: "center",
                   }}
                 >
-                Actions
-              </TableCell>
-            )}
-          </TableRow>
-        </TableHead>
-        <TableBody>{renderRows(data)}</TableBody>
-      </Table>
-    </TableContainer>
+                  Actions
+                </TableCell>
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody>{renderRows(sortable ? sortedData : data)}</TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 }
