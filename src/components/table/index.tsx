@@ -36,7 +36,7 @@ function GenericTable<T>({
   tableHeaderStyles,
   tableCellStyles,
   rowColors = DEFAULT_ROW_COLORS,
-}: GenericTableProps<T>) {
+}: GenericTableProps<T>): JSX.Element {
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
   const [allExpanded, setAllExpanded] = useState(false);
 
@@ -52,12 +52,12 @@ function GenericTable<T>({
       return obj;
     }, {} as Record<string, any>) ?? {};
 
-  const handleExpandAllRows = () => {
+  const handleExpandAllRows = (): void => {
     const newExpandState = !allExpanded;
     setAllExpanded(newExpandState);
 
     const updatedExpandedRows: Record<string, boolean> = {};
-    const setAllRowState = (rows: Row<T>[]) => {
+    const setAllRowState = (rows: Row<T>[]): void => {
       rows.forEach((row) => {
         updatedExpandedRows[row.id] = newExpandState;
         if (row.children) {
@@ -166,7 +166,7 @@ function GenericTable<T>({
     );
   };
 
-  const renderHeader = () => {
+  const renderHeader = (): JSX.Element => {
     return (
       <TableHead>
         <TableRow className="table-header-row">
@@ -241,7 +241,7 @@ function GenericTable<T>({
     );
   };
 
-  const renderBody = () => {
+  const renderBody = (): JSX.Element => {
     return (
       <TableBody>
         <RowGroup
@@ -261,7 +261,7 @@ function GenericTable<T>({
     );
   };
 
-  const renderEmptyData = () => {
+  const renderEmptyData = (): JSX.Element => {
     return (
       <div className="no-data-container">
         <div className="no-data-box">

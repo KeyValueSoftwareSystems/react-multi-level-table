@@ -1,7 +1,7 @@
 import { Row } from "../types";
 import { CELL_VALUE_TYPES, CellValueType } from '../constants';
 
-export const formatCurrency = (value: any) => {
+export const formatCurrency = (value: any): string => {
   const formattedValue = Math.abs(Number(value)).toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -9,7 +9,7 @@ export const formatCurrency = (value: any) => {
   return value < 0 ? `- $${formattedValue}` : `$${formattedValue}`;
 };
 
-export const checkCellValueType = (type: string, value: any) => {
+export const checkCellValueType = (type: string, value: any): string => {
   switch (type) {
     case CELL_VALUE_TYPES.STRING:
     case CELL_VALUE_TYPES.DATE:
@@ -21,7 +21,7 @@ export const checkCellValueType = (type: string, value: any) => {
     case CELL_VALUE_TYPES.CURRENCY:
       return Number(value) === 0 ? "-" : formatCurrency(value);
     default:
-      return null;
+      return "-";
   }
 };
 

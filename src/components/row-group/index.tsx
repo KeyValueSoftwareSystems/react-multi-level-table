@@ -33,7 +33,7 @@ function RowGroup<T>({
   rowColors = ["#F0F0F1", "#FFFFFF"],
   columnMetadata,
   renderCellContent,
-}: RowGroupProps<T>) {
+}: RowGroupProps<T>): JSX.Element {
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
   const [updatingRowId, setUpdatingRowId] = useState<string | null>(null);
   const [dynamicNestedRows, setDynamicNestedRows] = useState<{
@@ -43,7 +43,7 @@ function RowGroup<T>({
 
   const isShowActionColumn = Boolean(actions?.length);
 
-  const handleExpandRowClick = (id: string) => {
+  const handleExpandRowClick = (id: string): void => {
     setExpandedRows((prev) => ({
       ...prev,
       [id]: !prev[id],
@@ -54,7 +54,7 @@ function RowGroup<T>({
     rowIndex: number,
     row: Row<T>,
     e: React.MouseEvent
-  ) => {
+  ): Promise<void> => {
     e.stopPropagation();
     if (
       dynamicNestedRows?.dynamicRows?.length &&
@@ -71,7 +71,7 @@ function RowGroup<T>({
     }
   };
 
-  const handleRowActionClick = (rowId: string, action: RowAction, el?: any) => {
+  const handleRowActionClick = (rowId: string, action: RowAction, el?: any): void => {
     if (!action || !isShowActionColumn) return;
 
     const { renderUpdateComponent, action: actionHandler } = action;
@@ -83,7 +83,7 @@ function RowGroup<T>({
     }
   };
 
-  const getRowCellBackGround = (index: number) => {
+  const getRowCellBackGround = (index: number): string => {
     if (depth && depth === index) {
       return "#FFFFFF";
     } else {
@@ -91,7 +91,7 @@ function RowGroup<T>({
     }
   };
 
-  const renderDynamicRows = (dynamicRows: Row<T>[]) => {
+  const renderDynamicRows = (dynamicRows: Row<T>[]): JSX.Element[] => {
     return dynamicRows.map((row) => (
       <React.Fragment key={`${row.id}`}>
         <TableRow style={{ backgroundColor: "#FFFFFF" }}>
@@ -143,7 +143,7 @@ function RowGroup<T>({
                   backgroundColor: "#FFFFFF",
                   cursor: onViewRow ? "pointer" : "default",
                 }}
-                onClick={() => onViewRow?.(row)}
+                onClick={(): void => onViewRow?.(row)}
               >
                 {meta?.chartType === TABLE_TYPES.MULTI_LEVEL && (
                   <TableCell
@@ -153,7 +153,7 @@ function RowGroup<T>({
                     }}
                   ></TableCell>
                 )}
-                {columns.map((column, colIndex) => (
+                {columns.map((column) => (
                   <TableCell
                     key={String(column.key)}
                     sx={{
@@ -208,7 +208,7 @@ function RowGroup<T>({
                     : "#F0F0F1",
                 cursor: onViewRow ? "pointer" : "default",
               }}
-              onClick={() => onViewRow?.(row)}
+              onClick={(): void => onViewRow?.(row)}
             >
               {meta?.chartType === TABLE_TYPES.MULTI_LEVEL && (
                 <TableCell
@@ -232,7 +232,7 @@ function RowGroup<T>({
                         cursor: "pointer",
                         padding: 0,
                       }}
-                      onClick={() => handleExpandRowClick(row.id)}
+                      onClick={(): void => handleExpandRowClick(row.id)}
                     >
                       <ArrowDropDownIcon
                         style={{
@@ -251,7 +251,7 @@ function RowGroup<T>({
                         cursor: "pointer",
                         padding: 0,
                       }}
-                      onClick={(e) =>
+                      onClick={(e: React.MouseEvent): Promise<void> =>
                         handleExpandDynamicChildrenRowClick(rowIndex, row, e)
                       }
                     >
@@ -315,7 +315,7 @@ function RowGroup<T>({
                       <button
                         key={String(`${row.id}_${rowIndex}_${index}_action`)}
                         className="row-group-action-button"
-                        onClick={(e) => {
+                        onClick={(e: React.MouseEvent): void => {
                           handleRowActionClick(row.id, action);
                           e.stopPropagation();
                         }}
