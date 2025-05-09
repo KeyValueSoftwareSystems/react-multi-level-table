@@ -1,7 +1,7 @@
 import React from 'react';
 import { HeaderGroup } from 'react-table';
-import { DataItem } from '../../types/types';
-import './styles.css';
+import { DataItem } from '../types/types';
+import '../styles/TableHeader.css';
 
 /**
  * Props for the TableHeader component

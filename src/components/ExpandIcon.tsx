@@ -1,5 +1,5 @@
 import React from 'react';
-import './styles.css';
+import '../styles/ExpandIcon.css';
 
 /**
  * Props for the ExpandIcon component

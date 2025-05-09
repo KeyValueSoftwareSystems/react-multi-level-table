@@ -5,11 +5,11 @@ import {
   useFilters,
   usePagination,
 } from 'react-table';
-import { Column, DataItem, TableInstanceWithHooks, TableStateWithPagination } from '../../types/types';
-import { TableHeader } from '../TableHeader/TableHeader';
-import { TableRow } from '../TableRow/TableRow';
-import { Pagination } from '../Pagination/Pagination';
-import './styles.css';
+import { Column, DataItem, TableInstanceWithHooks, TableStateWithPagination } from '../types/types';
+import { TableHeader } from './TableHeader';
+import { TableRow } from './TableRow';
+import { Pagination } from './Pagination';
+import '../styles/MultiLevelTable.css';
 
 /**
  * Props for the MultiLevelTable component

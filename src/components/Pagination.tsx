@@ -1,6 +1,6 @@
 import React from 'react';
-import { PAGE_SIZE_OPTIONS } from '../../constants/pagination';
-import './styles.css';
+import { PAGE_SIZE_OPTIONS } from '../constants/pagination';
+import '../styles/Pagination.css';
 
 /**
  * Props for the Pagination component

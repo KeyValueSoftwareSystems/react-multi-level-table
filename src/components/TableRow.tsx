@@ -1,9 +1,9 @@
 import React from 'react';
 import { Cell } from 'react-table';
-import { Column, DataItem } from '../../types/types';
-import { TableCell } from '../TableCell/TableCell';
-import { ExpandIcon } from '../ExpandIcon/ExpandIcon';
-import './styles.css';
+import { Column, DataItem } from '../types/types';
+import { TableCell } from './TableCell';
+import { ExpandIcon } from './ExpandIcon';
+import '../styles/TableRow.css';
 
 /**
  * Props for the TableRow component
