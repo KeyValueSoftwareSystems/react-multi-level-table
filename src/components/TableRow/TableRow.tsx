@@ -47,14 +47,14 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
   if (!row.getRowProps) {
     return (
       <tr onClick={onToggle} className={getRowClassName()}>
-        {columns.map((column: Column) => (
+        {columns.map((column: Column, index: number) => (
           <td
             key={column.key}
             className={`table-cell ${level > 0 ? 'table-cell-nested' : ''}`}
             style={{ paddingLeft: level > 0 ? `${32 + (level * 16)}px` : '12px' }}
           >
             <div className="table-cell-content">
-              {hasChildren && <ExpandIcon isExpanded={isExpanded} />}
+              {hasChildren && index === 0 && <ExpandIcon isExpanded={isExpanded} />}
               {column.render 
                 ? column.render(row[column.key], row)
                 : row[column.key]}
