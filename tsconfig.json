@@ -17,8 +17,11 @@
     "noFallthroughCasesInSwitch": true,
     "declaration": true,
     "declarationDir": "dist/types",
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

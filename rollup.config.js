@@ -7,6 +7,13 @@ import { readFileSync } from 'fs';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
 
+const external = [
+  'react',
+  'react-dom',
+  'react/jsx-runtime',
+  ...Object.keys(pkg.peerDependencies || {})
+];
+
 export default defineConfig([
   {
     input: 'src/index.ts',
@@ -15,23 +22,39 @@ export default defineConfig([
         file: pkg.main,
         format: 'cjs',
         sourcemap: true,
+        exports: 'named',
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+          'react/jsx-runtime': 'jsxRuntime'
+        }
       },
       {
         file: pkg.module,
         format: 'esm',
         sourcemap: true,
+        exports: 'named',
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+          'react/jsx-runtime': 'jsxRuntime'
+        }
       },
     ],
     plugins: [
       resolve(),
       commonjs(),
-      typescript({ tsconfig: './tsconfig.json' }),
+      typescript({ 
+        tsconfig: './tsconfig.json',
+        exclude: ['**/__tests__/**', '**/*.test.ts', '**/*.test.tsx']
+      }),
     ],
-    external: [...Object.keys(pkg.peerDependencies || {})],
+    external
   },
   {
     input: 'dist/types/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'esm' }],
     plugins: [dts()],
+    external
   },
 ]); 
