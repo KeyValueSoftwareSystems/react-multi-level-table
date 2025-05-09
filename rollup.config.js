@@ -4,6 +4,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import dts from 'rollup-plugin-dts';
 import { defineConfig } from 'rollup';
 import { readFileSync } from 'fs';
+import postcss from 'rollup-plugin-postcss';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
 
@@ -44,6 +45,15 @@ export default defineConfig([
     plugins: [
       resolve(),
       commonjs(),
+      postcss({
+        extensions: ['.css'],
+        minimize: true,
+        modules: true,
+        inject: {
+          insertAt: 'top'
+        },
+        extract: false
+      }),
       typescript({ 
         tsconfig: './tsconfig.json',
         exclude: ['**/__tests__/**', '**/*.test.ts', '**/*.test.tsx']
@@ -54,7 +64,13 @@ export default defineConfig([
   {
     input: 'dist/types/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'esm' }],
-    plugins: [dts()],
-    external
+    plugins: [
+      postcss({
+        inject: false,
+        extract: false
+      }),
+      dts()
+    ],
+    external: [...external, /\.css$/]
   },
 ]); 
