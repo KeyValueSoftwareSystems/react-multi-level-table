@@ -1,35 +1,38 @@
 # React Multi Level Table
 
-A flexible and customizable multi-level table component for React applications.
+A flexible and customizable multi-level table component for React applications with support for sorting, filtering, and pagination.
 
 ## Installation
 
 ```bash
-npm install react-multi-level-table
+npm install @keyvalue/material-table-component
 # or
-yarn add react-multi-level-table
+yarn add @keyvalue/material-table-component
 ```
 
 ## Usage
 
 ```tsx
-import { MultiLevelTable } from 'react-multi-level-table';
+import { MultiLevelTable } from '@keyvalue/material-table-component';
 
 const data = [
   {
     id: 1,
     name: 'Parent 1',
     value: 100,
+    status: 'active',
     children: [
       {
         id: 2,
         name: 'Child 1',
         value: 50,
+        status: 'pending',
       },
       {
         id: 3,
         name: 'Child 2',
         value: 50,
+        status: 'completed',
       },
     ],
   },
@@ -39,18 +42,52 @@ const columns = [
   {
     key: 'name',
     title: 'Name',
+    filterable: true,
   },
   {
     key: 'value',
     title: 'Value',
+    filterable: true,
     render: (value) => `$${value}`,
+  },
+  {
+    key: 'status',
+    title: 'Status',
+    filterable: true,
+    render: (value) => (
+      <span style={{ 
+        padding: '4px 8px',
+        borderRadius: '4px',
+        backgroundColor: value === 'active' ? '#e6ffe6' : 
+                        value === 'pending' ? '#fff3e6' : '#e6f3ff',
+        color: value === 'active' ? '#006600' :
+               value === 'pending' ? '#cc7700' : '#0066cc'
+      }}>
+        {value}
+      </span>
+    ),
   },
 ];
 
 function App() {
-  return <MultiLevelTable data={data} columns={columns} />;
+  return (
+    <MultiLevelTable 
+      data={data} 
+      columns={columns}
+      pageSize={10}
+    />
+  );
 }
 ```
+
+## Features
+
+- **Multi-level Data Structure**: Display hierarchical data with parent-child relationships
+- **Sorting**: Click column headers to sort data (applies to parent rows only)
+- **Filtering**: Real-time filtering for specified columns (applies to parent rows only)
+- **Pagination**: Navigate through pages with configurable page sizes
+- **Custom Rendering**: Customize cell content with render functions
+- **TypeScript Support**: Full TypeScript support with proper type definitions
 
 ## Props
 
@@ -59,6 +96,7 @@ function App() {
 | data | array | Yes | - | Array of data objects to display in the table |
 | columns | array | Yes | - | Array of column configurations |
 | childrenKey | string | No | 'children' | Key to use for nested data |
+| pageSize | number | No | 10 | Number of rows to display per page |
 
 ### Column Configuration
 
@@ -69,6 +107,7 @@ Each column object should have the following properties:
 | key | string | Yes | Key to access the data in each row |
 | title | string | Yes | Column header text |
 | render | function | No | Custom render function for the column |
+| filterable | boolean | No | Whether the column can be filtered |
 
 ## Development
 
