@@ -1,0 +1,19 @@
+.table-row {
+  cursor: pointer;
+}
+
+.table-row-nested {
+  background-color: #f1f3f5;
+}
+
+.table-row-expanded {
+  background-color: #f8f9fa;
+}
+
+.table-row-main {
+  background-color: #ffffff;
+}
+
+.table-cell-nested {
+  padding-left: 32px;
+} 
