@@ -1,5 +1,5 @@
 import React from 'react';
-import { HeaderGroup } from 'react-table';
+import { HeaderGroup} from 'react-table';
 import { DataItem } from '../types';
 import './styles.css';
 
@@ -10,6 +10,16 @@ import './styles.css';
  */
 interface TableHeaderProps {
   headerGroups: HeaderGroup<DataItem>[];
+}
+
+type ColumnWithSorting = {
+  getHeaderProps: (props?: { style?: React.CSSProperties }) => { style?: React.CSSProperties; onClick?: () => void; key?: string };
+  getSortByToggleProps: () => { style?: React.CSSProperties; onClick?: () => void };
+  render: (type: string) => React.ReactNode;
+  isSorted?: boolean;
+  isSortedDesc?: boolean;
+  Filter?: React.ComponentType<{ column: ColumnWithSorting }>;
+  id: string;
 }
 
 /**
@@ -24,7 +34,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ headerGroups }) => (
       const { key: headerGroupKey, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
       return (
         <tr key={headerGroupKey} {...headerGroupProps}>
-          {headerGroup.headers.map((column: any) => {
+          {(headerGroup.headers as unknown as ColumnWithSorting[]).map((column) => {
             const { key: columnKey, ...columnProps } = column.getHeaderProps(column.getSortByToggleProps());
             return (
               <th

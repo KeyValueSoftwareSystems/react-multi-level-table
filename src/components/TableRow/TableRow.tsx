@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cell } from 'react-table';
+import { Cell, Row } from 'react-table';
 import { Column, DataItem } from '../types';
 import { TableCell } from '../TableCell/TableCell';
 import { ExpandIcon } from '../ExpandIcon/ExpandIcon';
@@ -8,7 +8,7 @@ import './styles.css';
 /**
  * Props for the TableRow component
  * @interface TableRowProps
- * @property {any} row - Row data from react-table
+ * @property {Row<DataItem> | DataItem} row - Row data from react-table or direct data item
  * @property {Column[]} columns - Array of column configurations
  * @property {boolean} hasChildren - Whether the row has child rows
  * @property {boolean} isExpanded - Whether the row is expanded
@@ -16,7 +16,7 @@ import './styles.css';
  * @property {number} [level=0] - Nesting level of the row
  */
 interface TableRowProps {
-  row: any;
+  row: Row<DataItem> | DataItem;
   columns: Column[];
   hasChildren: boolean;
   isExpanded: boolean;
@@ -44,7 +44,8 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
   };
 
   // For nested rows that don't have getRowProps
-  if (!row.getRowProps) {
+  if (!('getRowProps' in row)) {
+    const dataItem = row as DataItem;
     return (
       <tr onClick={onToggle} className={getRowClassName()}>
         {columns.map((column: Column) => (
@@ -56,8 +57,8 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
             <div className="table-cell-content">
               {hasChildren && <ExpandIcon isExpanded={isExpanded} />}
               {column.render 
-                ? column.render(row[column.key], row)
-                : row[column.key]}
+                ? column.render(dataItem[column.key], dataItem)
+                : String(dataItem[column.key])}
             </div>
           </td>
         ))}
@@ -66,7 +67,8 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
   }
 
   // For main table rows that have getRowProps
-  const { key, ...rowProps } = row.getRowProps();
+  const tableRow = row as Row<DataItem>;
+  const { key, ...rowProps } = tableRow.getRowProps();
   return (
     <tr
       key={key}
@@ -74,7 +76,7 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
       onClick={onToggle}
       className={getRowClassName()}
     >
-      {row.cells.map((cell: Cell<DataItem>) => (
+      {tableRow.cells.map((cell: Cell<DataItem>) => (
         <TableCell
           key={cell.column.id}
           cell={cell}

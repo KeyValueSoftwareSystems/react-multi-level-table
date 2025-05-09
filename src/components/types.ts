@@ -1,16 +1,17 @@
 import React from 'react';
-import { TableInstance, TableState } from 'react-table';
+import { TableInstance, TableState, Row } from 'react-table';
 
 export interface Column {
   key: string;
   title: string;
-  render?: (value: any, record: any) => React.ReactNode;
+  render?: (value: unknown, record: DataItem) => React.ReactNode;
   filterable?: boolean;
 }
 
 export interface DataItem {
-  id?: string | number;
-  [key: string]: any;
+  id: string | number;
+  level?: number;
+  [key: string]: unknown;
 }
 
 export interface TableStateWithPagination<T extends object> extends TableState<T> {
@@ -19,7 +20,7 @@ export interface TableStateWithPagination<T extends object> extends TableState<T
 }
 
 export interface TableInstanceWithHooks<T extends object> extends TableInstance<T> {
-  page: any[];
+  page: Row<T>[];
   canPreviousPage: boolean;
   canNextPage: boolean;
   pageOptions: number[];

@@ -4,6 +4,7 @@ import {
   useSortBy,
   useFilters,
   usePagination,
+  Row,
 } from 'react-table';
 import { Column, DataItem, TableInstanceWithHooks, TableStateWithPagination } from '../types';
 import { TableHeader } from '../TableHeader/TableHeader';
@@ -69,15 +70,15 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     return columns.map(col => ({
       Header: col.title,
       accessor: col.key,
-      Cell: ({ row, value }: any) => {
+      Cell: ({ row, value }: { row: Row<DataItem>; value: unknown }) => {
         const item = row.original;
         return (
           <div style={{ paddingLeft: `${item.level || 0}px` }}>
-            {col.render ? col.render(value, item) : value}
+            {col.render ? col.render(value, item) : value?.toString()}
           </div>
         );
       },
-      Filter: col.filterable ? ({ column }: any) => (
+      Filter: col.filterable ? ({ column }: { column: { setFilter: (value: string) => void } }) => (
         <input
           value={filterInput}
           onChange={e => {
