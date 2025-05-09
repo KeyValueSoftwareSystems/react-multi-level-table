@@ -1,9 +1,9 @@
 import React from 'react';
 import { Cell, Row } from 'react-table';
-import { Column, DataItem } from '../types';
-import { TableCell } from '../TableCell/TableCell';
-import { ExpandIcon } from '../ExpandIcon/ExpandIcon';
-import './styles.css';
+import { Column, DataItem } from '../types/types';
+import { TableCell } from './TableCell';
+import { ExpandIcon } from './ExpandIcon';
+import '../styles/TableRow.css';
 
 /**
  * Props for the TableRow component
@@ -48,14 +48,14 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
     const dataItem = row as DataItem;
     return (
       <tr onClick={onToggle} className={getRowClassName()}>
-        {columns.map((column: Column) => (
+        {columns.map((column: Column, index: number) => (
           <td
             key={column.key}
             className={`table-cell ${level > 0 ? 'table-cell-nested' : ''}`}
             style={{ paddingLeft: level > 0 ? `${32 + (level * 16)}px` : '12px' }}
           >
             <div className="table-cell-content">
-              {hasChildren && <ExpandIcon isExpanded={isExpanded} />}
+              {hasChildren && index === 0 && <ExpandIcon isExpanded={isExpanded} />}
               {column.render 
                 ? column.render(dataItem[column.key], dataItem)
                 : String(dataItem[column.key])}
@@ -76,11 +76,11 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
       onClick={onToggle}
       className={getRowClassName()}
     >
-      {tableRow.cells.map((cell: Cell<DataItem>) => (
+      {tableRow.cells.map((cell: Cell<DataItem>, index: number) => (
         <TableCell
           key={cell.column.id}
           cell={cell}
-          hasChildren={hasChildren}
+          hasChildren={hasChildren && index === 0}
           isExpanded={isExpanded}
           paddingLeft={level > 0 ? 32 + (level * 16) : 0}
         />

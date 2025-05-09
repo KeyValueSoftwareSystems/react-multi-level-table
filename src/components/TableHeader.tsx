@@ -1,7 +1,7 @@
 import React from 'react';
-import { HeaderGroup} from 'react-table';
-import { DataItem } from '../types';
-import './styles.css';
+import { HeaderGroup } from 'react-table';
+import { DataItem } from '../types/types';
+import '../styles/TableHeader.css';
 
 /**
  * Props for the TableHeader component
@@ -45,9 +45,9 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ headerGroups }) => (
                 <span>
                   {column.isSorted
                     ? column.isSortedDesc
-                      ? ' 🔽'
-                      : ' 🔼'
-                    : ''}
+                      ? ' 🔽 '
+                      : ' 🔼 '
+                    : ' '}
                 </span>
                 {column.Filter ? column.render('Filter') : null}
               </th>

@@ -1,4 +1,4 @@
-import { MultiLevelTable } from './components/MultiLevelTable/MultiLevelTable';
+import { MultiLevelTable } from './components/MultiLevelTable';
 
 const data = [
   {

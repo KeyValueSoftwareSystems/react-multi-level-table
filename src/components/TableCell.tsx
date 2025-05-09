@@ -1,8 +1,8 @@
 import React from 'react';
 import { Cell } from 'react-table';
-import { DataItem } from '../types';
-import { ExpandIcon } from '../ExpandIcon/ExpandIcon';
-import './styles.css';
+import { DataItem } from '../types/types';
+import { ExpandIcon } from './ExpandIcon';
+import '../styles/TableCell.css';
 
 /**
  * Props for the TableCell component
