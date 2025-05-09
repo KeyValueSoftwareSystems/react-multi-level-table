@@ -1,6 +1,6 @@
 import React from 'react';
 import { Cell } from 'react-table';
-import { DataItem } from '../types';
+import { DataItem } from '../../types/types';
 import { ExpandIcon } from '../ExpandIcon/ExpandIcon';
 import './styles.css';
 

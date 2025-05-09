@@ -1,6 +1,6 @@
 import React from 'react';
 import { Cell } from 'react-table';
-import { Column, DataItem } from '../types';
+import { Column, DataItem } from '../../types/types';
 import { TableCell } from '../TableCell/TableCell';
 import { ExpandIcon } from '../ExpandIcon/ExpandIcon';
 import './styles.css';
@@ -74,11 +74,11 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
       onClick={onToggle}
       className={getRowClassName()}
     >
-      {row.cells.map((cell: Cell<DataItem>) => (
+      {row.cells.map((cell: Cell<DataItem>, index: number) => (
         <TableCell
           key={cell.column.id}
           cell={cell}
-          hasChildren={hasChildren}
+          hasChildren={hasChildren && index === 0}
           isExpanded={isExpanded}
           paddingLeft={level > 0 ? 32 + (level * 16) : 0}
         />

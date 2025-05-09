@@ -5,7 +5,7 @@ import {
   useFilters,
   usePagination,
 } from 'react-table';
-import { Column, DataItem, TableInstanceWithHooks, TableStateWithPagination } from '../types';
+import { Column, DataItem, TableInstanceWithHooks, TableStateWithPagination } from '../../types/types';
 import { TableHeader } from '../TableHeader/TableHeader';
 import { TableRow } from '../TableRow/TableRow';
 import { Pagination } from '../Pagination/Pagination';
