@@ -48,11 +48,11 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
    */
   const rowsMap = useMemo(() => {
     const map = new Map<string | number, DataItem[]>();
-
     const processItem = (item: DataItem) => {
-      if (item[childrenKey]?.length) {
-        map.set(item.id!, item[childrenKey]);
-        item[childrenKey].forEach((child: DataItem) => {
+      const children = item[childrenKey] as DataItem[];
+      if (children?.length) {
+        map.set(item.id!, children);
+        children.forEach((child: DataItem) => {
           processItem(child);
         });
       }
