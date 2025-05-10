@@ -1,15 +1,18 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+
+import type {
+  Row} from 'react-table';
 import {
-  useTable,
-  useSortBy,
   useFilters,
   usePagination,
-  Row,
+  useSortBy,
+  useTable
 } from 'react-table';
-import { Column, DataItem, TableInstanceWithHooks, TableStateWithPagination } from '../types/types';
+
+import { Pagination } from './Pagination';
 import { TableHeader } from './TableHeader';
 import { TableRow } from './TableRow';
-import { Pagination } from './Pagination';
+import type { Column, DataItem, TableInstanceWithHooks, TableStateWithPagination } from '../types/types';
 import '../styles/MultiLevelTable.css';
 
 /**
@@ -50,6 +53,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     const map = new Map<string | number, DataItem[]>();
     const processItem = (item: DataItem) => {
       const children = item[childrenKey] as DataItem[];
+
       if (children?.length) {
         map.set(item.id!, children);
         children.forEach((child: DataItem) => {
@@ -59,6 +63,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     };
 
     data.forEach(processItem);
+
     return map;
   }, [data, childrenKey]);
 
@@ -72,6 +77,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
       accessor: col.key,
       Cell: ({ row, value }: { row: Row<DataItem>; value: unknown }) => {
         const item = row.original;
+
         return (
           <div style={{ paddingLeft: `${item.level || 0}px` }}>
             {col.render ? col.render(value, item) : value?.toString()}
@@ -125,11 +131,13 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   const toggleRow = (rowId: string | number) => {
     setExpandedRows(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(rowId)) {
+
+      if (newSet.has(rowId)) 
         newSet.delete(rowId);
-      } else {
+      else 
         newSet.add(rowId);
-      }
+      
+
       return newSet;
     });
   };
@@ -144,8 +152,10 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     if (!expandedRows.has(parentId)) return null;
     
     const children = rowsMap.get(parentId) || [];
+
     return children.map((child: DataItem) => {
       const hasChildren = rowsMap.has(child.id!);
+
       return (
         <React.Fragment key={child.id}>
           <TableRow

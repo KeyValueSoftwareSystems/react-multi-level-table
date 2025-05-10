@@ -382,14 +382,14 @@ const columns = [
             value === 'Active'
               ? '#e6ffe6'
               : value === 'Inactive'
-              ? '#ffe6e6'
-              : '#fff2e6',
+                ? '#ffe6e6'
+                : '#fff2e6',
           color:
             value === 'Active'
               ? '#006600'
               : value === 'Inactive'
-              ? '#cc0000'
-              : '#cc7700',
+                ? '#cc0000'
+                : '#cc7700',
         }}
       >
         {value}

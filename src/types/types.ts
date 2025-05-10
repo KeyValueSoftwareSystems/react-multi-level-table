@@ -1,5 +1,6 @@
-import React from 'react';
-import { TableInstance, TableState, Row } from 'react-table';
+import type React from 'react';
+
+import type { Row, TableInstance, TableState } from 'react-table';
 
 export interface Column {
   key: string;

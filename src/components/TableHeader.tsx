@@ -1,6 +1,8 @@
 import React from 'react';
-import { HeaderGroup } from 'react-table';
-import { DataItem } from '../types/types';
+
+import type { HeaderGroup } from 'react-table';
+
+import type { DataItem } from '../types/types';
 import '../styles/TableHeader.css';
 
 /**
@@ -32,10 +34,12 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ headerGroups }) => (
   <thead className="table-header">
     {headerGroups.map(headerGroup => {
       const { key: headerGroupKey, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
+
       return (
         <tr key={headerGroupKey} {...headerGroupProps}>
           {(headerGroup.headers as unknown as ColumnWithSorting[]).map((column) => {
             const { key: columnKey, ...columnProps } = column.getHeaderProps(column.getSortByToggleProps());
+
             return (
               <th
                 key={columnKey}

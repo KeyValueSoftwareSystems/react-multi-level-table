@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { PAGE_SIZE_OPTIONS } from '../constants/pagination';
+
 import '../styles/Pagination.css';
 
 /**

@@ -1,7 +1,9 @@
 import React from 'react';
-import { Cell } from 'react-table';
-import { DataItem } from '../types/types';
+
+import type { Cell } from 'react-table';
+
 import { ExpandIcon } from './ExpandIcon';
+import type { DataItem } from '../types/types';
 import '../styles/TableCell.css';
 
 /**
@@ -27,6 +29,7 @@ interface TableCellProps {
  */
 export const TableCell: React.FC<TableCellProps> = ({ cell, hasChildren, isExpanded, paddingLeft = 0 }) => {
   const { key, ...cellProps } = cell.getCellProps();
+
   return (
     <td
       key={key}

@@ -1,8 +1,10 @@
 import React from 'react';
-import { Cell, Row } from 'react-table';
-import { Column, DataItem } from '../types/types';
-import { TableCell } from './TableCell';
+
+import type { Cell, Row } from 'react-table';
+
 import { ExpandIcon } from './ExpandIcon';
+import { TableCell } from './TableCell';
+import type { Column, DataItem } from '../types/types';
 import '../styles/TableRow.css';
 
 /**
@@ -37,15 +39,18 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
    */
   const getRowClassName = () => {
     const classes = ['table-row'];
+
     if (isExpanded) classes.push('table-row-expanded');
     if (level === 0) classes.push('table-row-main');
     else classes.push('table-row-nested');
+
     return classes.join(' ');
   };
 
   // For nested rows that don't have getRowProps
   if (!('getRowProps' in row)) {
     const dataItem = row as DataItem;
+
     return (
       <tr onClick={onToggle} className={getRowClassName()}>
         {columns.map((column: Column, index: number) => (
@@ -69,6 +74,7 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
   // For main table rows that have getRowProps
   const tableRow = row as Row<DataItem>;
   const { key, ...rowProps } = tableRow.getRowProps();
+
   return (
     <tr
       key={key}
