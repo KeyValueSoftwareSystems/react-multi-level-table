@@ -100,8 +100,9 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                             onChange={(e) => column.setFilter?.(e.target.value)}
                             placeholder={`Filter ${column.title || column.id}...`}
                             style={{
-                              color: theme.table?.header?.textColor,
-                              borderColor: theme.table?.header?.textColor,
+                              color: theme.table?.filter?.textColor,
+                              borderColor: theme.table?.filter?.borderColor,
+                              backgroundColor: theme.table?.filter?.background,
                             }}
                           />
                         </div>

@@ -3,16 +3,18 @@ export type Theme = {
   light: ThemeProps;
 };
 
-export type ThemeProps = {
+export interface ThemeProps {
   colors?: {
-    primaryColor?: string;
-    textColor?: string;
-    borderColor?: string;
     background?: string;
+    primaryColor?: string;
+    borderColor?: string;
   };
   table?: {
     header?: {
       background?: string;
+      textColor?: string;
+    };
+    cell?: {
       textColor?: string;
       borderColor?: string;
     };
@@ -20,12 +22,13 @@ export type ThemeProps = {
       mainBackground?: string;
       nestedBackground?: string;
       expandedBackground?: string;
-      hoverBackground?: string;
     };
-    cell?: {
+    filter?: {
+      background?: string;
       textColor?: string;
       borderColor?: string;
-      nestedPadding?: string;
+      focusBorderColor?: string;
+      placeholderColor?: string;
     };
   };
   pagination?: {
@@ -46,4 +49,4 @@ export type ThemeProps = {
   expandIcon?: {
     color?: string;
   };
-}; 
+} 
