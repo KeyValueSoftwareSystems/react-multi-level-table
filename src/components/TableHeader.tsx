@@ -1,64 +1,90 @@
 import React from 'react';
 
-import type { HeaderGroup } from 'react-table';
+import type { HeaderGroup, TableHeaderProps as ReactTableHeaderProps } from 'react-table';
 
+import type { ThemeProps } from '../types/theme';
 import type { DataItem } from '../types/types';
+
 import '../styles/TableHeader.css';
+
+interface ColumnWithSorting extends HeaderGroup<DataItem> {
+  getSortByToggleProps: () => ReactTableHeaderProps;
+  isSorted?: boolean;
+  isSortedDesc?: boolean;
+  Filter?: React.ComponentType<{ column: ColumnWithSorting }>;
+  title?: string;
+  filterValue?: string;
+  setFilter?: (value: string) => void;
+}
 
 /**
  * Props for the TableHeader component
  * @interface TableHeaderProps
  * @property {HeaderGroup<DataItem>[]} headerGroups - Array of header groups from react-table
+ * @property {ThemeProps} theme - Theme properties
  */
 interface TableHeaderProps {
   headerGroups: HeaderGroup<DataItem>[];
-}
-
-type ColumnWithSorting = {
-  getHeaderProps: (props?: { style?: React.CSSProperties }) => { style?: React.CSSProperties; onClick?: () => void; key?: string };
-  getSortByToggleProps: () => { style?: React.CSSProperties; onClick?: () => void };
-  render: (type: string) => React.ReactNode;
-  isSorted?: boolean;
-  isSortedDesc?: boolean;
-  Filter?: React.ComponentType<{ column: ColumnWithSorting }>;
-  id: string;
+  theme: ThemeProps;
 }
 
 /**
- * Renders the table header with sorting and filtering capabilities
+ * Renders the table header with support for sorting and filtering
  * @component
  * @param {TableHeaderProps} props - Component props
  * @returns {JSX.Element} Rendered table header
  */
-export const TableHeader: React.FC<TableHeaderProps> = ({ headerGroups }) => (
-  <thead className="table-header">
-    {headerGroups.map(headerGroup => {
-      const { key: headerGroupKey, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
+export const TableHeader: React.FC<TableHeaderProps> = ({ headerGroups, theme }) => {
+  return (
+    <thead>
+      {headerGroups.map(headerGroup => {
+        const { key, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
 
-      return (
-        <tr key={headerGroupKey} {...headerGroupProps}>
-          {(headerGroup.headers as unknown as ColumnWithSorting[]).map((column) => {
-            const { key: columnKey, ...columnProps } = column.getHeaderProps(column.getSortByToggleProps());
+        return (
+          <tr key={key} {...headerGroupProps}>
+            {(headerGroup.headers as unknown as ColumnWithSorting[]).map(column => {
+              const { key, ...headerProps } = column.getHeaderProps(column.getSortByToggleProps());
 
-            return (
-              <th
-                key={columnKey}
-                {...columnProps}
-              >
-                {column.render('Header')}
-                <span>
-                  {column.isSorted
-                    ? column.isSortedDesc
-                      ? ' 🔽 '
-                      : ' 🔼 '
-                    : ' '}
-                </span>
-                {column.Filter ? column.render('Filter') : null}
-              </th>
-            );
-          })}
-        </tr>
-      );
-    })}
-  </thead>
-); 
+              return (
+                <th
+                  key={key}
+                  {...headerProps}
+                  style={{
+                    backgroundColor: theme.table?.header?.background,
+                    color: theme.table?.header?.textColor,
+                    borderColor: theme.table?.cell?.borderColor,
+                  }}
+                >
+                  <div>
+                    <span>
+                      {column.title || column.id}
+                      {column.isSorted && (
+                        <span className="sort-icon">
+                          {column.isSortedDesc ? '↓' : '↑'}
+                        </span>
+                      )}
+                    </span>
+                    {column.Filter && (
+                      <div className="filter-container">
+                        <input
+                          className="filter-input"
+                          value={column.filterValue || ''}
+                          onChange={e => column.setFilter?.(e.target.value)}
+                          placeholder={`Filter ${column.title || column.id}...`}
+                          style={{
+                            color: theme.table?.header?.textColor,
+                            borderColor: theme.table?.header?.textColor,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </th>
+              );
+            })}
+          </tr>
+        );
+      })}
+    </thead>
+  );
+}; 

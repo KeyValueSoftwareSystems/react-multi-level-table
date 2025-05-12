@@ -1,33 +1,39 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from "react";
 
-import type {
-  Row} from 'react-table';
 import {
+  type Row,
+  type Column as TableColumn,
   useFilters,
   usePagination,
   useSortBy,
-  useTable
-} from 'react-table';
+  useTable,
+} from "react-table";
 
-import { Pagination } from './Pagination';
-import { TableHeader } from './TableHeader';
-import { TableRow } from './TableRow';
-import type { Column, DataItem, TableInstanceWithHooks, TableStateWithPagination } from '../types/types';
-import '../styles/MultiLevelTable.css';
+import { Pagination } from "./Pagination";
+import { TableHeader } from "./TableHeader";
+import { TableRow } from "./TableRow";
+import type { ThemeProps } from "../types/theme";
+import type {
+  Column,
+  DataItem,
+  TableInstanceWithHooks,
+  TableStateWithPagination,
+} from "../types/types";
+import "../styles/MultiLevelTable.css";
 
 /**
  * Props for the MultiLevelTable component
  * @interface MultiLevelTableProps
  * @property {DataItem[]} data - Array of data items to display in the table
  * @property {Column[]} columns - Array of column configurations
- * @property {string} [childrenKey='children'] - Key to access child items in data
  * @property {number} [pageSize=10] - Number of items per page
+ * @property {ThemeProps} theme - Theme properties
  */
-export interface MultiLevelTableProps {
+interface MultiLevelTableProps {
   data: DataItem[];
   columns: Column[];
-  childrenKey?: string;
   pageSize?: number;
+  theme: ThemeProps;
 }
 
 /**
@@ -39,65 +45,43 @@ export interface MultiLevelTableProps {
 export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   data,
   columns,
-  childrenKey = 'children',
   pageSize = 10,
+  theme,
 }) => {
-  const [filterInput, setFilterInput] = useState('');
-  const [expandedRows, setExpandedRows] = useState<Set<string | number>>(new Set());
-
-  /**
-   * Creates a map of all rows and their children for efficient lookup
-   * @returns {Map<string | number, DataItem[]>} Map of row IDs to their children
-   */
-  const rowsMap = useMemo(() => {
-    const map = new Map<string | number, DataItem[]>();
-    const processItem = (item: DataItem) => {
-      const children = item[childrenKey] as DataItem[];
-
-      if (children?.length) {
-        map.set(item.id!, children);
-        children.forEach((child: DataItem) => {
-          processItem(child);
-        });
-      }
-    };
-
-    data.forEach(processItem);
-
-    return map;
-  }, [data, childrenKey]);
+  const [filterInput, setFilterInput] = useState("");
 
   /**
    * Prepares columns configuration for react-table
    * @returns {Array} Array of column configurations
    */
-  const tableColumns = useMemo(() => {
-    return columns.map(col => ({
+  const tableColumns = useMemo<TableColumn<DataItem>[]>(() => {
+    return columns.map((col) => ({
       Header: col.title,
-      accessor: col.key,
-      Cell: ({ row, value }: { row: Row<DataItem>; value: unknown }) => {
+      accessor: col.key as keyof DataItem,
+      Cell: ({ row, value }: { row: Row<DataItem>; value: string | number }) => {
         const item = row.original;
 
         return (
-          <div style={{ paddingLeft: `${item.level || 0}px` }}>
+          <div>
             {col.render ? col.render(value, item) : value?.toString()}
           </div>
         );
       },
-      Filter: col.filterable ? ({ column }: { column: { setFilter: (value: string) => void } }) => (
-        <input
-          value={filterInput}
-          onChange={e => {
-            setFilterInput(e.target.value);
-            column.setFilter(e.target.value);
-          }}
-          placeholder={`Filter ${col.title}...`}
-        />
-      ) : undefined,
+      Filter: col.filterable
+        ? ({ column }: { column: { setFilter: (value: string) => void } }) => (
+          <input
+            value={filterInput}
+            onChange={(e) => {
+              setFilterInput(e.target.value);
+              column.setFilter(e.target.value);
+            }}
+            placeholder={`Filter ${col.title}...`}
+          />
+        )
+        : undefined,
     }));
   }, [columns, filterInput]);
 
-  // Initialize table with react-table hooks
   const {
     getTableProps,
     getTableBodyProps,
@@ -124,37 +108,41 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     usePagination
   ) as TableInstanceWithHooks<DataItem>;
 
-  /**
-   * Toggles the expanded state of a row
-   * @param {string | number} rowId - ID of the row to toggle
-   */
-  const toggleRow = (rowId: string | number) => {
-    setExpandedRows(prev => {
+  const rowsMap = useMemo(() => {
+    const map = new Map<number, DataItem[]>();
+
+    const processItem = (item: DataItem) => {
+      if (item.children) {
+        map.set(item.id, item.children);
+        item.children.forEach(processItem);
+      }
+    };
+
+    data.forEach(processItem);
+
+    return map;
+  }, [data]);
+
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+
+  const toggleRow = (rowId: number) => {
+    setExpandedRows((prev) => {
       const newSet = new Set(prev);
 
-      if (newSet.has(rowId)) 
-        newSet.delete(rowId);
-      else 
-        newSet.add(rowId);
-      
+      if (newSet.has(rowId)) newSet.delete(rowId);
+      else newSet.add(rowId);
 
       return newSet;
     });
   };
 
-  /**
-   * Recursively renders nested rows for a parent row
-   * @param {string | number} parentId - ID of the parent row
-   * @param {number} [level=0] - Current nesting level
-   * @returns {JSX.Element[] | null} Array of nested row elements or null
-   */
-  const renderNestedRows = (parentId: string | number, level: number = 0) => {
+  const renderNestedRows = (parentId: number, level = 1) => {
     if (!expandedRows.has(parentId)) return null;
-    
+
     const children = rowsMap.get(parentId) || [];
 
-    return children.map((child: DataItem) => {
-      const hasChildren = rowsMap.has(child.id!);
+    return children.map((child) => {
+      const hasChildren = rowsMap.has(child.id);
 
       return (
         <React.Fragment key={child.id}>
@@ -162,26 +150,31 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
             row={child}
             columns={columns}
             hasChildren={hasChildren}
-            isExpanded={expandedRows.has(child.id!)}
-            onToggle={() => hasChildren && toggleRow(child.id!)}
+            isExpanded={expandedRows.has(child.id)}
+            onToggle={() => hasChildren && toggleRow(child.id)}
             level={level}
+            theme={theme}
           />
-          {renderNestedRows(child.id!, level + 1)}
+          {renderNestedRows(child.id, level + 1)}
         </React.Fragment>
       );
     });
   };
 
   return (
-    <div>
-      <table {...getTableProps()} className='table-container'>
-        <TableHeader headerGroups={headerGroups} />
+    <div style={{ backgroundColor: theme.colors?.background }}>
+      <table
+        {...getTableProps()}
+        className="table-container"
+        style={{ borderColor: theme.table?.cell?.borderColor }}
+      >
+        <TableHeader headerGroups={headerGroups} theme={theme} />
         <tbody {...getTableBodyProps()}>
-          {page.map(row => {
+          {page.map((row) => {
             prepareRow(row);
             const parentId = row.original.id;
             const hasChildren = rowsMap.has(parentId);
-            
+
             return (
               <React.Fragment key={parentId}>
                 <TableRow
@@ -190,6 +183,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
                   hasChildren={hasChildren}
                   isExpanded={expandedRows.has(parentId)}
                   onToggle={() => hasChildren && toggleRow(parentId)}
+                  theme={theme}
                 />
                 {renderNestedRows(parentId)}
               </React.Fragment>
@@ -209,7 +203,8 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
         previousPage={previousPage}
         pageSize={currentPageSize}
         setPageSize={setPageSize}
+        theme={theme}
       />
     </div>
   );
-}; 
+};
