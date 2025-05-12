@@ -14,6 +14,8 @@ import type { PaginationProps } from "./Pagination";
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
 import { SortType } from '../constants/sort';
+import { defaultThemeProps } from "../defaultThemeProps";
+import { mergeThemeProps } from "../mergeThemeProps";
 import type { ThemeProps } from "../types/theme";
 import type {
   Column,
@@ -35,7 +37,7 @@ interface MultiLevelTableProps {
   data: DataItem[];
   columns: Column[];
   pageSize?: number;
-  theme: ThemeProps;
+  theme?: ThemeProps;
   renderCustomPagination?: (props?: PaginationProps) => React.ReactNode;
   sortable?: boolean;
   ascendingIcon?: React.ReactNode;
@@ -58,6 +60,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   ascendingIcon,
   descendingIcon,
 }) => {
+  const mergedTheme = mergeThemeProps(defaultThemeProps, theme);
   const [filterInput, setFilterInput] = useState("");
 
   /**
@@ -180,7 +183,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
             isExpanded={expandedRows.has(child.id)}
             onToggle={() => hasChildren && toggleRow(child.id)}
             level={level}
-            theme={theme}
+            theme={mergedTheme}
           />
           {renderNestedRows(child.id, level + 1)}
         </React.Fragment>
@@ -189,13 +192,13 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   };
 
   return (
-    <div style={{ backgroundColor: theme.colors?.background }}>
+    <div style={{ backgroundColor: mergedTheme.colors?.background }}>
       <table
         {...getTableProps()}
         className="table-container"
-        style={{ borderColor: theme.table?.cell?.borderColor }}
+        style={{ borderColor: mergedTheme.table?.cell?.borderColor }}
       >
-        <TableHeader headerGroups={headerGroups} theme={theme} sortable={sortable}
+        <TableHeader headerGroups={headerGroups} theme={mergedTheme} sortable={sortable}
           ascendingIcon={ascendingIcon}
           descendingIcon={descendingIcon} />
         <tbody {...getTableBodyProps()}>
@@ -212,7 +215,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
                   hasChildren={hasChildren}
                   isExpanded={expandedRows.has(parentId)}
                   onToggle={() => hasChildren && toggleRow(parentId)}
-                  theme={theme}
+                  theme={mergedTheme}
                 />
                 {renderNestedRows(parentId)}
               </React.Fragment>
@@ -233,7 +236,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
           nextPage,
           previousPage,
           setPageSize,
-          theme,
+          theme: mergedTheme,
         })
       ) : (
         <Pagination
@@ -247,7 +250,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
           previousPage={previousPage}
           pageSize={currentPageSize}
           setPageSize={setPageSize}
-          theme={theme}
+          theme={mergedTheme}
         />
       )}
     </div>
