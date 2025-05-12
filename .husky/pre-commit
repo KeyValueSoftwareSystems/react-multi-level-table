@@ -1,13 +1,1 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# Load nvm and set npm path
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-NPM_PATH="$NVM_DIR/versions/node/v22.15.0/bin/npm"
-
-# Ensure we're in the project root
-cd "$(dirname "$0")/.."
-
-# Run lint using full npm path with --max-warnings=0 to treat warnings as errors
-"$NPM_PATH" run lint -- --max-warnings=0
+npm run lint

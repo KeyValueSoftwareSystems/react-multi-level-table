@@ -1,22 +1,27 @@
 {
-    "compilerOptions": {
-      "noImplicitAny": true,
-      "outDir": "build/types",
-      "module": "esnext",
-      "target": "es5",
-      "allowJs": true,
-      "sourceMap": true,
-      "declaration": true,
-      "emitDeclarationOnly": true,
-      "allowSyntheticDefaultImports": true,
-      "lib": ["es2018", "dom"],
-      "moduleResolution": "node",
-      "jsx": "react-jsx",
-      "skipLibCheck": true,
-      "esModuleInterop": true,
-      "resolveJsonModule": true,
-      "declarationDir": "build/types"
-    },
-    "include": ["src/**/*.tsx", "src/**/*.ts", "src/components/table/**/*.tsx", "src/components/table/**/*.ts", "src/constants/index.ts", "src/types.ts", "src/index.d.ts", "src/index.tsx"],
-    "exclude": ["src/**/tests", "node_modules"]
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "declaration": true,
+    "declarationDir": "dist/types",
+    "emitDeclarationOnly": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
