@@ -7,6 +7,8 @@ export interface Column {
   title: string;
   filterable?: boolean;
   render?: (value: string | number, item: DataItem) => React.ReactNode;
+  sortable?: boolean;
+  customSortFn?: (rowA: DataItem, rowB: DataItem, columnId: string) => number;
 }
 
 export interface DataItem {

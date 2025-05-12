@@ -13,6 +13,7 @@ import { Pagination } from "./Pagination";
 import type { PaginationProps } from "./Pagination";
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
+import { SortType } from '../constants/sort';
 import type { ThemeProps } from "../types/theme";
 import type {
   Column,
@@ -36,6 +37,9 @@ interface MultiLevelTableProps {
   pageSize?: number;
   theme: ThemeProps;
   renderCustomPagination?: (props?: PaginationProps) => React.ReactNode;
+  sortable?: boolean;
+  ascendingIcon?: React.ReactNode;
+  descendingIcon?: React.ReactNode;
 }
 
 /**
@@ -50,6 +54,9 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   pageSize = 10,
   theme,
   renderCustomPagination = null,
+  sortable = false,
+  ascendingIcon,
+  descendingIcon,
 }) => {
   const [filterInput, setFilterInput] = useState("");
 
@@ -61,6 +68,9 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     return columns.map((col) => ({
       Header: col.title,
       accessor: (row: DataItem) => row[col.key as keyof DataItem],
+      disableSortBy: sortable ? col.sortable === false : true,
+      sortType: col.customSortFn ? SortType.Custom : SortType.Basic,
+      sortFn: col.customSortFn,
       Cell: ({ row, value }: { row: Row<DataItem>; value: string | number }) => {
         const item = row.original;
 
@@ -83,7 +93,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
         )
         : undefined,
     }));
-  }, [columns, filterInput]);
+  }, [columns, filterInput, sortable]);
 
   const {
     getTableProps,
@@ -105,9 +115,20 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
       columns: tableColumns,
       data,
       initialState: { pageSize } as TableStateWithPagination<DataItem>,
+      // @ts-expect-error - sortTypes is not included in the type definition but is supported by react-table
+      sortTypes: {
+        custom: (rowA: Row<DataItem>, rowB: Row<DataItem>, columnId: string) => {
+          const column = columns.find(col => col.key === columnId);
+
+          if (column?.customSortFn) 
+            return column.customSortFn(rowA.original, rowB.original, columnId);
+          
+          return 0;
+        },
+      },
     },
     useFilters,
-    useSortBy,
+    ...(sortable ? [useSortBy] : []),
     usePagination
   ) as TableInstanceWithHooks<DataItem>;
 
@@ -174,7 +195,9 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
         className="table-container"
         style={{ borderColor: theme.table?.cell?.borderColor }}
       >
-        <TableHeader headerGroups={headerGroups} theme={theme} />
+        <TableHeader headerGroups={headerGroups} theme={theme} sortable={sortable}
+          ascendingIcon={ascendingIcon}
+          descendingIcon={descendingIcon} />
         <tbody {...getTableBodyProps()}>
           {page.map((row) => {
             prepareRow(row);
