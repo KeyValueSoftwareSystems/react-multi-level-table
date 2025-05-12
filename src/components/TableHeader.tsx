@@ -85,7 +85,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                   >
                     <div className="table-header-cell">
                       <span>{column.title || column.id}</span>
-                      <span>
+                      <span className="sort-icon">
                         {column.isSorted
                           ? column.isSortedDesc
                             ? descendingIcon || "↓"
