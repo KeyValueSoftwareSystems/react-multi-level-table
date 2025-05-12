@@ -18,7 +18,7 @@ import '../styles/Pagination.css';
  * @property {number} pageSize - Number of items per page
  * @property {(size: number) => void} setPageSize - Function to change page size
  */
-interface PaginationProps {
+export interface PaginationProps {
   canPreviousPage: boolean;
   canNextPage: boolean;
   pageOptions: number[];
