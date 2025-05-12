@@ -420,6 +420,8 @@ function App() {
         columns={columns}
         pageSize={5}
         sortable={true}
+        ascendingIcon={<div>↑</div>}
+        descendingIcon={<div>↓</div>}
         renderCustomPagination={renderCustomPagination}
       />
     </div>

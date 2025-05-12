@@ -4,6 +4,7 @@ import type { Row } from "react-table";
 import { useFilters, usePagination, useSortBy, useTable } from "react-table";
 
 import { Pagination } from "./Pagination";
+import type { PaginationProps } from "./Pagination";
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
 import { SortType } from '../constants/sort';
@@ -13,7 +14,6 @@ import type {
   TableInstanceWithHooks,
   TableStateWithPagination,
 } from "../types/types";
-import type { PaginationProps } from "./Pagination";
 import "../styles/MultiLevelTable.css";
 
 /**
@@ -32,6 +32,8 @@ export interface MultiLevelTableProps {
   pageSize?: number;
   renderCustomPagination?: (props?: PaginationProps) => React.ReactNode;
   sortable?: boolean;
+  ascendingIcon?: React.ReactNode;
+  descendingIcon?: React.ReactNode;
 }
 
 /**
@@ -47,6 +49,8 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   pageSize = 10,
   renderCustomPagination = null,
   sortable = false,
+  ascendingIcon,
+  descendingIcon,
 }) => {
   const [filterInput, setFilterInput] = useState("");
   const [expandedRows, setExpandedRows] = useState<Set<string | number>>(
@@ -196,7 +200,12 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   return (
     <div>
       <table {...getTableProps()} className="table-container">
-        <TableHeader headerGroups={headerGroups} sortable={sortable}/>
+        <TableHeader 
+          headerGroups={headerGroups} 
+          sortable={sortable}
+          ascendingIcon={ascendingIcon}
+          descendingIcon={descendingIcon}
+        />
         <tbody {...getTableBodyProps()}>
           {page.map((row) => {
             prepareRow(row);

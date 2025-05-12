@@ -9,3 +9,10 @@
 .table-header th.sortable {
   cursor: pointer;
 }
+
+.table-header-cell{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
