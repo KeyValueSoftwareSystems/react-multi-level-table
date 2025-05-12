@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { PAGE_SIZE_OPTIONS } from '../constants/pagination';
 import type { ThemeProps } from '../types/theme';
 import '../styles/Pagination.css';
 
@@ -11,24 +12,24 @@ import '../styles/Pagination.css';
  * @property {number[]} pageOptions - Array of available page numbers
  * @property {number} pageCount - Total number of pages
  * @property {number} pageIndex - Current page index
- * @property {(updater: number | ((pageIndex: number) => number)) => void} gotoPage - Function to navigate to a specific page
+ * @property {(page: number) => void} gotoPage - Function to navigate to a specific page
  * @property {() => void} nextPage - Function to navigate to next page
  * @property {() => void} previousPage - Function to navigate to previous page
  * @property {number} pageSize - Number of items per page
- * @property {(updater: number | ((pageSize: number) => number)) => void} setPageSize - Function to change page size
+ * @property {(size: number) => void} setPageSize - Function to change page size
  * @property {ThemeProps} theme - Theme properties
  */
-interface PaginationProps {
+export interface PaginationProps {
   canPreviousPage: boolean;
   canNextPage: boolean;
   pageOptions: number[];
   pageCount: number;
   pageIndex: number;
-  gotoPage: (updater: number | ((pageIndex: number) => number)) => void;
+  gotoPage: (page: number) => void;
   nextPage: () => void;
   previousPage: () => void;
   pageSize: number;
-  setPageSize: (updater: number | ((pageSize: number) => number)) => void;
+  setPageSize: (size: number) => void;
   theme: ThemeProps;
 }
 
@@ -110,30 +111,6 @@ export const Pagination: React.FC<PaginationProps> = ({
             {pageIndex + 1} of {pageOptions.length}
           </strong>
         </span>
-        <span style={{ margin: '0 8px', color: theme.pagination?.info?.textColor }}>
-          |
-        </span>
-        <span style={{ color: theme.pagination?.info?.textColor }}>
-          Go to page:
-          <input
-            type="number"
-            defaultValue={pageIndex + 1}
-            onChange={e => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0;
-
-              gotoPage(page);
-            }}
-            style={{
-              width: '50px',
-              margin: '0 8px',
-              padding: '4px',
-              backgroundColor: theme.pagination?.select?.background,
-              color: theme.pagination?.select?.textColor,
-              border: `1px solid ${theme.pagination?.select?.borderColor}`,
-              borderRadius: '4px',
-            }}
-          />
-        </span>
         <select
           value={pageSize}
           onChange={e => {
@@ -148,7 +125,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             borderRadius: '4px',
           }}
         >
-          {[5, 10, 20, 30, 40, 50].map(pageSize => (
+          {PAGE_SIZE_OPTIONS.map(pageSize => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>

@@ -31,6 +31,6 @@ export interface TableInstanceWithHooks<T extends object> extends TableInstance<
   gotoPage: (updater: number | ((pageIndex: number) => number)) => void;
   nextPage: () => void;
   previousPage: () => void;
-  setPageSize: (updater: number | ((pageSize: number) => number)) => void;
+  setPageSize: (pageSize: number) => void;
   state: TableStateWithPagination<T>;
 } 

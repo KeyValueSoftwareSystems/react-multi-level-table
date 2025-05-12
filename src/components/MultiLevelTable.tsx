@@ -10,6 +10,7 @@ import {
 } from "react-table";
 
 import { Pagination } from "./Pagination";
+import type { PaginationProps } from "./Pagination";
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
 import type { ThemeProps } from "../types/theme";
@@ -34,6 +35,7 @@ interface MultiLevelTableProps {
   columns: Column[];
   pageSize?: number;
   theme: ThemeProps;
+  renderCustomPagination?: (props?: PaginationProps) => React.ReactNode;
 }
 
 /**
@@ -47,6 +49,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   columns,
   pageSize = 10,
   theme,
+  renderCustomPagination = null,
 }) => {
   const [filterInput, setFilterInput] = useState("");
 
@@ -195,19 +198,35 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
         </tbody>
       </table>
 
-      <Pagination
-        canPreviousPage={canPreviousPage}
-        canNextPage={canNextPage}
-        pageOptions={pageOptions}
-        pageCount={pageCount}
-        pageIndex={pageIndex}
-        gotoPage={gotoPage}
-        nextPage={nextPage}
-        previousPage={previousPage}
-        pageSize={currentPageSize}
-        setPageSize={setPageSize}
-        theme={theme}
-      />
+      {renderCustomPagination ? (
+        renderCustomPagination({
+          canPreviousPage,
+          canNextPage,
+          pageOptions,
+          pageCount,
+          pageIndex,
+          pageSize: currentPageSize,
+          gotoPage,
+          nextPage,
+          previousPage,
+          setPageSize,
+          theme,
+        })
+      ) : (
+        <Pagination
+          canPreviousPage={canPreviousPage}
+          canNextPage={canNextPage}
+          pageOptions={pageOptions}
+          pageCount={pageCount}
+          pageIndex={pageIndex}
+          gotoPage={gotoPage}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          pageSize={currentPageSize}
+          setPageSize={setPageSize}
+          theme={theme}
+        />
+      )}
     </div>
   );
 };
