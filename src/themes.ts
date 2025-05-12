@@ -43,20 +43,6 @@ export const lightTheme: ThemeProps = {
   expandIcon: {
     color: '#495057',
   },
-  status: {
-    active: {
-      background: '#28a745',
-      textColor: '#ffffff',
-    },
-    inactive: {
-      background: '#dc3545',
-      textColor: '#ffffff',
-    },
-    pending: {
-      background: '#ffc107',
-      textColor: '#212529',
-    },
-  },
 };
 
 export const darkTheme: ThemeProps = {
@@ -101,19 +87,5 @@ export const darkTheme: ThemeProps = {
   },
   expandIcon: {
     color: '#e9ecef',
-  },
-  status: {
-    active: {
-      background: '#198754',
-      textColor: '#ffffff',
-    },
-    inactive: {
-      background: '#dc3545',
-      textColor: '#ffffff',
-    },
-    pending: {
-      background: '#ffc107',
-      textColor: '#212529',
-    },
   },
 }; 

@@ -364,16 +364,15 @@ const data: DataItem[] = [
   },
 ];
 
-const StatusCell: React.FC<{ value: string; theme: ThemeProps }> = ({ value, theme }) => {
-  const statusTheme = theme.status?.[value.toLowerCase() as keyof typeof theme.status];
-
+const StatusCell: React.FC<{ value: string; theme: ThemeProps }> = ({ value }) => {
+ 
   return (
     <span
       style={{
         padding: '4px 8px',
         borderRadius: '4px',
-        backgroundColor: statusTheme?.background,
-        color: statusTheme?.textColor,
+        backgroundColor: '#ffffff',
+        color: value === 'Active' ? '#2ecc71' : value === 'Inactive' ? '#e74c3c' : '#f1c40f',
       }}
     >
       {value}

@@ -44,20 +44,6 @@ export const defaultTheme: Theme = {
     expandIcon: {
       color: '#2c3e50',
     },
-    status: {
-      active: {
-        background: '#e6ffe6',
-        textColor: '#006600',
-      },
-      inactive: {
-        background: '#ffe6e6',
-        textColor: '#cc0000',
-      },
-      pending: {
-        background: '#fff2e6',
-        textColor: '#cc7700',
-      },
-    },
   },
   dark: {
     colors: {
@@ -101,20 +87,6 @@ export const defaultTheme: Theme = {
     },
     expandIcon: {
       color: '#ecf0f1',
-    },
-    status: {
-      active: {
-        background: '#27ae60',
-        textColor: '#ffffff',
-      },
-      inactive: {
-        background: '#c0392b',
-        textColor: '#ffffff',
-      },
-      pending: {
-        background: '#f39c12',
-        textColor: '#ffffff',
-      },
     },
   },
 }; 

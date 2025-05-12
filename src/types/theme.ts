@@ -46,18 +46,4 @@ export type ThemeProps = {
   expandIcon?: {
     color?: string;
   };
-  status?: {
-    active?: {
-      background?: string;
-      textColor?: string;
-    };
-    inactive?: {
-      background?: string;
-      textColor?: string;
-    };
-    pending?: {
-      background?: string;
-      textColor?: string;
-    };
-  };
 }; 
