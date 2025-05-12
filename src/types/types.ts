@@ -1,6 +1,6 @@
 import type React from 'react';
 
-import type { TableInstance, TableState } from 'react-table';
+import type { Row, TableInstance, TableState } from 'react-table';
 
 export interface Column {
   key: string;
@@ -23,7 +23,7 @@ export interface TableStateWithPagination<T extends object> extends TableState<T
 }
 
 export interface TableInstanceWithHooks<T extends object> extends TableInstance<T> {
-  page: T[];
+  page: Row<T>[];
   canPreviousPage: boolean;
   canNextPage: boolean;
   pageOptions: number[];

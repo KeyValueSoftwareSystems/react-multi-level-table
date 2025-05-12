@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { MultiLevelTable } from './components/MultiLevelTable';
-import { ThemeProvider, useTheme } from './context/ThemeContext';
+import { darkTheme, lightTheme } from './themes';
+import type { ThemeProps } from './types/theme';
+import type { Column, DataItem } from './types/types';
 
-const data = [
+import './App.css';
+
+const data: DataItem[] = [
   {
     id: 1,
     name: 'Parent 1',
@@ -360,8 +364,7 @@ const data = [
   },
 ];
 
-const StatusCell: React.FC<{ value: string }> = ({ value }) => {
-  const { theme } = useTheme();
+const StatusCell: React.FC<{ value: string; theme: ThemeProps }> = ({ value, theme }) => {
   const statusTheme = theme.status?.[value.toLowerCase() as keyof typeof theme.status];
 
   return (
@@ -378,64 +381,62 @@ const StatusCell: React.FC<{ value: string }> = ({ value }) => {
   );
 };
 
-const columns = [
-  {
-    key: 'name',
-    title: 'Name',
-    accessor: 'name',
-    filterable: true,
-  },
-  {
-    key: 'value',
-    title: 'Value',
-    accessor: 'value',
-    render: (value: number) => `$${value}`,
-    filterable: true,
-  },
-  {
-    key: 'status',
-    title: 'Status',
-    accessor: 'status',
-    filterable: true,
-    render: (value: string) => <StatusCell value={value} />,
-  },
-];
+const App: React.FC = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
-const TableDemo: React.FC = () => {
-  const { theme, isDarkMode, toggleTheme } = useTheme();
+  const toggleTheme = () => {
+    setIsDarkMode(prev => !prev);
+  };
+
+  const columns: Column[] = [
+    {
+      key: 'name',
+      title: 'Name',
+      filterable: true,
+    },
+    {
+      key: 'value',
+      title: 'Value',
+      filterable: true,
+      render: (value: string | number) => `$${value}`,
+    },
+    {
+      key: 'status',
+      title: 'Status',
+      filterable: true,
+      render: (value: string | number) => <StatusCell value={value as string} theme={theme} />,
+    },
+  ];
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto', backgroundColor: theme.colors?.background }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <div>
-          <h1 style={{ color: theme.colors?.textColor }}>React Multi Level Table Demo</h1>
-          <p style={{ color: theme.colors?.textColor }}>Features: Sorting, Filtering, Pagination, and Nested Data</p>
-        </div>
+    <div className="app" style={{ backgroundColor: theme.colors?.background }}>
+      <header className="app-header" style={{ backgroundColor: theme.table?.header?.background }}>
+        <h1 style={{ color: theme.table?.header?.textColor }}>Multi-Level Table Demo</h1>
         <button
+          className="theme-toggle"
           onClick={toggleTheme}
           style={{
-            padding: '8px 16px',
             backgroundColor: theme.colors?.primaryColor,
             color: '#ffffff',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
+            borderColor: theme.colors?.borderColor,
           }}
         >
-          {isDarkMode ? '🌞 Light Mode' : '🌙 Dark Mode'}
+          {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
         </button>
-      </div>
-      <MultiLevelTable data={data} columns={columns} pageSize={5} theme={theme} />
+      </header>
+
+      <main className="app-content">
+        <div className="table-container" style={{ backgroundColor: theme.colors?.background }}>
+          <MultiLevelTable
+            data={data}
+            columns={columns}
+            theme={theme}
+          />
+        </div>
+      </main>
     </div>
   );
 };
-
-function App() {
-  return (
-    <ThemeProvider>
-      <TableDemo />
-    </ThemeProvider>
-  );
-}
 
 export default App;

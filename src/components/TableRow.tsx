@@ -68,34 +68,39 @@ export const TableRow: React.FC<TableRowProps> = ({
 
     return (
       <tr className={getRowClassName()} style={getRowStyle()}>
-        {columns.map((column: Column, index: number) => (
-          <td
-            key={column.key}
-            className={`table-cell ${level > 0 ? 'table-cell-nested' : ''}`}
-            style={{
-              paddingLeft: level > 0 ? `${32 + (level * 16)}px` : '12px',
-              color: theme.table?.cell?.textColor,
-              borderColor: theme.table?.cell?.borderColor,
-            }}
-          >
-            <div className="table-cell-content">
-              {hasChildren && index === 0 && (
-                <span 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onToggle();
-                  }}
-                  style={{ cursor: 'pointer', marginRight: '8px' }}
-                >
-                  <ExpandIcon isExpanded={isExpanded} theme={theme} />
-                </span>
-              )}
-              {column.render 
-                ? column.render(dataItem[column.key], dataItem)
-                : String(dataItem[column.key])}
-            </div>
-          </td>
-        ))}
+        {columns.map((column: Column, index: number) => {
+          const value = dataItem[column.key as keyof DataItem];
+          const displayValue = typeof value === 'string' || typeof value === 'number' ? value : '';
+
+          return (
+            <td
+              key={column.key}
+              className={`table-cell ${level > 0 ? 'table-cell-nested' : ''}`}
+              style={{
+                paddingLeft: level > 0 ? `${32 + (level * 16)}px` : '12px',
+                color: theme.table?.cell?.textColor,
+                borderColor: theme.table?.cell?.borderColor,
+              }}
+            >
+              <div className="table-cell-content">
+                {hasChildren && index === 0 && (
+                  <span 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggle();
+                    }}
+                    style={{ cursor: 'pointer', marginRight: '8px' }}
+                  >
+                    <ExpandIcon isExpanded={isExpanded} theme={theme} />
+                  </span>
+                )}
+                {column.render 
+                  ? column.render(displayValue, dataItem)
+                  : String(displayValue)}
+              </div>
+            </td>
+          );
+        })}
       </tr>
     );
   }

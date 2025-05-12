@@ -57,7 +57,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   const tableColumns = useMemo<TableColumn<DataItem>[]>(() => {
     return columns.map((col) => ({
       Header: col.title,
-      accessor: col.key as keyof DataItem,
+      accessor: (row: DataItem) => row[col.key as keyof DataItem],
       Cell: ({ row, value }: { row: Row<DataItem>; value: string | number }) => {
         const item = row.original;
 
@@ -129,8 +129,11 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     setExpandedRows((prev) => {
       const newSet = new Set(prev);
 
-      if (newSet.has(rowId)) newSet.delete(rowId);
-      else newSet.add(rowId);
+      if (newSet.has(rowId)) 
+        newSet.delete(rowId);
+      else 
+        newSet.add(rowId);
+      
 
       return newSet;
     });
