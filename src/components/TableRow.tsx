@@ -4,7 +4,9 @@ import type { Cell, Row } from 'react-table';
 
 import { ExpandIcon } from './ExpandIcon';
 import { TableCell } from './TableCell';
+import type { ThemeProps } from '../types/theme';
 import type { Column, DataItem } from '../types/types';
+
 import '../styles/TableRow.css';
 
 /**
@@ -16,6 +18,7 @@ import '../styles/TableRow.css';
  * @property {boolean} isExpanded - Whether the row is expanded
  * @property {() => void} onToggle - Function to toggle row expansion
  * @property {number} [level=0] - Nesting level of the row
+ * @property {ThemeProps} theme - Theme properties
  */
 interface TableRowProps {
   row: Row<DataItem> | DataItem;
@@ -24,6 +27,7 @@ interface TableRowProps {
   isExpanded: boolean;
   onToggle: () => void;
   level?: number;
+  theme: ThemeProps;
 }
 
 /**
@@ -32,11 +36,15 @@ interface TableRowProps {
  * @param {TableRowProps} props - Component props
  * @returns {JSX.Element} Rendered table row
  */
-export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, isExpanded, onToggle, level = 0 }) => {
-  /**
-   * Generates the appropriate CSS classes for the row based on its state
-   * @returns {string} Space-separated CSS classes
-   */
+export const TableRow: React.FC<TableRowProps> = ({ 
+  row, 
+  columns, 
+  hasChildren, 
+  isExpanded, 
+  onToggle, 
+  level = 0,
+  theme 
+}) => {
   const getRowClassName = () => {
     const classes = ['table-row'];
 
@@ -47,26 +55,52 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
     return classes.join(' ');
   };
 
+  const getRowStyle = () => {
+    if (level === 0) return { backgroundColor: theme.table?.row?.mainBackground };
+    if (isExpanded) return { backgroundColor: theme.table?.row?.expandedBackground };
+
+    return { backgroundColor: theme.table?.row?.nestedBackground };
+  };
+
   // For nested rows that don't have getRowProps
   if (!('getRowProps' in row)) {
     const dataItem = row as DataItem;
 
     return (
-      <tr onClick={onToggle} className={getRowClassName()}>
-        {columns.map((column: Column, index: number) => (
-          <td
-            key={column.key}
-            className={`table-cell ${level > 0 ? 'table-cell-nested' : ''}`}
-            style={{ paddingLeft: level > 0 ? `${32 + (level * 16)}px` : '12px' }}
-          >
-            <div className="table-cell-content">
-              {hasChildren && index === 0 && <ExpandIcon isExpanded={isExpanded} />}
-              {column.render 
-                ? column.render(dataItem[column.key], dataItem)
-                : String(dataItem[column.key])}
-            </div>
-          </td>
-        ))}
+      <tr className={getRowClassName()} style={getRowStyle()}>
+        {columns.map((column: Column, index: number) => {
+          const value = dataItem[column.key as keyof DataItem];
+          const displayValue = typeof value === 'string' || typeof value === 'number' ? value : '';
+
+          return (
+            <td
+              key={column.key}
+              className={`table-cell ${level > 0 ? 'table-cell-nested' : ''}`}
+              style={{
+                paddingLeft: level > 0 ? `${32 + (level * 16)}px` : '12px',
+                color: theme.table?.cell?.textColor,
+                borderColor: theme.table?.cell?.borderColor,
+              }}
+            >
+              <div className="table-cell-content">
+                {hasChildren && index === 0 && (
+                  <span 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggle();
+                    }}
+                    style={{ cursor: 'pointer', marginRight: '8px' }}
+                  >
+                    <ExpandIcon isExpanded={isExpanded} theme={theme} />
+                  </span>
+                )}
+                {column.render 
+                  ? column.render(displayValue, dataItem)
+                  : String(displayValue)}
+              </div>
+            </td>
+          );
+        })}
       </tr>
     );
   }
@@ -79,8 +113,8 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
     <tr
       key={key}
       {...rowProps}
-      onClick={onToggle}
       className={getRowClassName()}
+      style={getRowStyle()}
     >
       {tableRow.cells.map((cell: Cell<DataItem>, index: number) => (
         <TableCell
@@ -88,7 +122,9 @@ export const TableRow: React.FC<TableRowProps> = ({ row, columns, hasChildren, i
           cell={cell}
           hasChildren={hasChildren && index === 0}
           isExpanded={isExpanded}
+          onToggle={onToggle}
           paddingLeft={level > 0 ? 32 + (level * 16) : 0}
+          theme={theme}
         />
       ))}
     </tr>

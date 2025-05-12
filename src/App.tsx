@@ -1,6 +1,13 @@
-import { MultiLevelTable } from "./components/MultiLevelTable";
+import React, { useState } from "react";
 
-const data = [
+import { MultiLevelTable } from "./components/MultiLevelTable";
+import { darkTheme, lightTheme } from "./themes";
+import type { ThemeProps } from "./types/theme";
+import type { Column, DataItem } from "./types/types";
+
+import "./App.css";
+
+const data: DataItem[] = [
   {
     id: 1,
     name: "Parent 1",
@@ -357,75 +364,103 @@ const data = [
   },
 ];
 
-const columns = [
-  {
-    key: "name",
-    title: "Name",
-    filterable: true,
-  },
-  {
-    key: "value",
-    title: "Value",
-    render: (value: unknown) => `$${value as number}`,
-    filterable: true,
-  },
-  {
-    key: "status",
-    title: "Status",
-    filterable: true,
-    sortable: true,
-    customSortFn: (rowA: any, rowB: any, columnId: string) => {
-      const statusOrder = { 'Active': 0, 'Pending': 1, 'Inactive': 2 };
-      const statusA = String(rowA[columnId]);
-      const statusB = String(rowB[columnId]);
-      
-      return (statusOrder[statusA as keyof typeof statusOrder] || 0) - (statusOrder[statusB as keyof typeof statusOrder] || 0);
-    },
-    render: (value: unknown) => (
-      <span
-        style={{
-          padding: "4px 8px",
-          borderRadius: "4px",
-          backgroundColor:
-            value === "Active"
-              ? "#e6ffe6"
-              : value === "Inactive"
-                ? "#ffe6e6"
-                : "#fff2e6",
-          color:
-            value === "Active"
-              ? "#006600"
-              : value === "Inactive"
-                ? "#cc0000"
-                : "#cc7700",
-        }}
-      >
-        {value as string}
-      </span>
-    ),
-  },
-];
-
-const renderCustomPagination = () => {
-  return <div>Custom Pagination </div>;
+const StatusCell: React.FC<{ value: string; theme: ThemeProps }> = ({
+  value,
+}) => {
+  return (
+    <span
+      style={{
+        padding: "4px 8px",
+        borderRadius: "4px",
+        backgroundColor: "#ffffff",
+        color:
+          value === "Active"
+            ? "#2ecc71"
+            : value === "Inactive"
+              ? "#e74c3c"
+              : "#f1c40f",
+      }}
+    >
+      {value}
+    </span>
+  );
 };
 
-function App() {
+const App: React.FC = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
+  const toggleTheme = () => {
+    setIsDarkMode((prev) => !prev);
+  };
+
+  const columns: Column[] = [
+    {
+      key: "name",
+      title: "Name",
+      filterable: true,
+    },
+    {
+      key: "value",
+      title: "Value",
+      filterable: true,
+      render: (value: string | number) => `$${value}`,
+    },
+    {
+      key: "status",
+      title: "Status",
+      filterable: true,
+      render: (value: string | number) => (
+        <StatusCell value={value as string} theme={theme} />
+      ),
+    },
+  ];
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const renderCustomPagination = () => {
+    return <div>Custom Pagination </div>;
+  };
+
   return (
-    <div style={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
-      <h1>React Multi Level Table Demo</h1>
-      <p>Features: Sorting, Filtering, Pagination, and Nested Data</p>
-      <MultiLevelTable
-        data={data}
-        columns={columns}
-        pageSize={5}
-        sortable={true}
-        ascendingIcon={<div>↑</div>}
-        descendingIcon={<div>↓</div>}
-        renderCustomPagination={renderCustomPagination}
-      />
+    <div className="app" style={{ backgroundColor: theme.colors?.background }}>
+      <header
+        className="app-header"
+        style={{ backgroundColor: theme.table?.header?.background }}
+      >
+        <h1 style={{ color: theme.table?.header?.textColor }}>
+          Multi-Level Table Demo
+        </h1>
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+          style={{
+            backgroundColor: theme.colors?.primaryColor,
+            color: "#ffffff",
+            borderColor: theme.colors?.borderColor,
+          }}
+        >
+          {isDarkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+        </button>
+      </header>
+
+      <main className="app-content">
+        <div
+          className="table-container"
+          style={{ backgroundColor: theme.colors?.background }}
+        >
+          <MultiLevelTable
+            data={data}
+            columns={columns}
+            theme={theme}
+            pageSize={5}
+            sortable={true}
+            ascendingIcon={<div>↑</div>}
+            descendingIcon={<div>↓</div>}
+          />
+        </div>
+      </main>
     </div>
   );
-}
+};
 
 export default App;

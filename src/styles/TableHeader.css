@@ -16,3 +16,9 @@
   align-items: center;
   gap: 16px;
 }
+
+.table-header-cell span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
