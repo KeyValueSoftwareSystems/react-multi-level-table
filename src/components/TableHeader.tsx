@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
-import type { HeaderGroup } from 'react-table';
+import type { HeaderGroup } from "react-table";
 
-import type { ThemeProps } from '../types/theme';
-import type { DataItem } from '../types/types';
+import type { ThemeProps } from "../types/theme";
+import type { DataItem } from "../types/types";
 
-import '../styles/TableHeader.css';
+import "../styles/TableHeader.css";
 
 /**
  * Props for the TableHeader component
@@ -25,8 +25,15 @@ interface TableHeaderProps {
 }
 
 type ColumnWithSorting = {
-  getHeaderProps: (props?: { style?: React.CSSProperties }) => { style?: React.CSSProperties; onClick?: () => void; key?: string };
-  getSortByToggleProps: () => { style?: React.CSSProperties; onClick?: () => void };
+  getHeaderProps: (props?: { style?: React.CSSProperties }) => {
+    style?: React.CSSProperties;
+    onClick?: () => void;
+    key?: string;
+  };
+  getSortByToggleProps: () => {
+    style?: React.CSSProperties;
+    onClick?: () => void;
+  };
   render: (type: string) => React.ReactNode;
   isSorted?: boolean;
   isSortedDesc?: boolean;
@@ -36,8 +43,7 @@ type ColumnWithSorting = {
   title?: string;
   filterValue?: string;
   setFilter?: (value: string) => void;
-}
-
+};
 
 /**
  * Renders the table header with support for sorting and filtering
@@ -45,62 +51,69 @@ type ColumnWithSorting = {
  * @param {TableHeaderProps} props - Component props
  * @returns {JSX.Element} Rendered table header
  */
-export const TableHeader: React.FC<TableHeaderProps> = ({ headerGroups, theme , sortable = false,
+export const TableHeader: React.FC<TableHeaderProps> = ({
+  headerGroups,
+  theme,
+  sortable = false,
   ascendingIcon,
-  descendingIcon }) => {
+  descendingIcon,
+}) => {
   return (
     <thead>
-      {headerGroups.map(headerGroup => {
-        const { key: headerGroupKey, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
+      {headerGroups.map((headerGroup) => {
+        const { key: headerGroupKey, ...headerGroupProps } =
+          headerGroup.getHeaderGroupProps();
 
         return (
           <tr key={headerGroupKey} {...headerGroupProps}>
-            {(headerGroup.headers as unknown as ColumnWithSorting[]).map(column => {
-              const isColumnSortable = sortable && !column.disableSortBy;
-              const { key: columnKey, ...columnProps } = isColumnSortable 
-                ? column.getHeaderProps(column.getSortByToggleProps())
-                : column.getHeaderProps();
+            {(headerGroup.headers as unknown as ColumnWithSorting[]).map(
+              (column) => {
+                const isColumnSortable = sortable && !column.disableSortBy;
+                const { key: columnKey, ...columnProps } = isColumnSortable
+                  ? column.getHeaderProps(column.getSortByToggleProps())
+                  : column.getHeaderProps();
 
-              return (
-                <th
-                  key={columnKey}
-                  {...columnProps}
-                  style={{
-                    backgroundColor: theme.table?.header?.background,
-                    color: theme.table?.header?.textColor,
-                    borderColor: theme.table?.cell?.borderColor,
-                  }}
-                >
-                  <div>
-                    <span>
-                      {column.title || column.id}
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? descendingIcon || '↓'
-                          : ascendingIcon || '↑'
-                        : ' '}
-                    </span>
-                    {column.Filter && (
-                      <div className="filter-container">
-                        <input
-                          className="filter-input"
-                          value={column.filterValue || ''}
-                          onChange={e => column.setFilter?.(e.target.value)}
-                          placeholder={`Filter ${column.title || column.id}...`}
-                          style={{
-                            color: theme.table?.header?.textColor,
-                            borderColor: theme.table?.header?.textColor,
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </th>
-              );
-            })}
+                return (
+                  <th
+                    key={columnKey}
+                    {...columnProps}
+                    style={{
+                      backgroundColor: theme.table?.header?.background,
+                      color: theme.table?.header?.textColor,
+                      borderColor: theme.table?.cell?.borderColor,
+                    }}
+                  >
+                    <div className="table-header-cell">
+                      <span>{column.title || column.id}</span>
+                      <span>
+                        {column.isSorted
+                          ? column.isSortedDesc
+                            ? descendingIcon || "↓"
+                            : ascendingIcon || "↑"
+                          : " "}
+                      </span>
+                      {column.Filter && (
+                        <div className="filter-container">
+                          <input
+                            className="filter-input"
+                            value={column.filterValue || ""}
+                            onChange={(e) => column.setFilter?.(e.target.value)}
+                            placeholder={`Filter ${column.title || column.id}...`}
+                            style={{
+                              color: theme.table?.header?.textColor,
+                              borderColor: theme.table?.header?.textColor,
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </th>
+                );
+              }
+            )}
           </tr>
         );
       })}
     </thead>
   );
-}; 
+};
