@@ -30,6 +30,7 @@ export interface MultiLevelTableProps {
   childrenKey?: string;
   pageSize?: number;
   renderCustomPagination?: (props?: PaginationProps) => React.ReactNode;
+  sortable?: boolean;
 }
 
 /**
@@ -44,6 +45,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   childrenKey = "children",
   pageSize = 10,
   renderCustomPagination = null,
+  sortable = false,
 }) => {
   const [filterInput, setFilterInput] = useState("");
   const [expandedRows, setExpandedRows] = useState<Set<string | number>>(
@@ -80,6 +82,9 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     return columns.map((col) => ({
       Header: col.title,
       accessor: col.key,
+      disableSortBy: sortable ? col.sortable === false : true,
+      sortType: col.customSortFn ? 'custom' : 'basic',
+      sortFn: col.customSortFn,
       Cell: ({ row, value }: { row: Row<DataItem>; value: unknown }) => {
         const item = row.original;
 
@@ -102,7 +107,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
         )
         : undefined,
     }));
-  }, [columns, filterInput]);
+  }, [columns, filterInput, sortable]);
 
   // Initialize table with react-table hooks
   const {
@@ -125,9 +130,19 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
       columns: tableColumns,
       data,
       initialState: { pageSize } as TableStateWithPagination<DataItem>,
+      // @ts-expect-error - sortTypes is not included in the type definition but is supported by react-table
+      sortTypes: {
+        custom: (rowA: Row<DataItem>, rowB: Row<DataItem>, columnId: string) => {
+          const column = columns.find(col => col.key === columnId);
+          if (column?.customSortFn) {
+            return column.customSortFn(rowA.original, rowB.original, columnId);
+          }
+          return 0;
+        },
+      },
     },
     useFilters,
-    useSortBy,
+    ...(sortable ? [useSortBy] : []),
     usePagination
   ) as TableInstanceWithHooks<DataItem>;
 
@@ -179,7 +194,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   return (
     <div>
       <table {...getTableProps()} className="table-container">
-        <TableHeader headerGroups={headerGroups} />
+        <TableHeader headerGroups={headerGroups} sortable={sortable}/>
         <tbody {...getTableBodyProps()}>
           {page.map((row) => {
             prepareRow(row);
