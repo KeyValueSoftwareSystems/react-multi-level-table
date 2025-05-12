@@ -373,6 +373,14 @@ const columns = [
     key: "status",
     title: "Status",
     filterable: true,
+    sortable: true,
+    customSortFn: (rowA: any, rowB: any, columnId: string) => {
+      const statusOrder = { 'Active': 0, 'Pending': 1, 'Inactive': 2 };
+      const statusA = String(rowA[columnId]);
+      const statusB = String(rowB[columnId]);
+      
+      return (statusOrder[statusA as keyof typeof statusOrder] || 0) - (statusOrder[statusB as keyof typeof statusOrder] || 0);
+    },
     render: (value: unknown) => (
       <span
         style={{
@@ -411,6 +419,9 @@ function App() {
         data={data}
         columns={columns}
         pageSize={5}
+        sortable={true}
+        ascendingIcon={<div>↑</div>}
+        descendingIcon={<div>↓</div>}
         renderCustomPagination={renderCustomPagination}
       />
     </div>
