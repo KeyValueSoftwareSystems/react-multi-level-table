@@ -45,6 +45,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ headerGroups, sortable
             const { key: columnKey, ...columnProps } = isColumnSortable 
               ? column.getHeaderProps(column.getSortByToggleProps())
               : column.getHeaderProps();
+              
             return (
               <th
                 key={columnKey}

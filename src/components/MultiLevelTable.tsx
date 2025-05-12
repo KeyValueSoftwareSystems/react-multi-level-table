@@ -135,9 +135,10 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
       sortTypes: {
         custom: (rowA: Row<DataItem>, rowB: Row<DataItem>, columnId: string) => {
           const column = columns.find(col => col.key === columnId);
-          if (column?.customSortFn) {
+
+          if (column?.customSortFn) 
             return column.customSortFn(rowA.original, rowB.original, columnId);
-          }
+          
           return 0;
         },
       },

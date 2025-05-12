@@ -378,6 +378,7 @@ const columns = [
       const statusOrder = { 'Active': 0, 'Pending': 1, 'Inactive': 2 };
       const statusA = String(rowA[columnId]);
       const statusB = String(rowB[columnId]);
+      
       return (statusOrder[statusA as keyof typeof statusOrder] || 0) - (statusOrder[statusB as keyof typeof statusOrder] || 0);
     },
     render: (value: unknown) => (
