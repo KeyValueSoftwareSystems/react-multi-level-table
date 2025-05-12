@@ -4,15 +4,16 @@ import type { Row } from "react-table";
 import { useFilters, usePagination, useSortBy, useTable } from "react-table";
 
 import { Pagination } from "./Pagination";
-import type { PaginationProps } from "./Pagination";
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
+import { SortType } from '../constants/sort';
 import type {
   Column,
   DataItem,
   TableInstanceWithHooks,
   TableStateWithPagination,
 } from "../types/types";
+import type { PaginationProps } from "./Pagination";
 import "../styles/MultiLevelTable.css";
 
 /**
@@ -83,7 +84,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
       Header: col.title,
       accessor: col.key,
       disableSortBy: sortable ? col.sortable === false : true,
-      sortType: col.customSortFn ? 'custom' : 'basic',
+      sortType: col.customSortFn ? SortType.Custom : SortType.Basic,
       sortFn: col.customSortFn,
       Cell: ({ row, value }: { row: Row<DataItem>; value: unknown }) => {
         const item = row.original;
