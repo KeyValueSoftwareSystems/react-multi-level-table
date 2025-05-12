@@ -1,19 +1,19 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from "react";
 
+import type { Row } from "react-table";
+import { useFilters, usePagination, useSortBy, useTable } from "react-table";
+
+import { Pagination } from "./Pagination";
+import type { PaginationProps } from "./Pagination";
+import { TableHeader } from "./TableHeader";
+import { TableRow } from "./TableRow";
 import type {
-  Row} from 'react-table';
-import {
-  useFilters,
-  usePagination,
-  useSortBy,
-  useTable
-} from 'react-table';
-
-import { Pagination } from './Pagination';
-import { TableHeader } from './TableHeader';
-import { TableRow } from './TableRow';
-import type { Column, DataItem, TableInstanceWithHooks, TableStateWithPagination } from '../types/types';
-import '../styles/MultiLevelTable.css';
+  Column,
+  DataItem,
+  TableInstanceWithHooks,
+  TableStateWithPagination,
+} from "../types/types";
+import "../styles/MultiLevelTable.css";
 
 /**
  * Props for the MultiLevelTable component
@@ -23,11 +23,13 @@ import '../styles/MultiLevelTable.css';
  * @property {string} [childrenKey='children'] - Key to access child items in data
  * @property {number} [pageSize=10] - Number of items per page
  */
+
 export interface MultiLevelTableProps {
   data: DataItem[];
   columns: Column[];
   childrenKey?: string;
   pageSize?: number;
+  renderCustomPagination?: (props?: PaginationProps) => React.ReactNode;
 }
 
 /**
@@ -39,11 +41,14 @@ export interface MultiLevelTableProps {
 export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   data,
   columns,
-  childrenKey = 'children',
+  childrenKey = "children",
   pageSize = 10,
+  renderCustomPagination = null,
 }) => {
-  const [filterInput, setFilterInput] = useState('');
-  const [expandedRows, setExpandedRows] = useState<Set<string | number>>(new Set());
+  const [filterInput, setFilterInput] = useState("");
+  const [expandedRows, setExpandedRows] = useState<Set<string | number>>(
+    new Set()
+  );
 
   /**
    * Creates a map of all rows and their children for efficient lookup
@@ -72,7 +77,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
    * @returns {Array} Array of column configurations
    */
   const tableColumns = useMemo(() => {
-    return columns.map(col => ({
+    return columns.map((col) => ({
       Header: col.title,
       accessor: col.key,
       Cell: ({ row, value }: { row: Row<DataItem>; value: unknown }) => {
@@ -84,16 +89,18 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
           </div>
         );
       },
-      Filter: col.filterable ? ({ column }: { column: { setFilter: (value: string) => void } }) => (
-        <input
-          value={filterInput}
-          onChange={e => {
-            setFilterInput(e.target.value);
-            column.setFilter(e.target.value);
-          }}
-          placeholder={`Filter ${col.title}...`}
-        />
-      ) : undefined,
+      Filter: col.filterable
+        ? ({ column }: { column: { setFilter: (value: string) => void } }) => (
+          <input
+            value={filterInput}
+            onChange={(e) => {
+              setFilterInput(e.target.value);
+              column.setFilter(e.target.value);
+            }}
+            placeholder={`Filter ${col.title}...`}
+          />
+        )
+        : undefined,
     }));
   }, [columns, filterInput]);
 
@@ -129,14 +136,11 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
    * @param {string | number} rowId - ID of the row to toggle
    */
   const toggleRow = (rowId: string | number) => {
-    setExpandedRows(prev => {
+    setExpandedRows((prev) => {
       const newSet = new Set(prev);
 
-      if (newSet.has(rowId)) 
-        newSet.delete(rowId);
-      else 
-        newSet.add(rowId);
-      
+      if (newSet.has(rowId)) newSet.delete(rowId);
+      else newSet.add(rowId);
 
       return newSet;
     });
@@ -150,7 +154,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
    */
   const renderNestedRows = (parentId: string | number, level: number = 0) => {
     if (!expandedRows.has(parentId)) return null;
-    
+
     const children = rowsMap.get(parentId) || [];
 
     return children.map((child: DataItem) => {
@@ -174,14 +178,14 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
 
   return (
     <div>
-      <table {...getTableProps()} className='table-container'>
+      <table {...getTableProps()} className="table-container">
         <TableHeader headerGroups={headerGroups} />
         <tbody {...getTableBodyProps()}>
-          {page.map(row => {
+          {page.map((row) => {
             prepareRow(row);
             const parentId = row.original.id;
             const hasChildren = rowsMap.has(parentId);
-            
+
             return (
               <React.Fragment key={parentId}>
                 <TableRow
@@ -197,19 +201,33 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
           })}
         </tbody>
       </table>
-
-      <Pagination
-        canPreviousPage={canPreviousPage}
-        canNextPage={canNextPage}
-        pageOptions={pageOptions}
-        pageCount={pageCount}
-        pageIndex={pageIndex}
-        gotoPage={gotoPage}
-        nextPage={nextPage}
-        previousPage={previousPage}
-        pageSize={currentPageSize}
-        setPageSize={setPageSize}
-      />
+      {renderCustomPagination ? (
+        renderCustomPagination({
+          canPreviousPage,
+          canNextPage,
+          pageOptions,
+          pageCount,
+          pageIndex,
+          pageSize: currentPageSize,
+          gotoPage,
+          nextPage,
+          previousPage,
+          setPageSize,
+        })
+      ) : (
+        <Pagination
+          canPreviousPage={canPreviousPage}
+          canNextPage={canNextPage}
+          pageOptions={pageOptions}
+          pageCount={pageCount}
+          pageIndex={pageIndex}
+          gotoPage={gotoPage}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          pageSize={currentPageSize}
+          setPageSize={setPageSize}
+        />
+      )}
     </div>
   );
-}; 
+};
