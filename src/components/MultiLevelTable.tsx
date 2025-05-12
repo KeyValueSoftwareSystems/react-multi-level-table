@@ -42,6 +42,7 @@ interface MultiLevelTableProps {
   sortable?: boolean;
   ascendingIcon?: React.ReactNode;
   descendingIcon?: React.ReactNode;
+  expandIcon?: React.ReactNode;
 }
 
 /**
@@ -59,6 +60,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   sortable = false,
   ascendingIcon,
   descendingIcon,
+  expandIcon,
 }) => {
   const mergedTheme = mergeThemeProps(defaultThemeProps, theme);
   const [filterInput, setFilterInput] = useState("");
@@ -184,6 +186,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
             onToggle={() => hasChildren && toggleRow(child.id)}
             level={level}
             theme={mergedTheme}
+            expandIcon={expandIcon}
           />
           {renderNestedRows(child.id, level + 1)}
         </React.Fragment>
@@ -216,6 +219,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
                   isExpanded={expandedRows.has(parentId)}
                   onToggle={() => hasChildren && toggleRow(parentId)}
                   theme={mergedTheme}
+                  expandIcon={expandIcon}
                 />
                 {renderNestedRows(parentId)}
               </React.Fragment>

@@ -19,6 +19,7 @@ import '../styles/TableRow.css';
  * @property {() => void} onToggle - Function to toggle row expansion
  * @property {number} [level=0] - Nesting level of the row
  * @property {ThemeProps} theme - Theme properties
+ * @property {React.ReactNode} [expandIcon] - Custom expand icon
  */
 interface TableRowProps {
   row: Row<DataItem> | DataItem;
@@ -28,6 +29,7 @@ interface TableRowProps {
   onToggle: () => void;
   level?: number;
   theme: ThemeProps;
+  expandIcon?: React.ReactNode;
 }
 
 /**
@@ -43,7 +45,8 @@ export const TableRow: React.FC<TableRowProps> = ({
   isExpanded, 
   onToggle, 
   level = 0,
-  theme 
+  theme,
+  expandIcon,
 }) => {
   const getRowClassName = () => {
     const classes = ['table-row'];
@@ -91,7 +94,7 @@ export const TableRow: React.FC<TableRowProps> = ({
                     }}
                     style={{ cursor: 'pointer', marginRight: '8px' }}
                   >
-                    <ExpandIcon isExpanded={isExpanded} theme={theme} />
+                    {expandIcon || <ExpandIcon isExpanded={isExpanded} theme={theme} />}
                   </span>
                 )}
                 {column.render 
@@ -125,6 +128,7 @@ export const TableRow: React.FC<TableRowProps> = ({
           onToggle={onToggle}
           paddingLeft={level > 0 ? 32 + (level * 16) : 0}
           theme={theme}
+          expandIcon={expandIcon}
         />
       ))}
     </tr>

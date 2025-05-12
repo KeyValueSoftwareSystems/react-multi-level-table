@@ -18,6 +18,7 @@ import '../styles/TableCell.css';
  * @property {() => void} onToggle - Function to toggle row expansion
  * @property {number} [paddingLeft=0] - Left padding for nested cells
  * @property {ThemeProps} theme - Theme properties
+ * @property {React.ReactNode} [expandIcon] - Custom expand icon
  */
 interface TableCellProps {
   cell: Cell<DataItem>;
@@ -26,6 +27,7 @@ interface TableCellProps {
   onToggle: () => void;
   paddingLeft?: number;
   theme: ThemeProps;
+  expandIcon?: React.ReactNode;
 }
 
 /**
@@ -40,7 +42,8 @@ export const TableCell: React.FC<TableCellProps> = ({
   isExpanded, 
   onToggle, 
   paddingLeft = 0,
-  theme 
+  theme,
+  expandIcon,
 }) => {
   const { key, ...cellProps } = cell.getCellProps();
 
@@ -76,7 +79,7 @@ export const TableCell: React.FC<TableCellProps> = ({
               alignItems: 'center',
             }}
           >
-            <ExpandIcon isExpanded={isExpanded} theme={theme} />
+            {expandIcon || <ExpandIcon isExpanded={isExpanded} theme={theme} />}
           </button>
         )}
         {cell.render('Cell')}
