@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import type { Cell, Row } from "react-table";
 
@@ -48,7 +48,7 @@ export const TableRow: React.FC<TableRowProps> = ({
   theme,
   expandIcon,
 }) => {
-  const getRowClassName = () => {
+  const getRowClassName = useMemo(() => {
     const classes = ["table-row"];
 
     if (isExpanded) classes.push("table-row-expanded");
@@ -56,16 +56,15 @@ export const TableRow: React.FC<TableRowProps> = ({
     else classes.push("table-row-nested");
 
     return classes.join(" ");
-  };
+  }, [isExpanded, level]);
 
-  const getRowStyle = () => {
-    if (level === 0)
-      return { backgroundColor: theme.table?.row?.mainBackground };
-    if (isExpanded)
-      return { backgroundColor: theme.table?.row?.expandedBackground };
-
-    return { backgroundColor: theme.table?.row?.nestedBackground };
-  };
+  const getRowStyle = useMemo(() => {
+    const rowShades = theme.table?.row?.levelColors || [];
+    // Use the level to determine which shade to use, defaulting to the lightest shade for deeper nesting
+    const shadeIndex = Math.min(level, rowShades.length - 1);
+    
+    return { backgroundColor: rowShades[shadeIndex]?.background };
+  }, [level, theme.table?.row?.levelColors]);
 
   const handleExpandClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -77,7 +76,7 @@ export const TableRow: React.FC<TableRowProps> = ({
     const dataItem = row as DataItem;
 
     return (
-      <tr className={getRowClassName()} style={getRowStyle()}>
+      <tr className={getRowClassName} style={getRowStyle}>
         {columns.map((column: Column, index: number) => {
           const value = dataItem[column.key as keyof DataItem];
           const displayValue =
@@ -121,8 +120,8 @@ export const TableRow: React.FC<TableRowProps> = ({
     <tr
       key={key}
       {...rowProps}
-      className={getRowClassName()}
-      style={getRowStyle()}
+      className={getRowClassName}
+      style={getRowStyle}
     >
       {tableRow.cells.map((cell: Cell<DataItem>, index: number) => (
         <TableCell

@@ -16,9 +16,7 @@ export const lightTheme: ThemeProps = {
       borderColor: '#dee2e6',
     },
     row: {
-      mainBackground: '#ffffff',
-      nestedBackground: '#f8f9fa',
-      expandedBackground: '#e9ecef',
+      levelColors: [{background: '#ffffff'}, {background: '#f1f3f5'}, {background: '#f8f9fa'}]
     },
     filter: {
       background: 'transparent',
@@ -64,9 +62,7 @@ export const darkTheme: ThemeProps = {
       borderColor: '#495057',
     },
     row: {
-      mainBackground: '#343a40',
-      nestedBackground: '#2b3035',
-      expandedBackground: '#212529',
+      levelColors: [{background: '#2c3e50'}, {background: '#34495e'}, {background: '#2c3e50'}]
     },
     filter: {
       background: 'transparent',
@@ -95,3 +91,4 @@ export const darkTheme: ThemeProps = {
     color: '#e9ecef',
   },
 }; 
+
