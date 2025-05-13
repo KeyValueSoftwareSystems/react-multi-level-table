@@ -1,4 +1,22 @@
 .table-container {
   width: 100%;
   border-collapse: collapse;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-container {
+  min-width: 100%;
+  white-space: nowrap;
+}
+
+/* Ensure table cells don't wrap content */
+.table-container td,
+.table-container th {
+  white-space: nowrap;
+  padding: 8px;
 } 
