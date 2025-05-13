@@ -2,27 +2,30 @@ import type { ThemeProps } from './types/theme';
 
 export const lightTheme: ThemeProps = {
   colors: {
-    primaryColor: '#007bff',
-    textColor: '#212529',
-    borderColor: '#dee2e6',
     background: '#ffffff',
+    primaryColor: '#007bff',
+    borderColor: '#dee2e6',
   },
   table: {
     header: {
       background: '#e9ecef',
       textColor: '#495057',
+    },
+    cell: {
+      textColor: '#212529',
       borderColor: '#dee2e6',
     },
     row: {
       mainBackground: '#ffffff',
       nestedBackground: '#f8f9fa',
       expandedBackground: '#e9ecef',
-      hoverBackground: '#f8f9fa',
     },
-    cell: {
-      textColor: '#212529',
-      borderColor: '#dee2e6',
-      nestedPadding: '1rem',
+    filter: {
+      background: 'transparent',
+      textColor: '#495057',
+      borderColor: '#495057',
+      focusBorderColor: '#007bff',
+      placeholderColor: 'rgba(73, 80, 87, 0.7)',
     },
   },
   pagination: {
@@ -47,14 +50,16 @@ export const lightTheme: ThemeProps = {
 
 export const darkTheme: ThemeProps = {
   colors: {
-    primaryColor: '#0d6efd',
-    textColor: '#ffffff',
-    borderColor: '#495057',
     background: '#212529',
+    primaryColor: '#0d6efd',
+    borderColor: '#495057',
   },
   table: {
     header: {
       background: '#2b3035',
+      textColor: '#e9ecef',
+    },
+    cell: {
       textColor: '#e9ecef',
       borderColor: '#495057',
     },
@@ -62,12 +67,13 @@ export const darkTheme: ThemeProps = {
       mainBackground: '#343a40',
       nestedBackground: '#2b3035',
       expandedBackground: '#212529',
-      hoverBackground: '#2b3035',
     },
-    cell: {
+    filter: {
+      background: 'transparent',
       textColor: '#e9ecef',
-      borderColor: '#495057',
-      nestedPadding: '1rem',
+      borderColor: '#e9ecef',
+      focusBorderColor: '#0d6efd',
+      placeholderColor: 'rgba(233, 236, 239, 0.7)',
     },
   },
   pagination: {

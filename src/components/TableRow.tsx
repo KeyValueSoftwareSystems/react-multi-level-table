@@ -19,6 +19,7 @@ import "../styles/TableRow.css";
  * @property {() => void} onToggle - Function to toggle row expansion
  * @property {number} [level=0] - Nesting level of the row
  * @property {ThemeProps} theme - Theme properties
+ * @property {React.ReactNode} [expandIcon] - Custom expand icon
  */
 interface TableRowProps {
   row: Row<DataItem> | DataItem;
@@ -28,6 +29,7 @@ interface TableRowProps {
   onToggle: () => void;
   level?: number;
   theme: ThemeProps;
+  expandIcon?: React.ReactNode;
 }
 
 /**
@@ -44,6 +46,7 @@ export const TableRow: React.FC<TableRowProps> = ({
   onToggle,
   level = 0,
   theme,
+  expandIcon,
 }) => {
   const getRowClassName = () => {
     const classes = ["table-row"];
@@ -91,16 +94,15 @@ export const TableRow: React.FC<TableRowProps> = ({
             >
               <div className="table-cell-content">
                 {hasChildren && index === 0 ? (
-                  <button
-                    onClick={handleExpandClick}
-                    className="expand-button"
-                  >
-                    <ExpandIcon isExpanded={isExpanded} theme={theme} />
+                  <button onClick={handleExpandClick} className="expand-button">
+                    {expandIcon || (
+                      <ExpandIcon isExpanded={isExpanded} theme={theme} />
+                    )}
                   </button>
                 ) : (
                   <div className="expand-button" />
                 )}
-                {column.render
+                {column.render 
                   ? column.render(displayValue, dataItem)
                   : String(displayValue)}
               </div>
@@ -131,6 +133,7 @@ export const TableRow: React.FC<TableRowProps> = ({
           onToggle={onToggle}
           paddingLeft={level > 0 ? 32 + level * 16 : 0}
           theme={theme}
+          expandIcon={expandIcon}
         />
       ))}
     </tr>
