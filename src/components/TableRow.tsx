@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 
-import type { Cell, Row } from 'react-table';
+import type { Cell, Row } from "react-table";
 
-import { ExpandIcon } from './ExpandIcon';
-import { TableCell } from './TableCell';
-import type { ThemeProps } from '../types/theme';
-import type { Column, DataItem } from '../types/types';
+import { ExpandIcon } from "./ExpandIcon";
+import { TableCell } from "./TableCell";
+import type { ThemeProps } from "../types/theme";
+import type { Column, DataItem } from "../types/types";
 
-import '../styles/TableRow.css';
+import "../styles/TableRow.css";
 
 /**
  * Props for the TableRow component
@@ -38,64 +38,69 @@ interface TableRowProps {
  * @param {TableRowProps} props - Component props
  * @returns {JSX.Element} Rendered table row
  */
-export const TableRow: React.FC<TableRowProps> = ({ 
-  row, 
-  columns, 
-  hasChildren, 
-  isExpanded, 
-  onToggle, 
+export const TableRow: React.FC<TableRowProps> = ({
+  row,
+  columns,
+  hasChildren,
+  isExpanded,
+  onToggle,
   level = 0,
   theme,
   expandIcon,
 }) => {
   const getRowClassName = () => {
-    const classes = ['table-row'];
+    const classes = ["table-row"];
 
-    if (isExpanded) classes.push('table-row-expanded');
-    if (level === 0) classes.push('table-row-main');
-    else classes.push('table-row-nested');
+    if (isExpanded) classes.push("table-row-expanded");
+    if (level === 0) classes.push("table-row-main");
+    else classes.push("table-row-nested");
 
-    return classes.join(' ');
+    return classes.join(" ");
   };
 
   const getRowStyle = () => {
-    if (level === 0) return { backgroundColor: theme.table?.row?.mainBackground };
-    if (isExpanded) return { backgroundColor: theme.table?.row?.expandedBackground };
+    if (level === 0)
+      return { backgroundColor: theme.table?.row?.mainBackground };
+    if (isExpanded)
+      return { backgroundColor: theme.table?.row?.expandedBackground };
 
     return { backgroundColor: theme.table?.row?.nestedBackground };
   };
 
+  const handleExpandClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggle();
+  };
+
   // For nested rows that don't have getRowProps
-  if (!('getRowProps' in row)) {
+  if (!("getRowProps" in row)) {
     const dataItem = row as DataItem;
 
     return (
       <tr className={getRowClassName()} style={getRowStyle()}>
         {columns.map((column: Column, index: number) => {
           const value = dataItem[column.key as keyof DataItem];
-          const displayValue = typeof value === 'string' || typeof value === 'number' ? value : '';
+          const displayValue =
+            typeof value === "string" || typeof value === "number" ? value : "";
 
           return (
             <td
               key={column.key}
-              className={`table-cell ${level > 0 ? 'table-cell-nested' : ''}`}
+              className={`table-cell ${level > 0 ? "table-cell-nested" : ""}`}
               style={{
-                paddingLeft: level > 0 ? `${32 + (level * 16)}px` : '12px',
                 color: theme.table?.cell?.textColor,
                 borderColor: theme.table?.cell?.borderColor,
               }}
             >
               <div className="table-cell-content">
-                {hasChildren && index === 0 && (
-                  <span 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onToggle();
-                    }}
-                    style={{ cursor: 'pointer', marginRight: '8px' }}
-                  >
-                    {expandIcon || <ExpandIcon isExpanded={isExpanded} theme={theme} />}
-                  </span>
+                {hasChildren && index === 0 ? (
+                  <button onClick={handleExpandClick} className="expand-button">
+                    {expandIcon || (
+                      <ExpandIcon isExpanded={isExpanded} theme={theme} />
+                    )}
+                  </button>
+                ) : (
+                  <div className="expand-button" />
                 )}
                 {column.render 
                   ? column.render(displayValue, dataItem)
@@ -126,11 +131,11 @@ export const TableRow: React.FC<TableRowProps> = ({
           hasChildren={hasChildren && index === 0}
           isExpanded={isExpanded}
           onToggle={onToggle}
-          paddingLeft={level > 0 ? 32 + (level * 16) : 0}
+          paddingLeft={level > 0 ? 32 + level * 16 : 0}
           theme={theme}
           expandIcon={expandIcon}
         />
       ))}
     </tr>
   );
-}; 
+};

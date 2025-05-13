@@ -23,7 +23,7 @@ export const defaultTheme: Theme = {
       cell: {
         textColor: '#2c3e50',
         borderColor: '#e0e0e0',
-        nestedPadding: '32px',
+        nestedPadding: '16px',
       },
     },
     pagination: {
@@ -67,7 +67,7 @@ export const defaultTheme: Theme = {
       cell: {
         textColor: '#ecf0f1',
         borderColor: '#34495e',
-        nestedPadding: '32px',
+        nestedPadding: '16px',
       },
     },
     pagination: {

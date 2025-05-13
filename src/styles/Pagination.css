@@ -1,8 +1,9 @@
 .pagination-container {
-  margin-top: 20px;
+  margin-top: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 12px;
 }
 
 .pagination-button {

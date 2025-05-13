@@ -457,10 +457,7 @@ const App: React.FC = () => {
             data={data}
             columns={columns}
             theme={theme}
-            pageSize={5}
             sortable={true}
-            ascendingIcon={<div>↑</div>}
-            descendingIcon={<div>↓</div>}
           />
         </div>
       </main>
