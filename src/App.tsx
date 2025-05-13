@@ -416,18 +416,8 @@ const App: React.FC = () => {
     },
   ];
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const renderCustomPagination = () => {
-    return <div>Custom Pagination </div>;
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const renderCustomExpandButton = () => {
-    return <div>➡</div>;
-  };
-
   return (
-    <div className="app" style={{ backgroundColor: theme.colors?.background }}>
+    <div className="app" data-testid="app-container" style={{ backgroundColor: theme.colors?.background }}>
       <header
         className="app-header"
         style={{ backgroundColor: theme.table?.header?.background }}
