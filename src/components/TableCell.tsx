@@ -66,6 +66,11 @@ export const TableCell: React.FC<TableCellProps> = ({
     onToggle();
   };
 
+  const onSelect = () => {
+    if (rowId && onRowSelect) 
+      onRowSelect(rowId);
+  };
+
   return (
     <td
       key={key}
@@ -82,8 +87,8 @@ export const TableCell: React.FC<TableCellProps> = ({
           <input
             type="checkbox"
             checked={isRowSelected}
-            onChange={() => rowId !== undefined && onRowSelect?.(rowId)}
-            style={{ marginRight: 8, cursor: 'pointer' }}
+            onChange={onSelect}
+            className="row-checkbox"
           />
         )}
         {isSelectionColumn ? (

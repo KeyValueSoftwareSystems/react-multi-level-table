@@ -45,7 +45,7 @@ interface MultiLevelTableProps {
   descendingIcon?: React.ReactNode;
   expandIcon?: React.ReactNode;
   selectable?: boolean;
-  onSelectionChange?: (selectedRows: Set<number>) => void;
+  onSelectionChange?: (selectedRows: Set<string | number>) => void;
 }
 
 /**
@@ -79,7 +79,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
 
   const handleSelectAll = () => {
     const newIsAllSelected = !selectionState.isAllSelected;
-    const newSelectedRows = new Set<number>();
+    const newSelectedRows = new Set<string | number>();
 
     if (newIsAllSelected) parentRowIds.forEach(id => newSelectedRows.add(id));
 
@@ -91,7 +91,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     onSelectionChange?.(newSelectedRows);
   };
 
-  const handleRowSelect = (rowId: number) => {
+  const handleRowSelect = (rowId: string | number) => {
     const newSelectedRows = new Set(selectionState.selectedRows);
 
     if (newSelectedRows.has(rowId)) newSelectedRows.delete(rowId);
@@ -188,7 +188,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   ) as TableInstanceWithHooks<DataItem>;
 
   const rowsMap = useMemo(() => {
-    const map = new Map<number, DataItem[]>();
+    const map = new Map<string | number, DataItem[]>();
 
     const processItem = (item: DataItem) => {
       if (item.children) {
@@ -202,9 +202,9 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     return map;
   }, [data]);
 
-  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+  const [expandedRows, setExpandedRows] = useState<Set<string | number>>(new Set());
 
-  const toggleRow = (rowId: number) => {
+  const toggleRow = (rowId: string | number) => {
     setExpandedRows((prev) => {
       const newSet = new Set(prev);
 
@@ -217,7 +217,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     });
   };
 
-  const renderNestedRows = (parentId: number, level = 1) => {
+  const renderNestedRows = (parentId: string | number, level = 1) => {
     if (!expandedRows.has(parentId)) return null;
     const children = rowsMap.get(parentId) || [];
 
@@ -237,7 +237,6 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
             expandIcon={expandIcon}
             selectable={false}
             isRowSelected={false}
-            onRowSelect={undefined}
           />
           {renderNestedRows(child.id, level + 1)}
         </React.Fragment>

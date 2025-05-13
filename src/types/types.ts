@@ -38,6 +38,6 @@ export interface TableInstanceWithHooks<T extends object> extends TableInstance<
 }
 
 export interface SelectionState {
-  selectedRows: Set<number>;
+  selectedRows: Set<string | number>;
   isAllSelected: boolean;
 } 
