@@ -20,6 +20,7 @@ import type { ThemeProps } from "../types/theme";
 import type {
   Column,
   DataItem,
+  SelectionState,
   TableInstanceWithHooks,
   TableStateWithPagination,
 } from "../types/types";
@@ -43,6 +44,8 @@ interface MultiLevelTableProps {
   ascendingIcon?: React.ReactNode;
   descendingIcon?: React.ReactNode;
   expandIcon?: React.ReactNode;
+  selectable?: boolean;
+  onSelectionChange?: (selectedRows: Set<number>) => void;
 }
 
 /**
@@ -61,9 +64,48 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   ascendingIcon,
   descendingIcon,
   expandIcon,
+  selectable = false,
+  onSelectionChange,
 }) => {
   const mergedTheme = mergeThemeProps(defaultTheme, theme);
   const [filterInput, setFilterInput] = useState("");
+  const [selectionState, setSelectionState] = useState<SelectionState>({
+    selectedRows: new Set(),
+    isAllSelected: false,
+  });
+
+  // Get all parent row IDs (level 0)
+  const parentRowIds = useMemo(() => data.map(item => item.id), [data]);
+
+  const handleSelectAll = () => {
+    const newIsAllSelected = !selectionState.isAllSelected;
+    const newSelectedRows = new Set<number>();
+
+    if (newIsAllSelected) parentRowIds.forEach(id => newSelectedRows.add(id));
+
+    setSelectionState({
+      selectedRows: newSelectedRows,
+      isAllSelected: newIsAllSelected,
+    });
+
+    onSelectionChange?.(newSelectedRows);
+  };
+
+  const handleRowSelect = (rowId: number) => {
+    const newSelectedRows = new Set(selectionState.selectedRows);
+
+    if (newSelectedRows.has(rowId)) newSelectedRows.delete(rowId);
+    else newSelectedRows.add(rowId);
+
+    const newIsAllSelected = newSelectedRows.size === parentRowIds.length;
+
+    setSelectionState({
+      selectedRows: newSelectedRows,
+      isAllSelected: newIsAllSelected,
+    });
+
+    onSelectionChange?.(newSelectedRows);
+  };
 
   /**
    * Prepares columns configuration for react-table
@@ -84,7 +126,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
         value: string | number;
       }) => {
         const item = row.original;
-
+        
         return (
           <div>{col.render ? col.render(value, item) : value?.toString()}</div>
         );
@@ -177,7 +219,6 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
 
   const renderNestedRows = (parentId: number, level = 1) => {
     if (!expandedRows.has(parentId)) return null;
-
     const children = rowsMap.get(parentId) || [];
 
     return children.map((child) => {
@@ -194,6 +235,9 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
             level={level}
             theme={mergedTheme}
             expandIcon={expandIcon}
+            selectable={false}
+            isRowSelected={false}
+            onRowSelect={undefined}
           />
           {renderNestedRows(child.id, level + 1)}
         </React.Fragment>
@@ -251,8 +295,12 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
                 hasChildren={hasChildren}
                 isExpanded={expandedRows.has(parentId)}
                 onToggle={() => hasChildren && toggleRow(parentId)}
+                level={0}
                 theme={mergedTheme}
                 expandIcon={expandIcon}
+                selectable={true}
+                isRowSelected={selectionState.selectedRows.has(row.original.id)}
+                onRowSelect={handleRowSelect}
               />
               {renderNestedRows(parentId)}
             </React.Fragment>
@@ -276,6 +324,9 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
             sortable={sortable}
             ascendingIcon={ascendingIcon}
             descendingIcon={descendingIcon}
+            selectable={selectable}
+            isAllSelected={selectionState.isAllSelected}
+            onSelectAll={handleSelectAll}
           />
           {renderTableBody()}
         </table>

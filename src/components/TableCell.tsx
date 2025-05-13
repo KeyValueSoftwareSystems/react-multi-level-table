@@ -19,6 +19,10 @@ import '../styles/TableCell.css';
  * @property {number} [paddingLeft=0] - Left padding for nested cells
  * @property {ThemeProps} theme - Theme properties
  * @property {React.ReactNode} [expandIcon] - Custom expand icon
+ * @property {boolean} [selectable=false] - Whether the cell is selectable
+ * @property {boolean} [isRowSelected=false] - Whether the row is selected
+ * @property {(rowId: number) => void} [onRowSelect] - Function to select a row
+ * @property {number} [rowId] - ID of the row
  */
 interface TableCellProps {
   cell: Cell<DataItem>;
@@ -28,6 +32,10 @@ interface TableCellProps {
   paddingLeft?: number;
   theme: ThemeProps;
   expandIcon?: React.ReactNode;
+  selectable?: boolean;
+  isRowSelected?: boolean;
+  onRowSelect?: (rowId: number) => void;
+  rowId?: number;
 }
 
 /**
@@ -44,8 +52,13 @@ export const TableCell: React.FC<TableCellProps> = ({
   paddingLeft = 0,
   theme,
   expandIcon,
+  selectable = false,
+  isRowSelected = false,
+  onRowSelect,
+  rowId,
 }) => {
   const { key, ...cellProps } = cell.getCellProps();
+  const isSelectionColumn = cell.column.id === 'selection';
 
   const handleExpandClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -65,15 +78,29 @@ export const TableCell: React.FC<TableCellProps> = ({
       }}
     >
       <div className="table-cell-content">
-        {hasChildren ? (
-          <button
-            onClick={handleExpandClick}
-            className="expand-button"
-          >
-            {expandIcon || <ExpandIcon isExpanded={isExpanded} theme={theme} />}
-          </button>
-        ) : <div className="expand-button" />}
-        {cell.render('Cell')}
+        {selectable && (
+          <input
+            type="checkbox"
+            checked={isRowSelected}
+            onChange={() => rowId !== undefined && onRowSelect?.(rowId)}
+            style={{ marginRight: 8, cursor: 'pointer' }}
+          />
+        )}
+        {isSelectionColumn ? (
+          cell.render('Cell')
+        ) : (
+          <>
+            {hasChildren ? (
+              <button
+                onClick={handleExpandClick}
+                className="expand-button"
+              >
+                {expandIcon || <ExpandIcon isExpanded={isExpanded} theme={theme} />}
+              </button>
+            ) : <div className="expand-button" />}
+            {cell.render('Cell')}
+          </>
+        )}
       </div>
     </td>
   );

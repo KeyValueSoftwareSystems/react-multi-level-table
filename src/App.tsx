@@ -389,9 +389,15 @@ const StatusCell: React.FC<{ value: string; theme: ThemeProps }> = ({
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const theme = isDarkMode ? darkTheme : lightTheme;
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
 
   const toggleTheme = () => {
     setIsDarkMode((prev) => !prev);
+  };
+
+  const handleSelectionChange = (newSelectedRows: Set<number>) => {
+    setSelectedRows(newSelectedRows);
+    console.log('Selected rows:', Array.from(newSelectedRows));
   };
 
   const columns: Column[] = [
@@ -448,8 +454,15 @@ const App: React.FC = () => {
             columns={columns}
             theme={theme}
             sortable={true}
+            selectable={true}
+            onSelectionChange={handleSelectionChange}
           />
         </div>
+        {selectedRows.size > 0 && (
+          <div className="selection-info" style={{ marginTop: '16px', color: theme.table?.cell?.textColor }}>
+            Selected rows: {Array.from(selectedRows).join(', ')}
+          </div>
+        )}
       </main>
     </div>
   );

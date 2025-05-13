@@ -35,4 +35,9 @@ export interface TableInstanceWithHooks<T extends object> extends TableInstance<
   previousPage: () => void;
   setPageSize: (pageSize: number) => void;
   state: TableStateWithPagination<T>;
+}
+
+export interface SelectionState {
+  selectedRows: Set<number>;
+  isAllSelected: boolean;
 } 
