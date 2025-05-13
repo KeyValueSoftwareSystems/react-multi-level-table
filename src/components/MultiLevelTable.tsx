@@ -33,7 +33,7 @@ import "../styles/MultiLevelTable.css";
  * @property {number} [pageSize=10] - Number of items per page
  * @property {ThemeProps} theme - Theme properties
  */
-interface MultiLevelTableProps {
+export interface MultiLevelTableProps {
   data: DataItem[];
   columns: Column[];
   pageSize?: number;
