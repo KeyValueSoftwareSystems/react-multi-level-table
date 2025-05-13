@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import type { Row } from 'react-table';
+
 import { MultiLevelTable } from "./components/MultiLevelTable";
 import { darkTheme, lightTheme } from "./themes";
 import type { ThemeProps } from "./types/theme";
@@ -388,7 +390,14 @@ const StatusCell: React.FC<{ value: string; theme: ThemeProps }> = ({
 
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selectedRows, setSelectedRows] = useState<Record<string, boolean>>({});
   const theme = isDarkMode ? darkTheme : lightTheme;
+  
+  const handleSelectionChange = (selectedRowIds: Record<string, boolean>, selectedFlatRows: Row<DataItem>[]) => {
+    setSelectedRows(selectedRowIds);
+    console.log('Selected Row IDs:', selectedRowIds);
+    console.log('Selected Rows:', selectedFlatRows.map(row => row.original));
+  };
 
   const toggleTheme = () => {
     setIsDarkMode((prev) => !prev);
@@ -458,6 +467,9 @@ const App: React.FC = () => {
             columns={columns}
             theme={theme}
             sortable={true}
+            selectable={true}
+            initialSelectedRowIds={selectedRows}
+            onSelectionChange={handleSelectionChange}
           />
         </div>
       </main>
@@ -466,3 +478,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+

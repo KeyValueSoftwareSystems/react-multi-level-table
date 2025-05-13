@@ -1,13 +1,14 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import {
-  type Row,
   type Column as TableColumn,
   useFilters,
   usePagination,
+  useRowSelect,
   useSortBy,
   useTable,
 } from "react-table";
+import type { CellProps, Hooks, Row } from "react-table";
 
 import { Pagination } from "./Pagination";
 import type { PaginationProps } from "./Pagination";
@@ -43,6 +44,9 @@ interface MultiLevelTableProps {
   ascendingIcon?: React.ReactNode;
   descendingIcon?: React.ReactNode;
   expandIcon?: React.ReactNode;
+  selectable?: boolean;
+  onSelectionChange?: (selectedRowIds: Record<string, boolean>, selectedFlatRows: Row<DataItem>[]) => void;
+  initialSelectedRowIds?: Record<string, boolean>;
 }
 
 /**
@@ -61,6 +65,9 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   ascendingIcon,
   descendingIcon,
   expandIcon,
+  selectable = false,
+  onSelectionChange,
+  initialSelectedRowIds = {},
 }) => {
   const mergedTheme = mergeThemeProps(defaultTheme, theme);
   const [filterInput, setFilterInput] = useState("");
@@ -114,12 +121,16 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     nextPage,
     previousPage,
     setPageSize,
-    state: { pageIndex, pageSize: currentPageSize },
+    state: { pageIndex, pageSize: currentPageSize, selectedRowIds },
+    selectedFlatRows,
   } = useTable(
     {
       columns: tableColumns,
       data,
-      initialState: { pageSize } as TableStateWithPagination<DataItem>,
+      initialState: { 
+        pageSize,
+        selectedRowIds: initialSelectedRowIds 
+      } as TableStateWithPagination<DataItem> & { selectedRowIds: Record<string, boolean> },
       // @ts-expect-error - sortTypes is not included in the type definition but is supported by react-table
       sortTypes: {
         custom: (rowA: Row<DataItem>, rowB: Row<DataItem>, columnId: string) => {
@@ -131,11 +142,41 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
           return 0;
         },
       },
+      getRowId: (row: DataItem) => row.id?.toString() || '',
     },
     useFilters,
     ...(sortable ? [useSortBy] : []),
-    usePagination
-  ) as TableInstanceWithHooks<DataItem>;
+    usePagination,
+    ...(selectable ? [useRowSelect, (hooks: Hooks<DataItem>) => {
+      hooks.visibleColumns.push(columns => [
+        {
+          id: 'selection',
+          Header: (instance) => (
+            <div style={{ width: '40px', textAlign: 'center' }}>
+              <input type="checkbox" {...(instance as any).getToggleAllPageRowsSelectedProps()} />
+            </div>
+          ),
+          Cell: ({ row }: CellProps<DataItem, unknown>) => (
+            <div style={{ width: '40px', textAlign: 'center' }}>
+              <input type="checkbox" {...(row as any).getToggleRowSelectedProps()} />
+            </div>
+          ),
+          disableSortBy: true,
+          width: 40,
+        },
+        ...columns,
+      ]);
+    }] : [])
+  ) as TableInstanceWithHooks<DataItem> & { 
+    selectedFlatRows: Row<DataItem>[]; 
+    getToggleAllPageRowsSelectedProps: () => any;
+    state: TableStateWithPagination<DataItem> & { selectedRowIds: Record<string, boolean> };
+  };
+
+  useEffect(() => {
+    if (selectable && onSelectionChange)
+      onSelectionChange(selectedRowIds, selectedFlatRows);
+  }, [selectable, selectedRowIds, selectedFlatRows, onSelectionChange]);
 
   const rowsMap = useMemo(() => {
     const map = new Map<number, DataItem[]>();

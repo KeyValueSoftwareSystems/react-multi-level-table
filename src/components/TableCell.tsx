@@ -46,6 +46,7 @@ export const TableCell: React.FC<TableCellProps> = ({
   expandIcon,
 }) => {
   const { key, ...cellProps } = cell.getCellProps();
+  const isSelectionColumn = cell.column.id === 'selection';
 
   const handleExpandClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -65,6 +66,7 @@ export const TableCell: React.FC<TableCellProps> = ({
       }}
     >
       <div className="table-cell-content">
+      {isSelectionColumn && cell.render('Cell')}
         {hasChildren ? (
           <button
             onClick={handleExpandClick}
@@ -73,7 +75,7 @@ export const TableCell: React.FC<TableCellProps> = ({
             {expandIcon || <ExpandIcon isExpanded={isExpanded} theme={theme} />}
           </button>
         ) : <div className="expand-button" />}
-        {cell.render('Cell')}
+        {!isSelectionColumn && cell.render('Cell')}
       </div>
     </td>
   );
