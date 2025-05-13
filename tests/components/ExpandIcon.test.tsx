@@ -1,6 +1,7 @@
 import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 
 import { ExpandIcon } from '../../src/components/ExpandIcon';
 import type { ThemeProps } from '../../src/types/theme';
@@ -14,7 +15,6 @@ describe('ExpandIcon', () => {
 
   it('renders expanded icon (▼) when isExpanded is true', () => {
     render(<ExpandIcon isExpanded theme={mockTheme} />);
-
     const icon = screen.getByText('▼');
     expect(icon).toBeInTheDocument();
     expect(icon).toHaveClass('expand-icon');
