@@ -13,7 +13,7 @@ import { Pagination } from "./Pagination";
 import type { PaginationProps } from "./Pagination";
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
-import { SortType } from '../constants/sort';
+import { SortType } from "../constants/sort";
 import { defaultTheme } from "../constants/theme";
 import { mergeThemeProps } from "../mergeThemeProps";
 import type { ThemeProps } from "../types/theme";
@@ -76,13 +76,17 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
       disableSortBy: sortable ? col.sortable === false : true,
       sortType: col.customSortFn ? SortType.Custom : SortType.Basic,
       sortFn: col.customSortFn,
-      Cell: ({ row, value }: { row: Row<DataItem>; value: string | number }) => {
+      Cell: ({
+        row,
+        value,
+      }: {
+        row: Row<DataItem>;
+        value: string | number;
+      }) => {
         const item = row.original;
 
         return (
-          <div>
-            {col.render ? col.render(value, item) : value?.toString()}
-          </div>
+          <div>{col.render ? col.render(value, item) : value?.toString()}</div>
         );
       },
       Filter: col.filterable
@@ -122,8 +126,12 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
       initialState: { pageSize } as TableStateWithPagination<DataItem>,
       // @ts-expect-error - sortTypes is not included in the type definition but is supported by react-table
       sortTypes: {
-        custom: (rowA: Row<DataItem>, rowB: Row<DataItem>, columnId: string) => {
-          const column = columns.find(col => col.key === columnId);
+        custom: (
+          rowA: Row<DataItem>,
+          rowB: Row<DataItem>,
+          columnId: string
+        ) => {
+          const column = columns.find((col) => col.key === columnId);
 
           if (column?.customSortFn) 
             return column.customSortFn(rowA.original, rowB.original, columnId);
@@ -162,7 +170,6 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
         newSet.delete(rowId);
       else 
         newSet.add(rowId);
-      
 
       return newSet;
     });
@@ -194,69 +201,87 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     });
   };
 
+  const renderPagination = () => {
+    if (renderCustomPagination) 
+      return renderCustomPagination({
+        canPreviousPage,
+        canNextPage,
+        pageOptions,
+        pageCount,
+        pageIndex,
+        pageSize: currentPageSize,
+        gotoPage,
+        nextPage,
+        previousPage,
+        setPageSize,
+        theme: mergedTheme,
+      });
+    
+
+    return (
+      <Pagination
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage}
+        pageOptions={pageOptions}
+        pageCount={pageCount}
+        pageIndex={pageIndex}
+        gotoPage={gotoPage}
+        nextPage={nextPage}
+        previousPage={previousPage}
+        pageSize={currentPageSize}
+        setPageSize={setPageSize}
+        theme={mergedTheme}
+      />
+    );
+  };
+
+  const renderTableBody = () => {
+    return (
+      <tbody {...getTableBodyProps()}>
+        {page.map((row) => {
+          prepareRow(row);
+          const parentId = row.original.id;
+          const hasChildren = rowsMap.has(parentId);
+
+          return (
+            <React.Fragment key={parentId}>
+              <TableRow
+                row={row}
+                columns={columns}
+                hasChildren={hasChildren}
+                isExpanded={expandedRows.has(parentId)}
+                onToggle={() => hasChildren && toggleRow(parentId)}
+                theme={mergedTheme}
+                expandIcon={expandIcon}
+              />
+              {renderNestedRows(parentId)}
+            </React.Fragment>
+          );
+        })}
+      </tbody>
+    );
+  };
+
   return (
     <div style={{ backgroundColor: mergedTheme.colors?.background }}>
-      <table
-        {...getTableProps()}
-        className="table-container"
-        style={{ borderColor: mergedTheme.table?.cell?.borderColor }}
-      >
-        <TableHeader headerGroups={headerGroups} theme={mergedTheme} sortable={sortable}
-          ascendingIcon={ascendingIcon}
-          descendingIcon={descendingIcon} />
-        <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
-            const parentId = row.original.id;
-            const hasChildren = rowsMap.has(parentId);
+      <div className="table-wrapper">
+        <table
+          {...getTableProps()}
+          className="table-container"
+          style={{ borderColor: mergedTheme.table?.cell?.borderColor }}
+        >
+          <TableHeader
+            headerGroups={headerGroups}
+            theme={mergedTheme}
+            sortable={sortable}
+            ascendingIcon={ascendingIcon}
+            descendingIcon={descendingIcon}
+          />
+          {renderTableBody()}
+        </table>
 
-            return (
-              <React.Fragment key={parentId}>
-                <TableRow
-                  row={row}
-                  columns={columns}
-                  hasChildren={hasChildren}
-                  isExpanded={expandedRows.has(parentId)}
-                  onToggle={() => hasChildren && toggleRow(parentId)}
-                  theme={mergedTheme}
-                  expandIcon={expandIcon}
-                />
-                {renderNestedRows(parentId)}
-              </React.Fragment>
-            );
-          })}
-        </tbody>
-      </table>
-
-      {renderCustomPagination ? (
-        renderCustomPagination({
-          canPreviousPage,
-          canNextPage,
-          pageOptions,
-          pageCount,
-          pageIndex,
-          pageSize: currentPageSize,
-          gotoPage,
-          nextPage,
-          previousPage,
-          setPageSize,
-          theme: mergedTheme,
-        })
-      ) : (
-        <Pagination
-          canPreviousPage={canPreviousPage}
-          canNextPage={canNextPage}
-          pageOptions={pageOptions}
-          pageCount={pageCount}
-          pageIndex={pageIndex}
-          gotoPage={gotoPage}
-          nextPage={nextPage}
-          previousPage={previousPage}
-          pageSize={currentPageSize}
-          setPageSize={setPageSize}
-          theme={mergedTheme}
-        />
-      )}
+        {renderPagination()}
+      </div>
     </div>
   );
 };

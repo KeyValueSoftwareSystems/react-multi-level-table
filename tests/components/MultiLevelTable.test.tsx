@@ -189,7 +189,8 @@ describe('MultiLevelTable', () => {
     );
     
     const table = screen.getByRole('table');
-    expect(table.parentElement).toHaveStyle({ backgroundColor: '#f0f0f0' });
+    const tableWrapper = table.closest('.table-wrapper');
+    expect(tableWrapper?.parentElement).toHaveStyle({ backgroundColor: '#f0f0f0' });
     expect(table).toHaveStyle({ borderColor: '#ff0000' });
   });
   it('handles custom column rendering', () => {
