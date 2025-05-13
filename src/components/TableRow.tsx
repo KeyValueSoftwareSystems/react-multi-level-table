@@ -20,6 +20,9 @@ import "../styles/TableRow.css";
  * @property {number} [level=0] - Nesting level of the row
  * @property {ThemeProps} theme - Theme properties
  * @property {React.ReactNode} [expandIcon] - Custom expand icon
+ * @property {boolean} [selectable=false] - Whether the row is selectable
+ * @property {boolean} [isRowSelected=false] - Whether the row is selected
+ * @property {(rowId: number) => void} [onRowSelect] - Function to select a row
  */
 interface TableRowProps {
   row: Row<DataItem> | DataItem;
@@ -30,6 +33,9 @@ interface TableRowProps {
   level?: number;
   theme: ThemeProps;
   expandIcon?: React.ReactNode;
+  selectable?: boolean;
+  isRowSelected?: boolean;
+  onRowSelect?: (rowId: number) => void;
 }
 
 /**
@@ -47,6 +53,9 @@ export const TableRow: React.FC<TableRowProps> = ({
   level = 0,
   theme,
   expandIcon,
+  selectable = false,
+  isRowSelected = false,
+  onRowSelect,
 }) => {
   const getRowClassName = useMemo(() => {
     const classes = ["table-row"];
@@ -92,6 +101,14 @@ export const TableRow: React.FC<TableRowProps> = ({
               }}
             >
               <div className="table-cell-content">
+                {index === 0 && selectable && (
+                  <input
+                    type="checkbox"
+                    checked={isRowSelected}
+                    onChange={() => onRowSelect?.(dataItem.id)}
+                    style={{ marginRight: 8, cursor: 'pointer' }}
+                  />
+                )}
                 {hasChildren && index === 0 ? (
                   <button onClick={handleExpandClick} className="expand-button">
                     {expandIcon || (
@@ -133,6 +150,10 @@ export const TableRow: React.FC<TableRowProps> = ({
           paddingLeft={level > 0 ? 32 + level * 16 : 0}
           theme={theme}
           expandIcon={expandIcon}
+          selectable={selectable && index === 0}
+          isRowSelected={isRowSelected}
+          onRowSelect={onRowSelect}
+          rowId={tableRow.original.id}
         />
       ))}
     </tr>

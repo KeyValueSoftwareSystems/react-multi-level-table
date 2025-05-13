@@ -15,6 +15,9 @@ import "../styles/TableHeader.css";
  * @property {boolean} [sortable=false] - Whether the table is sortable
  * @property {React.ReactNode} [ascendingIcon] - Custom icon for ascending sort
  * @property {React.ReactNode} [descendingIcon] - Custom icon for descending sort
+ * @property {boolean} [selectable=false] - Whether the table is selectable
+ * @property {boolean} [isAllSelected=false] - Whether all rows are selected
+ * @property {() => void} [onSelectAll] - Function to select all rows
  */
 interface TableHeaderProps {
   headerGroups: HeaderGroup<DataItem>[];
@@ -22,6 +25,9 @@ interface TableHeaderProps {
   sortable?: boolean;
   ascendingIcon?: React.ReactNode;
   descendingIcon?: React.ReactNode;
+  selectable?: boolean;
+  isAllSelected?: boolean;
+  onSelectAll?: () => void;
 }
 
 type ColumnWithSorting = {
@@ -57,6 +63,9 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   sortable = false,
   ascendingIcon,
   descendingIcon,
+  selectable = false,
+  isAllSelected = false,
+  onSelectAll,
 }) => {
   return (
     <thead>
@@ -67,16 +76,17 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
         return (
           <tr key={headerGroupKey} {...headerGroupProps}>
             {(headerGroup.headers as unknown as ColumnWithSorting[]).map(
-              (column) => {
+              (column, index) => {
                 const isColumnSortable = sortable && !column.disableSortBy;
-                const { key: columnKey, ...columnProps } = isColumnSortable
+                const { key: columnKey } = isColumnSortable
                   ? column.getHeaderProps(column.getSortByToggleProps())
                   : column.getHeaderProps();
 
+                const sortProps = isColumnSortable ? column.getSortByToggleProps() : {};
+                
                 return (
                   <th
                     key={columnKey}
-                    {...columnProps}
                     style={{
                       backgroundColor: theme.table?.header?.background,
                       color: theme.table?.header?.textColor,
@@ -84,13 +94,26 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                     }}
                   >
                     <div className="table-header-cell">
-                      <span>{column.title || column.id}</span>
-                      <span className="sort-icon">
-                        {column.isSorted
-                          ? column.isSortedDesc
-                            ? descendingIcon || "↓"
-                            : ascendingIcon || "↑"
-                          : " "}
+                      {index === 0 && selectable && (
+                        <input
+                          type="checkbox"
+                          checked={isAllSelected}
+                          onChange={onSelectAll}
+                          style={{ marginRight: 8, cursor: 'pointer' }}
+                        />
+                      )}
+                      <span
+                        style={{ display: 'inline-flex', alignItems: 'center', cursor: isColumnSortable ? 'pointer' : 'default', userSelect: 'none' }}
+                        onClick={isColumnSortable ? (e => { e.stopPropagation(); (sortProps.onClick as any)?.(e); }) : undefined}
+                      >
+                        {column.title || column.id}
+                        <span className="sort-icon" style={{ marginLeft: 4 }}>
+                          {column.isSorted
+                            ? column.isSortedDesc
+                              ? descendingIcon || "↓"
+                              : ascendingIcon || "↑"
+                            : " "}
+                        </span>
                       </span>
                       {column.Filter && (
                         <div className="filter-container">

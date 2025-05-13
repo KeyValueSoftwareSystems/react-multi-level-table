@@ -1,6 +1,7 @@
 .table-container {
   width: 100%;
   border-collapse: collapse;
+  border-spacing: 0;
 }
 
 .table-wrapper {
@@ -19,4 +20,19 @@
 .table-container th {
   white-space: nowrap;
   padding: 8px;
+}
+
+.selection-header,
+.selection-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.selection-header input[type="checkbox"],
+.selection-cell input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
 } 
