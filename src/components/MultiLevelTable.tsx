@@ -14,7 +14,7 @@ import type { PaginationProps } from "./Pagination";
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
 import { SortType } from '../constants/sort';
-import { defaultThemeProps } from "../defaultThemeProps";
+import { defaultTheme } from "../constants/theme";
 import { mergeThemeProps } from "../mergeThemeProps";
 import type { ThemeProps } from "../types/theme";
 import type {
@@ -62,7 +62,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   descendingIcon,
   expandIcon,
 }) => {
-  const mergedTheme = mergeThemeProps(defaultThemeProps, theme);
+  const mergedTheme = mergeThemeProps(defaultTheme, theme);
   const [filterInput, setFilterInput] = useState("");
 
   /**

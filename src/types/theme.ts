@@ -7,21 +7,22 @@ export interface ThemeProps {
   colors?: {
     background?: string;
     primaryColor?: string;
+    textColor?: string;
     borderColor?: string;
   };
   table?: {
     header?: {
       background?: string;
       textColor?: string;
+      borderColor?: string;
     };
     cell?: {
       textColor?: string;
       borderColor?: string;
+      nestedPadding?: string;
     };
     row?: {
-      mainBackground?: string;
-      nestedBackground?: string;
-      expandedBackground?: string;
+      levelColors?: {background: string}[];
     };
     filter?: {
       background?: string;
