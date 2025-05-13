@@ -37,7 +37,7 @@
     "preview": "vite preview",
     "prepare": "husky",
     "pre-commit": "lint-staged",
-    "test": "vitest",
+    "test": "eslint src",
     "test:coverage": "vitest run --coverage"
   },
   "peerDependencies": {
