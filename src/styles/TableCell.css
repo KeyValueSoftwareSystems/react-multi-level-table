@@ -7,4 +7,16 @@
 .table-cell-content {
   display: flex;
   align-items: center;
+  padding: 0px 12px;
 } 
+
+.expand-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-right: 2px;
+  display: flex;
+  align-items: center;
+  width: 20px;
+}

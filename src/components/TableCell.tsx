@@ -62,23 +62,14 @@ export const TableCell: React.FC<TableCellProps> = ({
       }}
     >
       <div className="table-cell-content">
-        {hasChildren && (
+        {hasChildren ? (
           <button
             onClick={handleExpandClick}
             className="expand-button"
-            style={{
-              background: 'none',
-              border: 'none',
-              padding: 0,
-              cursor: 'pointer',
-              marginRight: '8px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
           >
             <ExpandIcon isExpanded={isExpanded} theme={theme} />
           </button>
-        )}
+        ) : <div className="expand-button" />}
         {cell.render('Cell')}
       </div>
     </td>
