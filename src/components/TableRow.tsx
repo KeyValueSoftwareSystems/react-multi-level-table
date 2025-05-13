@@ -85,7 +85,6 @@ export const TableRow: React.FC<TableRowProps> = ({
               key={column.key}
               className={`table-cell ${level > 0 ? "table-cell-nested" : ""}`}
               style={{
-                paddingLeft: level > 0 ? `${12 + level * 16}px` : "12px",
                 color: theme.table?.cell?.textColor,
                 borderColor: theme.table?.cell?.borderColor,
               }}
