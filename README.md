@@ -10,10 +10,11 @@
   - [Component Props](#22-component-props)
 - [Customization](#3-customization)
   - [Column Configuration](#31-column-configuration)
-  - [Features](#32-features)
-  - [Pagination](#33-pagination)
-  - [Selection](#34-selection)
-  - [Theme Customization](#35-theme-customization)
+  - [Expand Icon Customization](#32-expand-icon-customization)
+  - [Selection Props](#33-selection-props)
+  - [Sort Icons](#34-sort-icons)
+  - [Pagination](#35-pagination)
+  - [Theme Customization](#36-theme-customization)
 - [Development](#4-development)
   - [Project Structure](#41-project-structure)
   - [Development Commands](#42-development-commands)
@@ -126,7 +127,6 @@ The MultiLevelTable component accepts the following props:
 |------|------|----------|---------|-------------|
 | data | array | Yes | - | Array of data objects to display in the table |
 | columns | array | Yes | - | Array of column configurations |
-| childrenKey | string | No | 'children' | Key to use for nested data |
 | pageSize | number | No | 10 | Number of rows to display per page |
 | theme | object | No | - | Custom theme object for styling the table |
 | renderCustomPagination | function | No | null | Custom pagination component render function |
@@ -152,16 +152,60 @@ Each column object should have the following properties:
 | sortable | boolean | No | Whether the column can be sorted |
 | customSortFn | function | No | Custom sorting function. Receives (rowA: DataItem, rowB: DataItem, columnId: string) as parameters |
 
-### 3.2 Features
+### 3.2 Expand Icon Customization
 
-- **Multi-level Data Structure**: Display hierarchical data with parent-child relationships
-- **Sorting**: Click column headers to sort data (applies to parent rows only)
-- **Filtering**: Real-time filtering for specified columns (applies to parent rows only)
-- **Pagination**: Navigate through pages with configurable page sizes
-- **Custom Rendering**: Customize cell content with render functions
-- **TypeScript Support**: Full TypeScript support with proper type definitions
+You can customize the expand icon for rows with children using the `expandIcon` prop:
 
-### 3.3 Pagination
+```tsx
+<MultiLevelTable
+  data={data}
+  columns={columns}
+  expandIcon={<CustomExpandIcon />} // Your custom expand icon component
+/>
+```
+
+The expand icon will be displayed for rows that have children. You can provide any React component as the icon.
+
+### 3.3 Selection Props
+
+The table supports row selection with the following props:
+
+```tsx
+<MultiLevelTable
+  data={data}
+  columns={columns}
+  selectable={true} // Enable row selection
+  onSelectionChange={(selectedRows) => {
+    console.log('Selected rows:', selectedRows);
+  }}
+/>
+```
+
+| Prop | Type | Description |
+|------|------|-------------|
+| selectable | boolean | Enable/disable row selection functionality |
+| onSelectionChange | function | Callback function that receives a Set of selected row IDs |
+
+### 3.4 Sort Icons
+
+You can customize the sort icons for ascending and descending states:
+
+```tsx
+<MultiLevelTable
+  data={data}
+  columns={columns}
+  sortable={true}
+  ascendingIcon={<CustomAscendingIcon />} // Custom icon for ascending sort
+  descendingIcon={<CustomDescendingIcon />} // Custom icon for descending sort
+/>
+```
+
+| Prop | Type | Description |
+|------|------|-------------|
+| ascendingIcon | ReactNode | Custom icon component for ascending sort state |
+| descendingIcon | ReactNode | Custom icon component for descending sort state |
+
+### 3.5 Pagination
 
 The table component provides comprehensive pagination functionality. You can either use the default pagination or create a custom one using the pagination props:
 
@@ -230,47 +274,7 @@ const CustomPagination = ({
 />
 ```
 
-### 3.4 Selection
-
-The table component supports row selection functionality. When enabled, it provides a selection state with the following properties:
-
-```tsx
-interface SelectionState {
-  selectedRows: Set<string | number>;  // Set of selected row IDs
-  isAllSelected: boolean;              // Whether all rows are selected
-}
-```
-
-Example of using selection:
-
-```tsx
-function App() {
-  const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set());
-  const [isAllSelected, setIsAllSelected] = useState(false);
-
-  const handleSelectionChange = (selectionState: SelectionState) => {
-    setSelectedRows(selectionState.selectedRows);
-    setIsAllSelected(selectionState.isAllSelected);
-  };
-
-  return (
-    <MultiLevelTable
-      data={data}
-      columns={columns}
-      selectable={true}
-      onSelectionChange={handleSelectionChange}
-    />
-  );
-}
-```
-
-The selection functionality provides:
-- Individual row selection
-- Select all functionality
-- Selection state management
-- Custom selection change handling
-
-### 3.5 Theme Customization
+### 3.6 Theme Customization
 
 The table component supports theme customization through the `theme` prop. Here's the complete theme interface:
 
