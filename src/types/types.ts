@@ -4,7 +4,7 @@ import type { Row, TableInstance, TableState } from 'react-table';
 
 export interface Column {
   key: string;
-  title: string;
+  title: string | React.ReactNode;
   filterable?: boolean;
   render?: (value: string | number, item: DataItem) => React.ReactNode;
   sortable?: boolean;

@@ -46,7 +46,7 @@ type ColumnWithSorting = {
   Filter?: React.ComponentType<{ column: ColumnWithSorting }>;
   id: string;
   disableSortBy?: boolean;
-  title?: string;
+  title?: string | React.ReactNode;
   filterValue?: string;
   setFilter?: (value: string) => void;
 };
@@ -106,7 +106,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                         style={{ display: 'inline-flex', alignItems: 'center', cursor: isColumnSortable ? 'pointer' : 'default', userSelect: 'none' }}
                         onClick={isColumnSortable ? (e => { e.stopPropagation(); (sortProps.onClick as any)?.(e); }) : undefined}
                       >
-                        {column.title || column.id}
+                        {column.render('Header')}
                         <span className="sort-icon" style={{ marginLeft: 4 }}>
                           {column.isSorted
                             ? column.isSortedDesc
@@ -121,7 +121,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                             className="filter-input"
                             value={column.filterValue || ""}
                             onChange={(e) => column.setFilter?.(e.target.value)}
-                            placeholder={`Filter ${column.title || column.id}...`}
+                            placeholder={`Filter ${typeof column.title === 'string' ? column.title : column.id}...`}
                             style={{
                               color: theme.table?.filter?.textColor,
                               borderColor: theme.table?.filter?.borderColor,

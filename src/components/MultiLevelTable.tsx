@@ -33,6 +33,7 @@ import "../styles/MultiLevelTable.css";
  * @property {Column[]} columns - Array of column configurations
  * @property {number} [pageSize=10] - Number of items per page
  * @property {ThemeProps} theme - Theme properties
+ * @property {(row: DataItem) => void} [onRowClick] - Optional callback function when a parent row is clicked
  */
 export interface MultiLevelTableProps {
   data: DataItem[];
@@ -46,6 +47,7 @@ export interface MultiLevelTableProps {
   expandIcon?: React.ReactNode;
   selectable?: boolean;
   onSelectionChange?: (selectedRows: Set<string | number>) => void;
+  onRowClick?: (row: DataItem) => void;
 }
 
 /**
@@ -66,6 +68,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   expandIcon,
   selectable = false,
   onSelectionChange,
+  onRowClick,
 }) => {
   const mergedTheme = mergeThemeProps(defaultTheme, theme);
   const [filterInput, setFilterInput] = useState("");
@@ -113,7 +116,8 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
    */
   const tableColumns = useMemo<TableColumn<DataItem>[]>(() => {
     return columns.map((col) => ({
-      Header: col.title,
+      id: col.key,
+      Header: () => col.title,
       accessor: (row: DataItem) => row[col.key as keyof DataItem],
       disableSortBy: sortable ? col.sortable === false : true,
       sortType: col.customSortFn ? SortType.Custom : SortType.Basic,
@@ -139,7 +143,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
               setFilterInput(e.target.value);
               column.setFilter(e.target.value);
             }}
-            placeholder={`Filter ${col.title}...`}
+            placeholder={`Filter ${typeof col.title === 'string' ? col.title : col.key}...`}
           />
         )
         : undefined,
@@ -300,6 +304,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
                 selectable={true}
                 isRowSelected={selectionState.selectedRows.has(row.original.id)}
                 onRowSelect={handleRowSelect}
+                onRowClick={onRowClick}
               />
               {renderNestedRows(parentId)}
             </React.Fragment>
