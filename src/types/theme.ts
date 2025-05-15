@@ -1,8 +1,3 @@
-export type Theme = {
-  dark: ThemeProps;
-  light: ThemeProps;
-};
-
 export interface ThemeProps {
   colors?: {
     background?: string;

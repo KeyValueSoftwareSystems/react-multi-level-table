@@ -1,5 +1,5 @@
 {
-  "name": "@keyvaluesystems/material-table-component",
+  "name": "@keyvaluesystems/multilevel-table",
   "private": false,
   "version": "0.1.0",
   "description": "A flexible and customizable table component built with React and Material-UI",
@@ -19,9 +19,9 @@
     "url": "git+https://github.com/KeyValueSoftwareSystems/react-multi-level-table.git"
   },
   "bugs": {
-    "url": "https://github.com/KeyValueSoftwareSystems/siren-react-inbox/issues"
+    "url": "https://github.com/KeyValueSoftwareSystems/react-multi-level-table/issues"
   },
-  "homepage": "https://github.com/KeyValueSoftwareSystems/siren-react-inbox#readme",
+  "homepage": "https://github.com/KeyValueSoftwareSystems/react-multi-level-table#readme",
   "keywords": [
     "react",
     "table",
