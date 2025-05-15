@@ -48,11 +48,11 @@ export default defineConfig([
       postcss({
         extensions: ['.css'],
         minimize: true,
-        modules: true,
+        modules: false,
         inject: {
           insertAt: 'top'
         },
-        extract: false
+        extract: 'styles.css'
       }),
       typescript({ 
         tsconfig: './tsconfig.json',
