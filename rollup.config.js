@@ -48,11 +48,17 @@ export default defineConfig([
       postcss({
         extensions: ['.css'],
         minimize: true,
-        modules: true,
+        modules: {
+          generateScopedName: '[name]__[local]___[hash:base64:5]',
+          localsConvention: 'camelCase'
+        },
         inject: {
           insertAt: 'top'
         },
-        extract: false
+        extract: false,
+        use: ['sass'],
+        autoModules: true,
+        namedExports: true
       }),
       typescript({ 
         tsconfig: './tsconfig.json',
