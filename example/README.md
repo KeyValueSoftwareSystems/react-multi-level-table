@@ -1,6 +1,6 @@
 # Multi-Level Table Example
 
-This is an example project demonstrating the usage of `@keyvaluesystems/material-table-component`.
+This is an example project demonstrating the usage of `@keyvaluesystems/multilevel-table`.
 
 ## Features Demonstrated
 

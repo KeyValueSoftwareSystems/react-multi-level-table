@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { MultiLevelTable } from '../../src'
 import type { DataItem } from '../../src/types/types'
 
-// import { MultiLevelTable } from '@keyvaluesystems/material-table-component'
-// import type { DataItem } from '@keyvaluesystems/material-table-component'
+// import { MultiLevelTable } from '@keyvaluesystems/multilevel-table'
+// import type { DataItem } from '@keyvaluesystems/multilevel-table'
 
 import './App.css'
 

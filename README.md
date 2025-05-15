@@ -24,20 +24,20 @@
 
 ## Overview
 
-The `@keyvaluesystems/material-table-component` is a flexible and customizable multi-level table component for React applications. It provides comprehensive support for displaying hierarchical data with features like sorting, filtering, and pagination. This documentation provides detailed information on how to install, configure, and use the component effectively.
+The `@keyvaluesystems/multilevel-table` is a flexible and customizable multi-level table component for React applications. It provides comprehensive support for displaying hierarchical data with features like sorting, filtering, and pagination. This documentation provides detailed information on how to install, configure, and use the component effectively.
 
 ## 1. Installation
 
 You can install the component from npm:
 
 ```bash
-npm install @keyvaluesystems/material-table-component
+npm install @keyvaluesystems/multilevel-table
 ```
 
 or from yarn:
 
 ```bash
-yarn add @keyvaluesystems/material-table-component
+yarn add @keyvaluesystems/multilevel-table
 ```
 
 #### Prerequisites
@@ -52,7 +52,7 @@ yarn add @keyvaluesystems/material-table-component
 Here's a basic example of how to use the MultiLevelTable component:
 
 ```tsx
-import { MultiLevelTable } from '@keyvaluesystems/material-table-component';
+import { MultiLevelTable } from '@keyvaluesystems/multilevel-table';
 
 const data = [
   {
@@ -432,7 +432,7 @@ Here's a complete example showing how to use the component with custom styling a
 
 ```tsx
 import React from 'react';
-import { MultiLevelTable } from '@keyvaluesystems/material-table-component';
+import { MultiLevelTable } from '@keyvaluesystems/multilevel-table';
 
 function App() {
   const data = [
