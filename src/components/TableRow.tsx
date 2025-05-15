@@ -23,6 +23,7 @@ import "../styles/TableRow.css";
  * @property {boolean} [selectable=false] - Whether the row is selectable
  * @property {boolean} [isRowSelected=false] - Whether the row is selected
  * @property {(rowId: number) => void} [onRowSelect] - Function to select a row
+ * @property {(row: DataItem) => void} [onRowClick] - Optional callback function when a parent row is clicked
  */
 interface TableRowProps {
   row: Row<DataItem> | DataItem;
@@ -36,6 +37,7 @@ interface TableRowProps {
   selectable?: boolean;
   isRowSelected?: boolean;
   onRowSelect?: (rowId: number) => void;
+  onRowClick?: (row: DataItem) => void;
 }
 
 /**
@@ -56,16 +58,18 @@ export const TableRow: React.FC<TableRowProps> = ({
   selectable = false,
   isRowSelected = false,
   onRowSelect,
+  onRowClick,
 }) => {
   const getRowClassName = useMemo(() => {
-    const classes = ["table-row"];
+    const classes = [];
 
     if (isExpanded) classes.push("table-row-expanded");
     if (level === 0) classes.push("table-row-main");
+    if(onRowClick) classes.push("table-row-clickable");
     else classes.push("table-row-nested");
 
     return classes.join(" ");
-  }, [isExpanded, level]);
+  }, [isExpanded, level, onRowClick]);
 
   const getRowStyle = useMemo(() => {
     const rowShades = theme.table?.row?.levelColors || [];
@@ -80,12 +84,24 @@ export const TableRow: React.FC<TableRowProps> = ({
     onToggle();
   };
 
+  const handleRowClick = () => {
+    if (onRowClick) {
+      const dataItem = "original" in row ? row.original : row as DataItem;
+      
+      onRowClick(dataItem);
+    }
+  };
+
   // For nested rows that don't have getRowProps
   if (!("getRowProps" in row)) {
     const dataItem = row as DataItem;
 
     return (
-      <tr className={getRowClassName} style={getRowStyle}>
+      <tr 
+        className={getRowClassName} 
+        style={getRowStyle}
+        onClick={handleRowClick}
+      >
         {columns.map((column: Column, index: number) => {
           const value = dataItem[column.key as keyof DataItem];
           const displayValue =
@@ -139,6 +155,7 @@ export const TableRow: React.FC<TableRowProps> = ({
       {...rowProps}
       className={getRowClassName}
       style={getRowStyle}
+      onClick={handleRowClick}
     >
       {tableRow.cells.map((cell: Cell<DataItem>, index: number) => (
         <TableCell

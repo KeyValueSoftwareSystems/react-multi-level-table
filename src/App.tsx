@@ -455,6 +455,7 @@ const App: React.FC = () => {
             sortable={true}
             selectable={true}
             onSelectionChange={handleSelectionChange}
+            onRowClick={(data) => console.log(data)}
           />
         </div>
         {selectedRows.size > 0 && (

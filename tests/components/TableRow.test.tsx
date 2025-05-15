@@ -142,8 +142,45 @@ describe('TableRow', () => {
       );
 
       const row = screen.getByText('Test Item').closest('tr');
-      expect(row).toHaveClass('table-row');
       expect(row).toHaveClass('table-row-main');
+    });
+
+    it('applies clickable class when onRowClick is provided', () => {
+      render(
+        <TableRow
+          row={mockRow}
+          columns={mockColumns}
+          hasChildren={true}
+          isExpanded={false}
+          onToggle={() => {}}
+          level={0}
+          theme={mockTheme}
+          onRowClick={() => {}}
+        />
+      );
+
+      const row = screen.getByText('Test Item').closest('tr');
+      expect(row).toHaveClass('table-row-clickable');
+    });
+
+    it('handles row click correctly', () => {
+      const onRowClick = vi.fn();
+      render(
+        <TableRow
+          row={mockRow}
+          columns={mockColumns}
+          hasChildren={true}
+          isExpanded={false}
+          onToggle={() => {}}
+          level={0}
+          theme={mockTheme}
+          onRowClick={onRowClick}
+        />
+      );
+
+      const row = screen.getByText('Test Item').closest('tr');
+      fireEvent.click(row!);
+      expect(onRowClick).toHaveBeenCalledWith(mockData);
     });
 
     it('handles row expansion correctly', () => {
@@ -198,8 +235,27 @@ describe('TableRow', () => {
       );
 
       const row = screen.getByText('Test Item').closest('tr');
-      expect(row).toHaveClass('table-row');
       expect(row).toHaveClass('table-row-nested');
+    });
+
+    it('does not trigger click handler for nested rows', () => {
+      const onRowClick = vi.fn();
+      render(
+        <TableRow
+          row={mockData}
+          columns={mockColumns}
+          hasChildren={false}
+          isExpanded={false}
+          onToggle={() => {}}
+          level={1}
+          theme={mockTheme}
+          onRowClick={onRowClick}
+        />
+      );
+
+      const row = screen.getByText('Test Item').closest('tr');
+      fireEvent.click(row!);
+      expect(onRowClick).not.toHaveBeenCalled();
     });
 
     it('applies correct background color based on nesting level', () => {
