@@ -1,11 +1,13 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { describe, it, expect, vi } from 'vitest';
-import { TableHeader } from '../../src/components/TableHeader';
 import type { HeaderGroup } from 'react-table';
-import type { DataItem } from '../../src/types/types';
+import { describe, expect, it, vi } from 'vitest';
+
+import { TableHeader } from '../../src/components/TableHeader';
 import type { ThemeProps } from '../../src/types/theme';
+import type { DataItem } from '../../src/types/types';
 
 // Mock theme
 const mockTheme: ThemeProps = {
@@ -28,7 +30,7 @@ const mockTheme: ThemeProps = {
 // Mock header groups
 const createMockHeaderGroup = (
   id: string,
-  title: string,
+  title: string | React.ReactNode,
   isSorted = false,
   isSortedDesc = false,
   hasFilter = false
@@ -42,21 +44,22 @@ const createMockHeaderGroup = (
     getSortByToggleProps: () => ({
       onClick: vi.fn(),
     }),
-    render: (type: string) => (type === 'Header' ? title : null),
+    render: (type: string) => (type === 'Header' ? (title || id) : null),
     isSorted,
     isSortedDesc,
     Filter: hasFilter
       ? ({ column }: { column: any }) => (
-          <input
-            data-testid={`filter-${id}`}
-            value={column.filterValue || ''}
-            onChange={(e) => column.setFilter?.(e.target.value)}
-          />
-        )
+        <input
+          data-testid={`filter-${id}`}
+          value={column.filterValue || ''}
+          onChange={(e) => column.setFilter?.(e.target.value)}
+          placeholder={`Filter ${column.title || column.id}...`}
+        />
+      )
       : undefined,
     setFilter: hasFilter ? vi.fn() : undefined,
     disableSortBy: false,
-    title,
+    title: title || id,
     filterValue: '',
   };
 
@@ -119,9 +122,11 @@ describe('TableHeader', () => {
 
   it('applies theme styles correctly', () => {
     const headerGroups = [createMockHeaderGroup('name', 'Name')];
+
     renderTableHeader({ headerGroups });
 
     const headerCell = screen.getByRole('columnheader', { name: 'Name' });
+
     expect(headerCell).toHaveStyle({
       backgroundColor: mockTheme.table?.header?.background,
       color: mockTheme.table?.header?.textColor,
@@ -160,22 +165,27 @@ describe('TableHeader', () => {
 
   it('uses column id when title is not provided', () => {
     const headerGroups = [createMockHeaderGroup('name', '')];
+
     renderTableHeader({ headerGroups });
     expect(screen.getByText('name')).toBeInTheDocument();
   });
 
   it('renders filter input when column has Filter component', () => {
     const headerGroups = [createMockHeaderGroup('name', 'Name', false, false, true)];
+
     renderTableHeader({ headerGroups });
     const filterInput = screen.getByPlaceholderText('Filter Name...');
+
     expect(filterInput).toBeInTheDocument();
     expect(filterInput).toHaveClass('filter-input');
   });
 
   it('applies filter theme styles correctly', () => {
     const headerGroups = [createMockHeaderGroup('name', 'Name', false, false, true)];
+
     renderTableHeader({ headerGroups });
     const filterInput = screen.getByPlaceholderText('Filter Name...');
+
     expect(filterInput).toHaveStyle({
       color: mockTheme.table?.filter?.textColor,
       borderColor: mockTheme.table?.filter?.borderColor,
@@ -185,24 +195,43 @@ describe('TableHeader', () => {
 
   it('handles filter input change correctly', () => {
     const headerGroups = [createMockHeaderGroup('name', 'Name', false, false, true)];
+
     renderTableHeader({ headerGroups });
     const filterInput = screen.getByPlaceholderText('Filter Name...');
+
     fireEvent.change(filterInput, { target: { value: 'test' } });
     const mockColumn = (headerGroups[0].headers[0] as any).column;
+
     expect(mockColumn.setFilter).toHaveBeenCalledWith('test');
   });
 
   it('renders filter input with column id when title is not provided', () => {
     const headerGroups = [createMockHeaderGroup('name', '', false, false, true)];
+
     renderTableHeader({ headerGroups });
     const filterInput = screen.getByPlaceholderText('Filter name...');
+
     expect(filterInput).toBeInTheDocument();
   });
 
   it('does not render filter input when column has no Filter component', () => {
     const headerGroups = [createMockHeaderGroup('name', 'Name', false, false, false)];
+
     renderTableHeader({ headerGroups });
     const filterInput = screen.queryByPlaceholderText('Filter Name...');
+
     expect(filterInput).not.toBeInTheDocument();
+  });
+
+  it('renders a React node as column header', () => {
+    const customHeader = <span data-testid="custom-header">Custom</span>;
+    const headerGroups = [
+      createMockHeaderGroup('custom', customHeader as any),
+    ];
+
+    // Patch the render function to return the React node for 'Header'
+    (headerGroups[0].headers[0] as any).render = (type: string) => type === 'Header' ? customHeader : null;
+    renderTableHeader({ headerGroups });
+    expect(screen.getByTestId('custom-header')).toBeInTheDocument();
   });
 }); 

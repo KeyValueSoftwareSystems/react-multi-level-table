@@ -1,11 +1,13 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { TableRow } from '../../src/components/TableRow';
-import type { Column, DataItem } from '../../src/types/types';
-import type { ThemeProps } from '../../src/types/theme';
 import type { Row } from 'react-table';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { TableRow } from '../../src/components/TableRow';
+import type { ThemeProps } from '../../src/types/theme';
+import type { Column, DataItem } from '../../src/types/types';
 
 // Mock theme for testing
 const mockTheme: ThemeProps = {
@@ -142,6 +144,7 @@ describe('TableRow', () => {
       );
 
       const row = screen.getByText('Test Item').closest('tr');
+
       expect(row).toHaveClass('table-row-main');
     });
 
@@ -160,11 +163,13 @@ describe('TableRow', () => {
       );
 
       const row = screen.getByText('Test Item').closest('tr');
+
       expect(row).toHaveClass('table-row-clickable');
     });
 
     it('handles row click correctly', () => {
       const onRowClick = vi.fn();
+
       render(
         <TableRow
           row={mockRow}
@@ -179,12 +184,14 @@ describe('TableRow', () => {
       );
 
       const row = screen.getByText('Test Item').closest('tr');
+
       fireEvent.click(row!);
       expect(onRowClick).toHaveBeenCalledWith(mockData);
     });
 
     it('handles row expansion correctly', () => {
       const onToggle = vi.fn();
+
       render(
         <TableRow
           row={mockRow}
@@ -198,16 +205,88 @@ describe('TableRow', () => {
       );
 
       const expandButton = screen.getByRole('button');
+
       fireEvent.click(expandButton);
       expect(onToggle).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('Nested Table Row', () => {
+    let mockNestedRow: Row<DataItem>;
+
+    beforeEach(() => {
+      mockNestedRow = {
+        getRowProps: () => ({
+          key: 'nested-row-1',
+          className: 'test-nested-row'
+        }),
+        cells: [
+          { 
+            column: { 
+              id: 'name',
+              isVisible: true,
+              render: () => null,
+              totalLeft: 0,
+              totalWidth: 100,
+              width: 100,
+              minWidth: 0,
+              maxWidth: 100,
+              depth: 0,
+              parent: undefined,
+              placeholderOf: undefined,
+              Header: 'Name',
+              getHeaderProps: () => ({ key: 'header-name' }),
+              getFooterProps: () => ({ key: 'footer-name' }),
+              toggleHidden: () => {},
+              getToggleHiddenProps: () => ({})
+            }, 
+            value: 'Test Item',
+            row: {} as Row<DataItem>,
+            getCellProps: () => ({ key: 'cell-name' }),
+            render: () => 'Test Item'
+          },
+          { 
+            column: { 
+              id: 'value',
+              isVisible: true,
+              render: () => null,
+              totalLeft: 100,
+              totalWidth: 100,
+              width: 100,
+              minWidth: 0,
+              maxWidth: 100,
+              depth: 0,
+              parent: undefined,
+              placeholderOf: undefined,
+              Header: 'Value',
+              getHeaderProps: () => ({ key: 'header-value' }),
+              getFooterProps: () => ({ key: 'footer-value' }),
+              toggleHidden: () => {},
+              getToggleHiddenProps: () => ({})
+            }, 
+            value: 100,
+            row: {} as Row<DataItem>,
+            getCellProps: () => ({ key: 'cell-value' }),
+            render: () => '100'
+          }
+        ],
+        allCells: [],
+        values: {},
+        index: 0,
+        original: mockData,
+        id: 'nested-row-1',
+        subRows: []
+      };
+
+      // Update the row reference in cells after mockNestedRow is created
+      mockNestedRow.cells[0].row = mockNestedRow;
+      mockNestedRow.cells[1].row = mockNestedRow;
+    });
+
     it('renders nested row correctly', () => {
       render(
         <TableRow
-          row={mockData}
+          row={mockNestedRow}
           columns={mockColumns}
           hasChildren={false}
           isExpanded={false}
@@ -224,7 +303,7 @@ describe('TableRow', () => {
     it('applies correct classes for nested row', () => {
       render(
         <TableRow
-          row={mockData}
+          row={mockNestedRow}
           columns={mockColumns}
           hasChildren={false}
           isExpanded={false}
@@ -235,14 +314,16 @@ describe('TableRow', () => {
       );
 
       const row = screen.getByText('Test Item').closest('tr');
+
       expect(row).toHaveClass('table-row-nested');
     });
 
     it('does not trigger click handler for nested rows', () => {
       const onRowClick = vi.fn();
+
       render(
         <TableRow
-          row={mockData}
+          row={mockNestedRow}
           columns={mockColumns}
           hasChildren={false}
           isExpanded={false}
@@ -254,6 +335,7 @@ describe('TableRow', () => {
       );
 
       const row = screen.getByText('Test Item').closest('tr');
+
       fireEvent.click(row!);
       expect(onRowClick).not.toHaveBeenCalled();
     });
@@ -261,7 +343,7 @@ describe('TableRow', () => {
     it('applies correct background color based on nesting level', () => {
       render(
         <TableRow
-          row={mockData}
+          row={mockNestedRow}
           columns={mockColumns}
           hasChildren={false}
           isExpanded={false}
@@ -272,6 +354,7 @@ describe('TableRow', () => {
       );
 
       const row = screen.getByText('Test Item').closest('tr');
+
       expect(row).toHaveStyle({ backgroundColor: '#f5f5f5' });
     });
   });
@@ -298,7 +381,7 @@ describe('TableRow', () => {
   });
 
   describe('Column Rendering', () => {
-    const customRenderColumn = (value: string | number, item: DataItem) => (
+    const customRenderColumn = (value: string | number) => (
       <span data-testid="custom-render">{`Custom ${value}`}</span>
     );
 

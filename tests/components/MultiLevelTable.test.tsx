@@ -1,6 +1,8 @@
 import React from 'react';
+
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+
 import { MultiLevelTable } from '../../src/components/MultiLevelTable';
 import type { Column, DataItem } from '../../src/types/types';
 // Mock data for testing
@@ -71,6 +73,7 @@ const mockColumns: Column[] = [
     ),
   },
 ];
+
 describe('MultiLevelTable', () => {
   it('renders table with basic data', () => {
     render(<MultiLevelTable data={mockData} columns={mockColumns} />);
@@ -96,6 +99,7 @@ describe('MultiLevelTable', () => {
     
     // Click expand button for first parent
     const expandButton = screen.getAllByRole('button')[0];
+
     fireEvent.click(expandButton);
     
     // Children should now be visible
@@ -113,6 +117,7 @@ describe('MultiLevelTable', () => {
     
     // Click name header to sort
     const nameHeader = screen.getByText('Name');
+
     fireEvent.click(nameHeader);
     
     // Get all rows and check order
@@ -129,6 +134,7 @@ describe('MultiLevelTable', () => {
     
     // Check if order is reversed
     const updatedRows = screen.getAllByRole('row').slice(1);
+
     expect(within(updatedRows[0]).getByText('Parent 2')).toBeInTheDocument();
     expect(within(updatedRows[1]).getByText('Parent 1')).toBeInTheDocument();
   });
@@ -145,6 +151,7 @@ describe('MultiLevelTable', () => {
     // Check if pagination controls are present
     const nextButton = screen.getByRole('button', { name: '>' });
     const prevButton = screen.getByRole('button', { name: '<' });
+
     expect(nextButton).toBeInTheDocument();
     expect(prevButton).toBeInTheDocument();
     
@@ -190,6 +197,7 @@ describe('MultiLevelTable', () => {
     
     const table = screen.getByRole('table');
     const tableWrapper = table.closest('.table-wrapper');
+
     expect(tableWrapper?.parentElement).toHaveStyle({ backgroundColor: '#f0f0f0' });
     expect(table).toHaveStyle({ borderColor: '#ff0000' });
   });
@@ -207,6 +215,7 @@ describe('MultiLevelTable', () => {
     
     // Check if custom render is applied
     const customElements = screen.getAllByTestId('custom-name');
+
     expect(customElements).toHaveLength(2); // Two parent rows
     expect(customElements[0]).toHaveTextContent('Parent 1');
   });
@@ -214,7 +223,7 @@ describe('MultiLevelTable', () => {
     render(<MultiLevelTable data={mockData} columns={mockColumns} />);
     
     // Find filter input
-    const filterInput = screen.getByPlaceholderText('Filter Name...');
+    const filterInput = screen.getByPlaceholderText('Filter name...');
     
     // Type in filter
     fireEvent.change(filterInput, { target: { value: 'Parent 1' } });
@@ -241,10 +250,12 @@ describe('MultiLevelTable', () => {
     render(<MultiLevelTable data={mockData} columns={mockColumns} />);
     
     const statusCells = screen.getAllByTestId('status-cell');
+
     expect(statusCells).toHaveLength(2); // Two parent rows
     
     // Check if status cells have correct styles
     const activeCell = statusCells.find(cell => cell.textContent === 'Active');
+
     expect(activeCell).toHaveStyle({
       backgroundColor: '#e6ffe6',
       color: '#006600',

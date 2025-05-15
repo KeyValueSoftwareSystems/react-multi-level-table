@@ -116,7 +116,8 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
    */
   const tableColumns = useMemo<TableColumn<DataItem>[]>(() => {
     return columns.map((col) => ({
-      Header: col.title,
+      id: col.key,
+      Header: () => col.title,
       accessor: (row: DataItem) => row[col.key as keyof DataItem],
       disableSortBy: sortable ? col.sortable === false : true,
       sortType: col.customSortFn ? SortType.Custom : SortType.Basic,
@@ -142,7 +143,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
               setFilterInput(e.target.value);
               column.setFilter(e.target.value);
             }}
-            placeholder={`Filter ${col.title}...`}
+            placeholder={`Filter ${typeof col.title === 'string' ? col.title : col.key}...`}
           />
         )
         : undefined,

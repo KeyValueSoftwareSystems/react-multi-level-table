@@ -85,7 +85,7 @@ export const TableRow: React.FC<TableRowProps> = ({
   };
 
   const handleRowClick = () => {
-    if (onRowClick) {
+    if (onRowClick && level === 0) {
       const dataItem = "original" in row ? row.original : row as DataItem;
       
       onRowClick(dataItem);
