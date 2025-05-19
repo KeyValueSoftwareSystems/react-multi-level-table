@@ -22,6 +22,8 @@ export interface DataItem {
 export interface TableStateWithPagination<T extends object> extends TableState<T> {
   pageIndex: number;
   pageSize: number;
+  sortBy: Array<{ id: string; desc: boolean }>;
+  filters: Array<{ id: string; value: string }>;
 }
 
 export interface TableInstanceWithHooks<T extends object> extends TableInstance<T> {

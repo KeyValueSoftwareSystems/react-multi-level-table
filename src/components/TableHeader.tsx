@@ -104,7 +104,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                       )}
                       <span
                         style={{ display: 'inline-flex', alignItems: 'center', cursor: isColumnSortable ? 'pointer' : 'default', userSelect: 'none' }}
-                        onClick={isColumnSortable ? (e => { e.stopPropagation(); (sortProps.onClick as any)?.(e); }) : undefined}
+                        onClick={isColumnSortable ? (e: React.MouseEvent) => { e.stopPropagation(); (sortProps.onClick as (e: React.MouseEvent) => void)?.(e); } : undefined}
                       >
                         {column.render('Header')}
                         <span className="sort-icon" style={{ marginLeft: 4 }}>

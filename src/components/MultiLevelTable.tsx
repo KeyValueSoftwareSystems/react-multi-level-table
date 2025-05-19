@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import {
   type Row,
@@ -136,7 +136,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
         );
       },
       Filter: col.filterable
-        ? ({ column }: { column: { setFilter: (value: string) => void } }) => (
+        ? ({ column }: { column: { setFilter: (value: string) => void; filterValue?: string } }) => (
           <input
             value={filterInput}
             onChange={(e) => {
@@ -164,7 +164,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     nextPage,
     previousPage,
     setPageSize,
-    state: { pageIndex, pageSize: currentPageSize },
+    state: { pageIndex, pageSize: currentPageSize, sortBy, filters },
   } = useTable(
     {
       columns: tableColumns,
@@ -207,6 +207,12 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   }, [data]);
 
   const [expandedRows, setExpandedRows] = useState<Set<string | number>>(new Set());
+
+  // Collapse expanded rows when filtering or sorting occurs
+  useEffect(() => {
+    if (expandedRows.size > 0) setExpandedRows(new Set());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, filters]);
 
   const toggleRow = (rowId: string | number) => {
     setExpandedRows((prev) => {
