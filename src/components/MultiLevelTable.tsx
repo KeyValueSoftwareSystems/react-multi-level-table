@@ -71,7 +71,6 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   onRowClick,
 }) => {
   const mergedTheme = mergeThemeProps(defaultTheme, theme);
-  const [filterInput, setFilterInput] = useState("");
   const [selectionState, setSelectionState] = useState<SelectionState>({
     selectedRows: new Set(),
     isAllSelected: false,
@@ -110,10 +109,6 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     onSelectionChange?.(newSelectedRows);
   };
 
-  /**
-   * Prepares columns configuration for react-table
-   * @returns {Array} Array of column configurations
-   */
   const tableColumns = useMemo<TableColumn<DataItem>[]>(() => {
     return columns.map((col) => ({
       id: col.key,
@@ -130,25 +125,13 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
         value: string | number;
       }) => {
         const item = row.original;
-        
+
         return (
           <div>{col.render ? col.render(value, item) : value?.toString()}</div>
         );
       },
-      Filter: col.filterable
-        ? ({ column }: { column: { setFilter: (value: string) => void; filterValue?: string } }) => (
-          <input
-            value={filterInput}
-            onChange={(e) => {
-              setFilterInput(e.target.value);
-              column.setFilter(e.target.value);
-            }}
-            placeholder={`Filter ${typeof col.title === 'string' ? col.title : col.key}...`}
-          />
-        )
-        : undefined,
     }));
-  }, [columns, filterInput, sortable]);
+  }, [columns, sortable]);
 
   const {
     getTableProps,

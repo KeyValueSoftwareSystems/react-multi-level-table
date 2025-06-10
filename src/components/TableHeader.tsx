@@ -43,7 +43,6 @@ type ColumnWithSorting = {
   render: (type: string) => React.ReactNode;
   isSorted?: boolean;
   isSortedDesc?: boolean;
-  Filter?: React.ComponentType<{ column: ColumnWithSorting }>;
   id: string;
   disableSortBy?: boolean;
   title?: string | React.ReactNode;
@@ -82,8 +81,10 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                   ? column.getHeaderProps(column.getSortByToggleProps())
                   : column.getHeaderProps();
 
-                const sortProps = isColumnSortable ? column.getSortByToggleProps() : {};
-                
+                const sortProps = isColumnSortable
+                  ? column.getSortByToggleProps()
+                  : {};
+
                 return (
                   <th
                     key={columnKey}
@@ -99,14 +100,30 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                           type="checkbox"
                           checked={isAllSelected}
                           onChange={onSelectAll}
-                          style={{ marginRight: 8, cursor: 'pointer' }}
+                          style={{ marginRight: 8, cursor: "pointer" }}
                         />
                       )}
                       <span
-                        style={{ display: 'inline-flex', alignItems: 'center', cursor: isColumnSortable ? 'pointer' : 'default', userSelect: 'none' }}
-                        onClick={isColumnSortable ? (e: React.MouseEvent) => { e.stopPropagation(); (sortProps.onClick as (e: React.MouseEvent) => void)?.(e); } : undefined}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          cursor: isColumnSortable ? "pointer" : "default",
+                          userSelect: "none",
+                        }}
+                        onClick={
+                          isColumnSortable
+                            ? (e: React.MouseEvent) => {
+                              e.stopPropagation();
+                              (
+                                  sortProps.onClick as (
+                                    e: React.MouseEvent
+                                  ) => void
+                              )?.(e);
+                            }
+                            : undefined
+                        }
                       >
-                        {column.render('Header')}
+                        {column.render("Header")}
                         <span className="sort-icon" style={{ marginLeft: 4 }}>
                           {column.isSorted
                             ? column.isSortedDesc
@@ -115,21 +132,6 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                             : " "}
                         </span>
                       </span>
-                      {column.Filter && (
-                        <div className="filter-container">
-                          <input
-                            className="filter-input"
-                            value={column.filterValue || ""}
-                            onChange={(e) => column.setFilter?.(e.target.value)}
-                            placeholder={`Filter ${typeof column.title === 'string' ? column.title : column.id}...`}
-                            style={{
-                              color: theme.table?.filter?.textColor,
-                              borderColor: theme.table?.filter?.borderColor,
-                              backgroundColor: theme.table?.filter?.background,
-                            }}
-                          />
-                        </div>
-                      )}
                     </div>
                   </th>
                 );
