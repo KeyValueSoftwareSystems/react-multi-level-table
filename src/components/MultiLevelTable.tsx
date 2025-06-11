@@ -306,6 +306,66 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   return (
     <div style={{ backgroundColor: mergedTheme.colors?.background }}>
       <div className="table-wrapper">
+        <div 
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "1rem",
+            gap: "1rem",
+            borderBottom: `1px solid ${mergedTheme.table?.cell?.borderColor || "#e2e8f0"}`,
+          }}
+        >
+          <div style={{ flex: 1, maxWidth: "400px" }}>
+            <input
+              type="text"
+              placeholder="Search..."
+              style={{
+                width: "100%",
+                padding: "0.5rem",
+                borderRadius: "4px",
+                border: `1px solid ${mergedTheme.table?.cell?.borderColor || "#e2e8f0"}`,
+                backgroundColor: mergedTheme.colors?.background || "#ffffff",
+                color: mergedTheme.colors?.textColor || "#000000",
+                fontSize: "0.875rem",
+              }}
+            />
+          </div>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <button
+              style={{
+                padding: "0.5rem 1rem",
+                borderRadius: "4px",
+                border: `1px solid ${mergedTheme.table?.cell?.borderColor || "#e2e8f0"}`,
+                backgroundColor: mergedTheme.colors?.background || "#ffffff",
+                color: mergedTheme.colors?.textColor || "#000000",
+                cursor: "pointer",
+                fontSize: "0.875rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+              }}
+            >
+              <span>Export</span>
+            </button>
+            <button
+              style={{
+                padding: "0.5rem 1rem",
+                borderRadius: "4px",
+                border: `1px solid ${mergedTheme.table?.cell?.borderColor || "#e2e8f0"}`,
+                backgroundColor: mergedTheme.colors?.background || "#ffffff",
+                color: mergedTheme.colors?.textColor || "#000000",
+                cursor: "pointer",
+                fontSize: "0.875rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+              }}
+            >
+              <span>Filter</span>
+            </button>
+          </div>
+        </div>
         <table
           {...getTableProps()}
           className="table-container"
