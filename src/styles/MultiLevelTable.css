@@ -72,4 +72,17 @@
   transform: rotate(45deg);
   display: block;
   box-sizing: border-box;
+}
+
+.table-container td {
+  color: #000;
+  font-size: var(--Typeface-Size-lg, 16px);
+  font-style: normal;
+  font-weight: 400;
+  line-height: var(--Typeface-line-height-line-height-500, 20px);
+  letter-spacing: var(--Typeface-letter-spacing--normal, -0.54px);
+  background: #fff;
+  border-bottom: 1px solid #f1f1f3;
+  padding: 18px 16px;
+  vertical-align: middle;
 } 
