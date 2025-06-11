@@ -100,6 +100,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                           type="checkbox"
                           checked={isAllSelected}
                           onChange={onSelectAll}
+                          className="row-checkbox"
                           style={{ marginRight: 8, cursor: "pointer" }}
                         />
                       )}

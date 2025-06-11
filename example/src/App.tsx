@@ -384,7 +384,7 @@ const theme = {
 };
 
 function App() {
-  const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set());
+  const [, setSelectedRows] = useState<Set<string | number>>(new Set());
 
   const handleSelectionChange = (selectedRows: Set<string | number>) => {
     setSelectedRows(selectedRows);
@@ -404,11 +404,6 @@ function App() {
           sortable={true}
         />
       </div>
-      {selectedRows.size > 0 && (
-        <div className="selection-info">
-          Selected Rows: {Array.from(selectedRows).join(', ')}
-        </div>
-      )}
     </div>
   )
 }
