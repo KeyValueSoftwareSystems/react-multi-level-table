@@ -126,11 +126,11 @@ export const TableRow: React.FC<TableRowProps> = ({
                   />
                 )}
                 {hasChildren && index === 0 ? (
-                  <button onClick={handleExpandClick} className="expand-button">
+                  <div onClick={handleExpandClick} className="expand-button">
                     {expandIcon || (
                       <ExpandIcon isExpanded={isExpanded} theme={theme} />
                     )}
-                  </button>
+                  </div>
                 ) : (
                   <div className="expand-button" />
                 )}

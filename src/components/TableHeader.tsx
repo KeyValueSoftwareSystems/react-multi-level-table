@@ -88,6 +88,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                 return (
                   <th
                     key={columnKey}
+                    className="fixed-width-col"
                     style={{
                       backgroundColor: theme.table?.header?.background,
                       color: theme.table?.header?.textColor,
@@ -104,6 +105,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                           style={{ marginRight: 8, cursor: "pointer" }}
                         />
                       )}
+                      <span style={{width: "12px"}}/>
                       <span
                         style={{
                           display: "inline-flex",

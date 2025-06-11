@@ -19,7 +19,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
-  padding: 14px;
+  padding: 14px 12px;
 }
 
 .table-header-cell span {
@@ -71,4 +71,56 @@
   border-radius: 4px;
   transform: rotate(45deg);
   display: block;
+}
+
+.fixed-width-col {
+  width: 160px;
+  min-width: 160px;
+  max-width: 160px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fixed-width-col,
+.table-header th,
+.table-header-cell,
+.table-cell {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+th, td {
+  padding: 12px !important;
+  min-height: 44px;
+  height: 44px;
+  line-height: 20px;
+  font-size: 16px;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+tr {
+  height: 44px;
+  min-height: 44px;
+}
+
+.table-header-cell,
+.table-cell-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 100%;
+  min-height: 44px;
+  align-items: center;
+}
+
+.row-checkbox,
+.expand-icon {
+  margin: 0 !important;
+  vertical-align: middle;
+  height: 20px;
+  width: 20px;
+  min-height: 20px;
+  min-width: 20px;
 } 

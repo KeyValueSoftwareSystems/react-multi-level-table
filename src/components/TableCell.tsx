@@ -75,7 +75,7 @@ export const TableCell: React.FC<TableCellProps> = ({
     <td
       key={key}
       {...cellProps}
-      className="table-cell"
+      className={"table-cell fixed-width-col"}
       style={{
         paddingLeft: `${paddingLeft}px`,
         color: theme.table?.cell?.textColor,
@@ -96,12 +96,12 @@ export const TableCell: React.FC<TableCellProps> = ({
         ) : (
           <>
             {hasChildren ? (
-              <button
+              <div
                 onClick={handleExpandClick}
                 className="expand-button"
               >
                 {expandIcon || <ExpandIcon isExpanded={isExpanded} theme={theme} />}
-              </button>
+              </div>
             ) : <div className="expand-button" />}
             {cell.render('Cell')}
           </>
