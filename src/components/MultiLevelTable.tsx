@@ -313,7 +313,6 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
             alignItems: "center",
             padding: "1rem",
             gap: "1rem",
-            borderBottom: `1px solid ${mergedTheme.table?.cell?.borderColor || "#e2e8f0"}`,
           }}
         >
           <div style={{ flex: 1, maxWidth: "400px" }}>
@@ -368,7 +367,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
         </div>
         <table
           {...getTableProps()}
-          className="table-container"
+          className="main-table-container"
           style={{ borderColor: mergedTheme.table?.cell?.borderColor }}
         >
           <TableHeader
