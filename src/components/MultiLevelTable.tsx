@@ -344,7 +344,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
         {/* Style for search input placeholder */}
         <style>{`
           .mlt-search-input::placeholder {
-            color: #8C8C8C !important;
+            color: #8C8C8C  ;
             opacity: 1;
           }
         `}</style>

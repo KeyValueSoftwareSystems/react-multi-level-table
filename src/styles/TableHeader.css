@@ -92,7 +92,7 @@
 }
 
 th, td {
-  padding: 12px !important;
+  padding: 12px  ;
   min-height: 44px;
   height: 44px;
   line-height: 20px;
@@ -108,8 +108,8 @@ tr {
 
 .table-header-cell,
 .table-cell-content {
-  padding: 0 !important;
-  margin: 0 !important;
+  padding: 0  ;
+  margin: 0  ;
   height: 100%;
   min-height: 44px;
   align-items: center;
@@ -117,7 +117,7 @@ tr {
 
 .row-checkbox,
 .expand-icon {
-  margin: 0 !important;
+  margin: 0  ;
   vertical-align: middle;
   height: 20px;
   width: 20px;
