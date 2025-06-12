@@ -390,6 +390,13 @@ function App() {
     setSelectedRows(selectedRows);
   };
 
+  // Define filter options for the status column
+  const statusFilterOptions = [
+    { label: 'Active', value: 'Active' },
+    { label: 'Inactive', value: 'Inactive' },
+    { label: 'Pending', value: 'Pending' },
+  ];
+
   return (
     <div className="app">
       <h1>Multi-Level Table Example</h1>
@@ -403,6 +410,8 @@ function App() {
           onSelectionChange={handleSelectionChange}
           pageSize={5}
           sortable={true}
+          filterColumn="status"
+          filterOptions={statusFilterOptions}
         />
       </div>
     </div>

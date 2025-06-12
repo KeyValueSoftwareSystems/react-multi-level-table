@@ -2,10 +2,16 @@ import type React from 'react';
 
 import type { Row, TableInstance, TableState } from 'react-table';
 
+export interface FilterOption {
+  label: string;
+  value: string | number;
+}
+
 export interface Column {
   key: string;
   title: string | React.ReactNode;
   filterable?: boolean;
+  filterOptions?: FilterOption[];
   render?: (value: string | number, item: DataItem) => React.ReactNode;
   sortable?: boolean;
   customSortFn?: (rowA: DataItem, rowB: DataItem, columnId: string) => number;

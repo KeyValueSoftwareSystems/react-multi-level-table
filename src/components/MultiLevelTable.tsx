@@ -9,6 +9,7 @@ import {
   useTable,
 } from "react-table";
 
+import { FilterDropdown } from './FilterDropdown';
 import { Pagination } from "./Pagination";
 import type { PaginationProps } from "./Pagination";
 import { TableHeader } from "./TableHeader";
@@ -20,6 +21,7 @@ import type { ThemeProps } from "../types/theme";
 import type {
   Column,
   DataItem,
+  FilterOption,
   SelectionState,
   TableInstanceWithHooks,
   TableStateWithPagination,
@@ -36,6 +38,8 @@ import "../styles/MultiLevelTable.css";
  * @property {(row: DataItem) => void} [onRowClick] - Optional callback function when a parent row is clicked
  * @property {string[]} [searchableColumns] - Array of column keys to search in
  * @property {boolean} [showSearchBar=true] - Whether to show the search bar
+ * @property {string} [filterColumn] - The column to filter by
+ * @property {FilterOption[]} [filterOptions] - Array of filter options
  */
 export interface MultiLevelTableProps {
   data: DataItem[];
@@ -52,6 +56,8 @@ export interface MultiLevelTableProps {
   onRowClick?: (row: DataItem) => void;
   searchableColumns?: string[];
   showSearchBar?: boolean;
+  filterColumn?: string;
+  filterOptions?: FilterOption[];
 }
 
 /**
@@ -75,6 +81,8 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   onRowClick,
   searchableColumns,
   showSearchBar = true,
+  filterColumn,
+  filterOptions = [],
 }) => {
   const mergedTheme = mergeThemeProps(defaultTheme, theme);
   const [selectionState, setSelectionState] = useState<SelectionState>({
@@ -85,30 +93,47 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   // Search state
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+
+  const [selectedFilterValues, setSelectedFilterValues] = useState<Set<string | number>>(new Set());
+
   // Use provided searchableColumns or all columns
   const searchCols = useMemo(() => {
-    if (searchableColumns && searchableColumns.length > 0) return searchableColumns;
+    if (searchableColumns && searchableColumns.length > 0) 
+      return searchableColumns;
 
     return columns.map(col => col.key);
   }, [searchableColumns, columns]);
 
-  // Filtered data based on search
+  // Filtered data based on search and filter
   const filteredData = useMemo(() => {
-    if (!searchTerm)
+    let filtered = data;
 
-      return data;
+    // Apply search filter
+    if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
 
-    const lowerSearch = searchTerm.toLowerCase();
+      filtered = filtered.filter(row =>
+        searchCols.some(colKey => {
+          const value = row[colKey as keyof DataItem];
 
-    return data.filter(row =>
-      searchCols.some(colKey => {
-        const value = row[colKey as keyof DataItem];
+          return value && value.toString().toLowerCase().includes(lowerSearch);
+        })
+      );
+    }
 
-        return value && value.toString().toLowerCase().includes(lowerSearch);
-      })
-    );
+    // Apply column filter
+    if (filterColumn && selectedFilterValues.size > 0) 
+      filtered = filtered.filter(row => {
+        const value = row[filterColumn as keyof DataItem];
 
-  }, [data, searchTerm, searchCols]);
+        return typeof value === 'string' || typeof value === 'number' 
+          ? selectedFilterValues.has(value)
+          : false;
+      });
+
+    return filtered;
+  }, [data, searchTerm, searchCols, filterColumn, selectedFilterValues]);
 
   // Get all parent row IDs (level 0)
   const parentRowIds = useMemo(() => data.map(item => item.id), [data]);
@@ -338,6 +363,56 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     );
   };
 
+  const handleFilterChange = (values: Set<string | number>) => {
+    setSelectedFilterValues(values);
+  };
+
+  const renderFilterButton = () => {
+    if (!filterColumn || !filterOptions.length) return null;
+
+    return (
+      <div style={{ position: 'relative' }}>
+        <button
+          style={{
+            padding: "0.5rem 1rem",
+            borderRadius: "4px",
+            border: `1px solid ${mergedTheme.table?.cell?.borderColor || "#e2e8f0"}`,
+            backgroundColor: mergedTheme.colors?.background || "#ffffff",
+            color: mergedTheme.colors?.textColor || "#000000",
+            cursor: "pointer",
+            fontSize: "0.875rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+          onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+        >
+          <span>Filter</span>
+          {selectedFilterValues.size > 0 && (
+            <span style={{
+              backgroundColor: '#5d5fef',
+              color: '#ffffff',
+              borderRadius: '12px',
+              padding: '2px 8px',
+              fontSize: '0.75rem',
+            }}>
+              {selectedFilterValues.size}
+            </span>
+          )}
+        </button>
+        {showFilterDropdown && (
+          <FilterDropdown
+            options={filterOptions}
+            selectedValues={selectedFilterValues}
+            onFilterChange={handleFilterChange}
+            onClose={() => setShowFilterDropdown(false)}
+            theme={mergedTheme}
+          />
+        )}
+      </div>
+    );
+  };
+
   return (
     <div style={{ backgroundColor: mergedTheme.colors?.background }}>
       <div className="table-wrapper">
@@ -412,22 +487,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
               >
                 <span>Export</span>
               </button>
-              <button
-                style={{
-                  padding: "0.5rem 1rem",
-                  borderRadius: "4px",
-                  border: `1px solid ${mergedTheme.table?.cell?.borderColor || "#e2e8f0"}`,
-                  backgroundColor: mergedTheme.colors?.background || "#ffffff",
-                  color: mergedTheme.colors?.textColor || "#000000",
-                  cursor: "pointer",
-                  fontSize: "0.875rem",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.5rem",
-                }}
-              >
-                <span>Filter</span>
-              </button>
+              {renderFilterButton()}
             </div>
           </div>
         )}
