@@ -17,3 +17,7 @@
 .table-cell-nested {
   padding-left: 0px;
 } 
+
+.nested-row-expand-button {
+  padding-left: 20px !important;
+}

@@ -34,6 +34,8 @@ import "../styles/MultiLevelTable.css";
  * @property {number} [pageSize=10] - Number of items per page
  * @property {ThemeProps} theme - Theme properties
  * @property {(row: DataItem) => void} [onRowClick] - Optional callback function when a parent row is clicked
+ * @property {string[]} [searchableColumns] - Array of column keys to search in
+ * @property {boolean} [showSearchBar=true] - Whether to show the search bar
  */
 export interface MultiLevelTableProps {
   data: DataItem[];
@@ -48,6 +50,8 @@ export interface MultiLevelTableProps {
   selectable?: boolean;
   onSelectionChange?: (selectedRows: Set<string | number>) => void;
   onRowClick?: (row: DataItem) => void;
+  searchableColumns?: string[];
+  showSearchBar?: boolean;
 }
 
 /**
@@ -69,12 +73,42 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   selectable = false,
   onSelectionChange,
   onRowClick,
+  searchableColumns,
+  showSearchBar = true,
 }) => {
   const mergedTheme = mergeThemeProps(defaultTheme, theme);
   const [selectionState, setSelectionState] = useState<SelectionState>({
     selectedRows: new Set(),
     isAllSelected: false,
   });
+
+  // Search state
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Use provided searchableColumns or all columns
+  const searchCols = useMemo(() => {
+    if (searchableColumns && searchableColumns.length > 0) return searchableColumns;
+
+    return columns.map(col => col.key);
+  }, [searchableColumns, columns]);
+
+  // Filtered data based on search
+  const filteredData = useMemo(() => {
+    if (!searchTerm)
+
+      return data;
+
+    const lowerSearch = searchTerm.toLowerCase();
+
+    return data.filter(row =>
+      searchCols.some(colKey => {
+        const value = row[colKey as keyof DataItem];
+
+        return value && value.toString().toLowerCase().includes(lowerSearch);
+      })
+    );
+
+  }, [data, searchTerm, searchCols]);
 
   // Get all parent row IDs (level 0)
   const parentRowIds = useMemo(() => data.map(item => item.id), [data]);
@@ -151,7 +185,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   } = useTable(
     {
       columns: tableColumns,
-      data,
+      data: filteredData,
       initialState: { pageSize } as TableStateWithPagination<DataItem>,
       // @ts-expect-error - sortTypes is not included in the type definition but is supported by react-table
       sortTypes: {
@@ -294,6 +328,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
                 isRowSelected={selectionState.selectedRows.has(row.original.id)}
                 onRowSelect={handleRowSelect}
                 onRowClick={onRowClick}
+                isParentRow={true}
               />
               {renderNestedRows(parentId)}
             </React.Fragment>
@@ -306,65 +341,96 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   return (
     <div style={{ backgroundColor: mergedTheme.colors?.background }}>
       <div className="table-wrapper">
-        <div 
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "1rem",
-            gap: "1rem",
-          }}
-        >
-          <div style={{ flex: 1, maxWidth: "400px" }}>
-            <input
-              type="text"
-              placeholder="Search..."
-              style={{
-                width: "100%",
-                padding: "0.5rem",
-                borderRadius: "4px",
-                border: `1px solid ${mergedTheme.table?.cell?.borderColor || "#e2e8f0"}`,
-                backgroundColor: mergedTheme.colors?.background || "#ffffff",
-                color: mergedTheme.colors?.textColor || "#000000",
-                fontSize: "0.875rem",
-              }}
-            />
+        {/* Style for search input placeholder */}
+        <style>{`
+          .mlt-search-input::placeholder {
+            color: #8C8C8C !important;
+            opacity: 1;
+          }
+        `}</style>
+        {showSearchBar && (
+          <div 
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "1rem",
+              gap: "1rem",
+            }}
+          >
+            <div style={{  minWidth: 0, maxWidth: "400px", position: "relative" }}>
+              <span
+                style={{
+                  position: "absolute",
+                  left: 12,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  pointerEvents: "none",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="#595959" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+              <input
+                className="mlt-search-input"
+                type="text"
+                placeholder="Search"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "0.5rem 0.5rem 0.5rem 2.5rem",
+                  borderRadius: "8px",
+                  border: `1px solid ${mergedTheme.table?.cell?.borderColor || "#D9D9D9"}`,
+                  backgroundColor: mergedTheme.colors?.background || "#ffffff",
+                  color: mergedTheme.colors?.textColor || "#000000",
+                  fontSize: "0.875rem",
+                  outline: "none",
+                  transition: "border 0.2s",
+                }}
+                onFocus={e => e.currentTarget.style.border = '1.5px solid #D9D9D9'}
+                onBlur={e => e.currentTarget.style.border = `1px solid ${mergedTheme.table?.cell?.borderColor || "#D9D9D9"}`}
+              />
+            </div>
+            <div style={{ display: "flex", gap: "0.5rem", flexShrink: 0 }}>
+              <button
+                style={{
+                  padding: "0.5rem 1rem",
+                  borderRadius: "4px",
+                  border: `1px solid ${mergedTheme.table?.cell?.borderColor || "#e2e8f0"}`,
+                  backgroundColor: mergedTheme.colors?.background || "#ffffff",
+                  color: mergedTheme.colors?.textColor || "#000000",
+                  cursor: "pointer",
+                  fontSize: "0.875rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <span>Export</span>
+              </button>
+              <button
+                style={{
+                  padding: "0.5rem 1rem",
+                  borderRadius: "4px",
+                  border: `1px solid ${mergedTheme.table?.cell?.borderColor || "#e2e8f0"}`,
+                  backgroundColor: mergedTheme.colors?.background || "#ffffff",
+                  color: mergedTheme.colors?.textColor || "#000000",
+                  cursor: "pointer",
+                  fontSize: "0.875rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <span>Filter</span>
+              </button>
+            </div>
           </div>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <button
-              style={{
-                padding: "0.5rem 1rem",
-                borderRadius: "4px",
-                border: `1px solid ${mergedTheme.table?.cell?.borderColor || "#e2e8f0"}`,
-                backgroundColor: mergedTheme.colors?.background || "#ffffff",
-                color: mergedTheme.colors?.textColor || "#000000",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
-            >
-              <span>Export</span>
-            </button>
-            <button
-              style={{
-                padding: "0.5rem 1rem",
-                borderRadius: "4px",
-                border: `1px solid ${mergedTheme.table?.cell?.borderColor || "#e2e8f0"}`,
-                backgroundColor: mergedTheme.colors?.background || "#ffffff",
-                color: mergedTheme.colors?.textColor || "#000000",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
-            >
-              <span>Filter</span>
-            </button>
-          </div>
-        </div>
+        )}
         <table
           {...getTableProps()}
           className="main-table-container"

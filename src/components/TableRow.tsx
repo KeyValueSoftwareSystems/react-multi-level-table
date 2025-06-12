@@ -38,6 +38,7 @@ interface TableRowProps {
   isRowSelected?: boolean;
   onRowSelect?: (rowId: number) => void;
   onRowClick?: (row: DataItem) => void;
+  isParentRow?: boolean;
 }
 
 /**
@@ -59,6 +60,7 @@ export const TableRow: React.FC<TableRowProps> = ({
   isRowSelected = false,
   onRowSelect,
   onRowClick,
+  isParentRow = false,
 }) => {
   const getRowClassName = useMemo(() => {
     const classes = [];
@@ -125,15 +127,17 @@ export const TableRow: React.FC<TableRowProps> = ({
                     style={{ marginRight: 8, cursor: 'pointer' }}
                   />
                 )}
-                {hasChildren && index === 0 ? (
-                  <div onClick={handleExpandClick} className="expand-button">
-                    {expandIcon || (
-                      <ExpandIcon isExpanded={isExpanded} theme={theme} />
-                    )}
-                  </div>
-                ) : (
+
+                <div onClick={handleExpandClick}
+                  className={`expand-button ${isParentRow  || index !== 0? 'parent-row-expand-button' : 'nested-row-expand-button'}`}
+                  style={{visibility: hasChildren && index === 0 ? 'visible' : 'hidden'}}>
+                  {expandIcon || (
+                    <ExpandIcon isExpanded={isExpanded} theme={theme} />
+                  )}
+                </div>
+                {/* ) : (
                   <div className="expand-button" />
-                )}
+                )} */}
                 {column.render 
                   ? column.render(displayValue, dataItem)
                   : String(displayValue)}

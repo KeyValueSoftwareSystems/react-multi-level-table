@@ -397,6 +397,7 @@ function App() {
         <MultiLevelTable
           data={data}
           columns={columns}
+          searchableColumns={['name', 'value']}
           theme={theme}
           selectable={true}
           onSelectionChange={handleSelectionChange}
