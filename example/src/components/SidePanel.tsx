@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { SidePanelInput } from './SidePanelInput';
-import { createComponentStyles } from '../styles/componentStyles';
-import { getStatusStyle } from '../styles/style';
-import type { ThemeProps } from '../types/theme';
 import type { DataItem } from '../types/types';
-
+import type { ThemeProps } from '../types/theme';
+import { componentStyles, getStatusStyle } from '../styles/style';
 import '../styles/SidePanel.css';
 
 interface SidePanelProps {
@@ -31,7 +29,6 @@ export const SidePanel: React.FC<SidePanelProps> = ({
   isStatusEditable = false, // Status is typically not editable
 }) => {
   const [formData, setFormData] = useState<Partial<DataItem>>({});
-  const styles = createComponentStyles(theme);
 
   // Prevent body scroll when side panel is open
   useEffect(() => {
@@ -89,7 +86,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
     
     return (
       <span style={{ 
-        ...styles.statusBadge.base,
+        ...componentStyles.statusBadge.base,
         ...style
       }}>
         {status}
@@ -104,22 +101,22 @@ export const SidePanel: React.FC<SidePanelProps> = ({
     const firstLetter = value.charAt(0).toUpperCase();
     
     return (
-      <div style={styles.resourceTypeDisplay.container}>
+      <div style={componentStyles.resourceTypeDisplay.container}>
         <div style={{
-          ...styles.resourceTypeDisplay.icon,
-          ...(imageURL ? styles.resourceTypeDisplay.iconWithImage : styles.resourceTypeDisplay.iconWithoutImage)
+          ...componentStyles.resourceTypeDisplay.icon,
+          ...(imageURL ? componentStyles.resourceTypeDisplay.iconWithImage : componentStyles.resourceTypeDisplay.iconWithoutImage)
         }}>
           {imageURL ? (
             <img 
               src={imageURL} 
               alt={value}
-              style={styles.resourceTypeDisplay.image}
+              style={componentStyles.resourceTypeDisplay.image}
             />
           ) : (
             firstLetter
           )}
         </div>
-        <span style={styles.resourceTypeDisplay.text}>{value}</span>
+        <span style={componentStyles.resourceTypeDisplay.text}>{value}</span>
       </div>
     );
   };
@@ -130,36 +127,36 @@ export const SidePanel: React.FC<SidePanelProps> = ({
       <div 
         className="side-panel-overlay"
         onClick={onClose}
-        style={styles.sidePanel.overlay}
+        style={componentStyles.sidePanel.overlay}
       />
       
       {/* Side Panel */}
       <div 
         className="side-panel"
         style={{
-          ...styles.sidePanel.container,
+          ...componentStyles.sidePanel.container,
           transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
           transition: 'transform 0.3s ease-in-out',
         }}
       >
         {/* Header */}
-        <div style={styles.sidePanel.header}>
-          <h2 style={styles.sidePanel.title}>
+        <div style={componentStyles.sidePanel.header}>
+          <h2 style={componentStyles.sidePanel.title}>
             Resource Details
           </h2>
           <button
             onClick={onClose}
-            style={styles.sidePanel.closeButton}
+            style={componentStyles.sidePanel.closeButton}
           >
             ×
           </button>
         </div>
 
         {/* Content */}
-        <div style={styles.sidePanel.content}>
+        <div style={componentStyles.sidePanel.content}>
           {/* Resource Type */}
-          <div style={styles.sidePanel.fieldContainer}>
-            <label style={styles.sidePanel.label}>
+          <div style={componentStyles.sidePanel.fieldContainer}>
+            <label style={componentStyles.sidePanel.label}>
               Resource Type
             </label>
             <ResourceTypeDisplay 
@@ -169,11 +166,11 @@ export const SidePanel: React.FC<SidePanelProps> = ({
           </div>
 
           {/* ID */}
-          <div style={styles.sidePanel.fieldContainer}>
-            <label style={styles.sidePanel.label}>
+          <div style={componentStyles.sidePanel.fieldContainer}>
+            <label style={componentStyles.sidePanel.label}>
               ID *
             </label>
-            <div style={styles.sidePanel.idField}>
+            <div style={componentStyles.sidePanel.idField}>
               {item.id}
             </div>
           </div>
@@ -199,8 +196,8 @@ export const SidePanel: React.FC<SidePanelProps> = ({
           />
 
           {/* Status */}
-          <div style={styles.sidePanel.fieldContainer}>
-            <label style={styles.sidePanel.label}>
+          <div style={componentStyles.sidePanel.fieldContainer}>
+            <label style={componentStyles.sidePanel.label}>
               Status
             </label>
             {isStatusEditable ? (
@@ -229,13 +226,13 @@ export const SidePanel: React.FC<SidePanelProps> = ({
         </div>
 
         {/* Footer with Save Changes Button */}
-        <div style={styles.sidePanel.footer}>
+        <div style={componentStyles.sidePanel.footer}>
           <button
             onClick={handleSaveChanges}
             disabled={!hasChanges}
             style={{
-              ...styles.sidePanel.saveButton,
-              ...(hasChanges ? styles.sidePanel.saveButtonEnabled : styles.sidePanel.saveButtonDisabled),
+              ...componentStyles.sidePanel.saveButton,
+              ...(hasChanges ? componentStyles.sidePanel.saveButtonEnabled : componentStyles.sidePanel.saveButtonDisabled),
             }}
             onMouseEnter={(e) => {
               if (hasChanges) 

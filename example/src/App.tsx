@@ -2,9 +2,9 @@ import React, { useState } from "react";
 
 import { DeleteIcon, EditIcon } from "../../src/components/icons";
 import { MultiLevelTable } from "../../src/components/MultiLevelTable";
-import { Popup } from "../../src/components/Popup";
-import { RowDetailsPopup } from "../../src/components/RowDetailsPopup";
-import { SidePanel } from "../../src/components/SidePanel";
+import { Popup } from "./components/Popup";
+import { RowDetailsPopup } from "./components/RowDetailsPopup";
+import { SidePanel } from "./components/SidePanel";
 import { getStatusStyle, tableRowTypography } from "../../src/styles/style";
 import { darkTheme, lightTheme } from "../../src/themes";
 import type { ThemeProps } from "../../src/types/theme";

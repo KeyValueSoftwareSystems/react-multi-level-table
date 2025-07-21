@@ -10,14 +10,14 @@ import {
 } from "react-table";
 
 import { ButtonGroup } from './ButtonGroup';
-import { ExportDropdown } from './ExportDropdown';
-import { FilterDropdown } from './FilterDropdown';
 import { DeleteIcon, ExportIcon, FilterIcon, SearchIcon } from "./icons";
 import { Pagination } from "./Pagination";
 import type { PaginationProps } from "./Pagination";
-import { Popup } from './Popup';
 import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
+import { ExportDropdown } from '../../example/src/components/ExportDropdown';
+import { FilterDropdown } from '../../example/src/components/FilterDropdown';
+import { Popup } from '../../example/src/components/Popup';
 import { SortType } from "../constants/sort";
 import { defaultTheme } from "../constants/theme";
 import { mergeThemeProps } from "../mergeThemeProps";
