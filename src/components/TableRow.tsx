@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 import type { Cell, Row } from "react-table";
 
-import { DeleteIcon, ExpandIcon } from "./icons";
+import { ExpandIcon } from "./icons";
 import { TableCell } from "./TableCell";
 import { tableRowTypography } from "../styles/style";
 import type { ThemeProps } from "../types/theme";
@@ -62,7 +62,6 @@ export const TableRow: React.FC<TableRowProps> = ({
   isRowSelected = false,
   onRowSelect,
   onRowClick,
-  onDelete,
   isParentRow = false,
 }) => {
   const getRowClassName = useMemo(() => {
@@ -87,12 +86,6 @@ export const TableRow: React.FC<TableRowProps> = ({
   const handleExpandClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onToggle();
-  };
-
-  const handleDeleteClick = (dataItem: DataItem) => (e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if(onDelete)
-      onDelete(dataItem.id, dataItem.name || `Item ${dataItem.id}`);
   };
 
   const handleRowClick = () => {
@@ -160,20 +153,6 @@ export const TableRow: React.FC<TableRowProps> = ({
                 {column.render 
                   ? column.render(displayValue, dataItem)
                   : String(displayValue)}
-                
-                {onDelete && (
-                  <div 
-                    className="delete-button"
-                    onClick={handleDeleteClick(dataItem)}
-                  >
-                    <DeleteIcon 
-                      width={16} 
-                      height={16} 
-                      color="#dc3545"
-                      onClick={handleDeleteClick(dataItem)}
-                    />
-                  </div>
-                )}
               </div>
             </td>
           );
