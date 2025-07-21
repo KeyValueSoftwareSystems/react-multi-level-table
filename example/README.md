@@ -11,6 +11,9 @@ This is an example project demonstrating the usage of `@keyvaluesystems/multilev
 - Filtering
 - Pagination
 - Theme customization
+- Export functionality (CSV)
+- Generic Button components
+- Action button groups with dropdowns
 
 ## Getting Started
 
@@ -56,6 +59,23 @@ The example demonstrates:
    - Sorting
    - Filtering
    - Pagination
+   - CSV Export with dropdown
+   - Action buttons with badges
+   - Delete functionality with confirmation popup
+
+5. **Button Components**
+   - Generic Button component with icon and text
+   - ButtonGroup for managing multiple action buttons
+   - Support for badges, dropdowns, and custom icons
+   - Theme-aware styling
+   - Flexible icon positioning (left or right of text)
+
+6. **Popup Component**
+   - Generic confirmation popup
+   - Customizable icon, title, text, and buttons
+   - Theme-aware styling
+   - Accessibility features (ESC key, click outside)
+   - Responsive design
 
 ## Learn More
 

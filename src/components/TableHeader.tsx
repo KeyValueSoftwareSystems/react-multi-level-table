@@ -2,6 +2,7 @@ import React from "react";
 
 import type { HeaderGroup } from "react-table";
 
+import { ExpandIcon } from "./icons";
 import type { ThemeProps } from "../types/theme";
 import type { DataItem } from "../types/types";
 
@@ -60,8 +61,6 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   headerGroups,
   theme,
   sortable = false,
-  ascendingIcon,
-  descendingIcon,
   selectable = false,
   isAllSelected = false,
   onSelectAll,
@@ -127,13 +126,18 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                         }
                       >
                         {column.render("Header")}
-                        <span className="sort-icon" style={{ marginLeft: 4 }}>
-                          {column.isSorted
-                            ? column.isSortedDesc
-                              ? descendingIcon || "↓"
-                              : ascendingIcon || "↑"
-                            : " "}
-                        </span>
+                        <ExpandIcon
+                          isExpanded={false}
+                          theme={theme}
+                          mode="sort"
+                          sortDirection={
+                            column.isSorted
+                              ? column.isSortedDesc
+                                ? 'desc'
+                                : 'asc'
+                              : undefined
+                          }
+                        />
                       </span>
                     </div>
                   </th>

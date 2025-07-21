@@ -4,16 +4,16 @@ export const lightTheme: ThemeProps = {
   colors: {
     background: '#ffffff',
     primaryColor: '#007bff',
-    borderColor: '#dee2e6',
+    borderColor: '#D9D9D9',
   },
   table: {
     header: {
-      background: '#e9ecef',
+      background: '#F5F5F5',
       textColor: '#495057',
     },
     cell: {
       textColor: '#212529',
-      borderColor: '#dee2e6',
+      borderColor: '#D9D9D9',
     },
     row: {
       levelColors: [{background: '#ffffff'}, {background: '#f1f3f5'}, {background: '#f8f9fa'}]
@@ -21,7 +21,7 @@ export const lightTheme: ThemeProps = {
     filter: {
       background: 'transparent',
       textColor: '#495057',
-      borderColor: '#495057',
+      borderColor: '#BFBFBF',
       focusBorderColor: '#007bff',
       placeholderColor: 'rgba(73, 80, 87, 0.7)',
     },

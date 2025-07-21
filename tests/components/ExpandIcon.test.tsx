@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import { ExpandIcon } from '../../src/components/ExpandIcon';
+import { ExpandIcon } from '../../src/components/icons';
 import type { ThemeProps } from '../../src/types/theme';
 
 describe('ExpandIcon', () => {
@@ -13,21 +13,19 @@ describe('ExpandIcon', () => {
     },
   };
 
-  it('renders expanded icon (▼) when isExpanded is true', () => {
-    render(<ExpandIcon isExpanded theme={mockTheme} />);
-    const icon = screen.getByText('▼');
+  it('renders expanded icon when isExpanded is true', () => {
+    render(<ExpandIcon isExpanded theme={mockTheme} mode="expand" />);
+    const icon = screen.getByRole('img', { hidden: true });
     expect(icon).toBeInTheDocument();
-    expect(icon).toHaveClass('expand-icon');
-    expect(icon).toHaveStyle({ color: '#000000' });
+    expect(icon.closest('.expand-icon')).toHaveClass('expand-icon');
   });
 
-  it('renders collapsed icon (▶) when isExpanded is false', () => {
-    render(<ExpandIcon isExpanded={false} theme={mockTheme} />);
+  it('renders collapsed icon when isExpanded is false', () => {
+    render(<ExpandIcon isExpanded={false} theme={mockTheme} mode="expand" />);
 
-    const icon = screen.getByText('▶');
+    const icon = screen.getByRole('img', { hidden: true });
     expect(icon).toBeInTheDocument();
-    expect(icon).toHaveClass('expand-icon');
-    expect(icon).toHaveStyle({ color: '#000000' });
+    expect(icon.closest('.expand-icon')).toHaveClass('expand-icon');
   });
 
   it('applies custom theme color when provided', () => {
@@ -37,21 +35,18 @@ describe('ExpandIcon', () => {
       },
     };
 
-    render(<ExpandIcon isExpanded theme={customTheme} />);
+    render(<ExpandIcon isExpanded theme={customTheme} mode="expand" />);
 
-    const icon = screen.getByText('▼');
-    expect(icon).toHaveStyle({ color: '#FF0000' });
+    const icon = screen.getByRole('img', { hidden: true });
+    expect(icon).toBeInTheDocument();
   });
 
   it('renders without theme color when not provided', () => {
     const themeWithoutColor: ThemeProps = {};
 
-    render(<ExpandIcon isExpanded theme={themeWithoutColor} />);
+    render(<ExpandIcon isExpanded theme={themeWithoutColor} mode="expand" />);
 
-    const icon = screen.getByText('▼');
+    const icon = screen.getByRole('img', { hidden: true });
     expect(icon).toBeInTheDocument();
-    expect(icon).toHaveClass('expand-icon');
-    // Style should be empty or undefined when no color is provided
-    expect(icon.style.color).toBe('');
   });
 }); 

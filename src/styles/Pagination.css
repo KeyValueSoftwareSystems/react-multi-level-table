@@ -31,5 +31,23 @@
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   background-color: #ffffff;
-  color: #2c3e50;
+  color: #262626;
+}
+
+.pagination-select option {
+  background-color: #ffffff;
+  color: #262626;
+  padding: 8px 12px;
+}
+
+.pagination-select option:hover,
+.pagination-select option:focus {
+  background-color: #5D5FEF !important;
+  color: #ffffff !important;
+}
+
+.pagination-select option:checked,
+.pagination-select option:selected {
+  background-color: #5D5FEF !important;
+  color: #ffffff !important;
 } 

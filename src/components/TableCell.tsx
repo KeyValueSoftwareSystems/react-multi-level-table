@@ -2,7 +2,8 @@ import React from 'react';
 
 import type { Cell } from 'react-table';
 
-import { ExpandIcon } from './ExpandIcon';
+import { ExpandIcon } from './icons';
+import { tableRowTypography } from '../styles/style';
 import type { ThemeProps } from '../types/theme';
 import type { DataItem } from '../types/types';
 
@@ -23,19 +24,20 @@ import '../styles/TableCell.css';
  * @property {boolean} [isRowSelected=false] - Whether the row is selected
  * @property {(rowId: number) => void} [onRowSelect] - Function to select a row
  * @property {number} [rowId] - ID of the row
+ * @property {number} [index=0] - Index of the column in the row
  */
 interface TableCellProps {
   cell: Cell<DataItem>;
   hasChildren: boolean;
   isExpanded: boolean;
   onToggle: () => void;
-  paddingLeft?: number;
   theme: ThemeProps;
   expandIcon?: React.ReactNode;
   selectable?: boolean;
   isRowSelected?: boolean;
   onRowSelect?: (rowId: number) => void;
   rowId?: number;
+  index?: number;
 }
 
 /**
@@ -49,13 +51,13 @@ export const TableCell: React.FC<TableCellProps> = ({
   hasChildren, 
   isExpanded, 
   onToggle, 
-  paddingLeft = 0,
   theme,
   expandIcon,
   selectable = false,
   isRowSelected = false,
   onRowSelect,
   rowId,
+  index = 0,
 }) => {
   const { key, ...cellProps } = cell.getCellProps();
   const isSelectionColumn = cell.column.id === 'selection';
@@ -77,20 +79,31 @@ export const TableCell: React.FC<TableCellProps> = ({
       {...cellProps}
       className={"table-cell fixed-width-col"}
       style={{
-        paddingLeft: `${paddingLeft}px`,
         color: theme.table?.cell?.textColor,
         borderColor: theme.table?.cell?.borderColor,
       }}
     >
-      <div className="table-cell-content">
+      <div className="table-cell-content" style={tableRowTypography}>
         {selectable && (
           <input
             type="checkbox"
             checked={isRowSelected}
-            onChange={onSelect}
+            onChange={(e) => {
+              e.stopPropagation();
+              onSelect();
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             className="row-checkbox"
           />
         )}
+        
+        {/* Add placeholder for child rows to maintain alignment with parent rows */}
+        {!selectable && index === 0 && (
+          <div className="placeholder-spacer" />
+        )}
+        
         {isSelectionColumn ? (
           cell.render('Cell')
         ) : (
@@ -100,7 +113,7 @@ export const TableCell: React.FC<TableCellProps> = ({
                 onClick={handleExpandClick}
                 className="expand-button"
               >
-                {expandIcon || <ExpandIcon isExpanded={isExpanded} theme={theme} />}
+                {expandIcon || <ExpandIcon isExpanded={isExpanded} theme={theme} mode="expand" />}
               </div>
             ) : <div className="expand-button" />}
             {cell.render('Cell')}

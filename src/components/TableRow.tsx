@@ -2,8 +2,9 @@ import React, { useMemo } from "react";
 
 import type { Cell, Row } from "react-table";
 
-import { ExpandIcon } from "./ExpandIcon";
+import { DeleteIcon, ExpandIcon } from "./icons";
 import { TableCell } from "./TableCell";
+import { tableRowTypography } from "../styles/style";
 import type { ThemeProps } from "../types/theme";
 import type { Column, DataItem } from "../types/types";
 
@@ -38,6 +39,7 @@ interface TableRowProps {
   isRowSelected?: boolean;
   onRowSelect?: (rowId: number) => void;
   onRowClick?: (row: DataItem) => void;
+  onDelete?: (rowId: string | number, itemName: string) => void;
   isParentRow?: boolean;
 }
 
@@ -60,6 +62,7 @@ export const TableRow: React.FC<TableRowProps> = ({
   isRowSelected = false,
   onRowSelect,
   onRowClick,
+  onDelete,
   isParentRow = false,
 }) => {
   const getRowClassName = useMemo(() => {
@@ -84,6 +87,12 @@ export const TableRow: React.FC<TableRowProps> = ({
   const handleExpandClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onToggle();
+  };
+
+  const handleDeleteClick = (dataItem: DataItem) => (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if(onDelete)
+      onDelete(dataItem.id, dataItem.name || `Item ${dataItem.id}`);
   };
 
   const handleRowClick = () => {
@@ -118,29 +127,53 @@ export const TableRow: React.FC<TableRowProps> = ({
                 borderColor: theme.table?.cell?.borderColor,
               }}
             >
-              <div className="table-cell-content">
+              <div className="table-cell-content" style={tableRowTypography}>
                 {index === 0 && selectable && (
                   <input
                     type="checkbox"
                     checked={isRowSelected}
-                    onChange={() => onRowSelect?.(dataItem.id)}
-                    style={{ marginRight: 8, cursor: 'pointer' }}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      onRowSelect?.(dataItem.id);
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="row-checkbox checkbox-wrapper"
                   />
                 )}
 
-                <div onClick={handleExpandClick}
-                  className={`expand-button ${isParentRow  || index !== 0? 'parent-row-expand-button' : 'nested-row-expand-button'}`}
-                  style={{visibility: hasChildren && index === 0 ? 'visible' : 'hidden'}}>
+                {/* Add placeholder for child rows to maintain alignment with parent rows */}
+                {index === 0 && !selectable && (
+                  <div className="placeholder-spacer" />
+                )}
+
+                <div 
+                  onClick={handleExpandClick}
+                  className={`expand-button ${isParentRow || index !== 0 ? 'parent-row-expand-button' : 'nested-row-expand-button'} ${hasChildren && index === 0 ? 'expand-button-visible' : 'expand-button-hidden'}`}
+                >
                   {expandIcon || (
-                    <ExpandIcon isExpanded={isExpanded} theme={theme} />
+                    <ExpandIcon isExpanded={isExpanded} theme={theme} mode="expand" />
                   )}
                 </div>
-                {/* ) : (
-                  <div className="expand-button" />
-                )} */}
+                
                 {column.render 
                   ? column.render(displayValue, dataItem)
                   : String(displayValue)}
+                
+                {onDelete && (
+                  <div 
+                    className="delete-button"
+                    onClick={handleDeleteClick(dataItem)}
+                  >
+                    <DeleteIcon 
+                      width={16} 
+                      height={16} 
+                      color="#dc3545"
+                      onClick={handleDeleteClick(dataItem)}
+                    />
+                  </div>
+                )}
               </div>
             </td>
           );
@@ -168,13 +201,13 @@ export const TableRow: React.FC<TableRowProps> = ({
           hasChildren={hasChildren && index === 0}
           isExpanded={isExpanded}
           onToggle={onToggle}
-          paddingLeft={level > 0 ? 32 + level * 16 : 0}
           theme={theme}
           expandIcon={expandIcon}
           selectable={selectable && index === 0}
           isRowSelected={isRowSelected}
           onRowSelect={onRowSelect}
           rowId={tableRow.original.id}
+          index={index}
         />
       ))}
     </tr>

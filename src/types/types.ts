@@ -19,9 +19,14 @@ export interface Column {
 
 export interface DataItem {
   id: number;
+  resourceType: string;
   name: string;
-  value: number;
-  status: 'Active' | 'Inactive' | 'Pending';
+  dateTime: string;
+  status: 'Active' | 'Inactive' | 'Pending' | 'Processing' | 'Provisioning';
+  orchestration: string;
+  imageURL?: string;
+  subtext?: string;
+  showActionButtons?: boolean;
   children?: DataItem[];
 }
 
@@ -48,4 +53,22 @@ export interface TableInstanceWithHooks<T extends object> extends TableInstance<
 export interface SelectionState {
   selectedRows: Set<string | number>;
   isAllSelected: boolean;
+}
+
+export interface ButtonConfig {
+  id: string;
+  icon: React.ComponentType<{ width?: number; height?: number }>;
+  text: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  iconPosition?: 'left' | 'right';
+  badge?: {
+    count: number;
+  };
+  badgeStyle?: React.CSSProperties;
+  customStyle?: React.CSSProperties;
+  dropdown?: {
+    component: React.ComponentType<any>;
+    props: Record<string, any>;
+  };
 } 

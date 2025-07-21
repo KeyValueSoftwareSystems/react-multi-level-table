@@ -1,0 +1,46 @@
+.button {
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: center;
+  vertical-align: middle;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #262626;
+  transition: all 0.2s ease;
+  opacity: 1;
+  background-color: #FFFFFF;
+  color: #262626;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.button-primary {
+  background-color: #5D5FEF;
+  color: #FFFFFF;
+  border-color: #5D5FEF;
+}
+
+.button-secondary {
+  background-color: #FFFFFF;
+  color: #101828;
+  border-color: #262626;
+}
+
+.button-badge {
+  background-color: #5d5fef;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+} 

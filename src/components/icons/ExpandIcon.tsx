@@ -1,17 +1,21 @@
 import React from 'react';
 
-import type { ThemeProps } from '../types/theme';
-import '../styles/ExpandIcon.css';
+import type { ThemeProps } from '../../types/theme';
 
 /**
  * Props for the ExpandIcon component
  * @interface ExpandIconProps
  * @property {boolean} isExpanded - Whether the row is expanded
  * @property {ThemeProps} theme - The theme object
+ * @property {string} [mode] - Mode of the icon: 'expand' for row expansion, 'sort' for sorting
+ * @property {string} [sortDirection] - Sort direction: 'asc', 'desc', or undefined for default
  */
 interface ExpandIconProps {
   isExpanded: boolean;
   theme: ThemeProps;
+  mode?: 'expand' | 'sort';
+  sortDirection?: 'asc' | 'desc';
+  customStyle?: React.CSSProperties;
 }
 
 /**
@@ -20,7 +24,18 @@ interface ExpandIconProps {
  * @param {ExpandIconProps} props - Component props
  * @returns {JSX.Element} Rendered expand/collapse icon
  */
-export const ExpandIcon: React.FC<ExpandIconProps> = ({ isExpanded, theme }) => {
+export const ExpandIcon: React.FC<ExpandIconProps> = ({ isExpanded, theme, mode = 'expand', sortDirection, customStyle }) => {
+  // For sorting mode, determine visibility and rotation
+  const isSortMode = mode === 'sort';
+  const isVisible = isSortMode ? sortDirection !== undefined : true;
+  const rotation = isSortMode 
+    ? (sortDirection === 'asc' ? 'rotate(-90deg)' : sortDirection === 'desc' ? 'rotate(90deg)' : 'rotate(0deg)')
+    : (isExpanded ? 'rotate(90deg)' : 'rotate(0deg)');
+
+  if (isSortMode && !isVisible) 
+    return null; // Hide icon when not sorted
+  
+
   return (
     <span
       className="expand-icon"
@@ -29,9 +44,10 @@ export const ExpandIcon: React.FC<ExpandIconProps> = ({ isExpanded, theme }) => 
         display: 'inline-flex',
         alignItems: 'center',
         transition: 'transform 0.2s',
-        transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
-        // marginTop:  isExpanded ? '10px' : 0,
-        // marginRight: isExpanded ? 0 : '10px',
+        transform: rotation,
+        marginRight: isSortMode ? '4px' : '8px',
+        opacity: isSortMode && sortDirection ? 1 : 0.5,
+        ...customStyle,
       }}
     >
       <svg

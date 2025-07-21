@@ -8,23 +8,68 @@
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure table container maintains proper spacing */
+.table-container {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .main-table-container {
-  min-width: 100%;
-  white-space: nowrap;
+  width: 100%;
   border: 1px solid #d9d9d9;
   border-radius: 10px;
   border-collapse: separate;
   border-spacing: 0;
   border-radius: 12px;
   overflow: hidden;
+  table-layout: fixed;
 }
 
 /* Ensure table cells don't wrap content */
 .table-container td,
 .table-container th {
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Column width distribution - spread across full width with end spacing for actions */
+.main-table-container th:nth-child(1),
+.main-table-container td:nth-child(1) {
+  width: 22%; /* Resource Type - reduced slightly */
+}
+
+.main-table-container th:nth-child(2),
+.main-table-container td:nth-child(2) {
+  width: 18%; /* Name - reduced slightly */
+}
+
+.main-table-container th:nth-child(3),
+.main-table-container td:nth-child(3) {
+  width: 18%; /* Date & Time - reduced slightly */
+}
+
+.main-table-container th:nth-child(4),
+.main-table-container td:nth-child(4) {
+  width: 12%; /* Status - reduced slightly */
+}
+
+.main-table-container th:nth-child(5),
+.main-table-container td:nth-child(5) {
+  width: 12%; /* Orchestration - reduced slightly */
+}
+
+.main-table-container th:nth-child(6),
+.main-table-container td:nth-child(6) {
+  width: 8%; /* Actions - increased for better spacing */
+  padding-right: 24px; /* Add end spacing to actions column */
 }
 
 .selection-header,
@@ -42,7 +87,7 @@
   width: 16px;
   height: 16px;
   border-radius: 4px;
-  border: 1.2px solid #5d5fef;
+  border: 1px solid #BFBFBF;
   background: #fff;
   appearance: none;
   -webkit-appearance: none;
@@ -58,8 +103,9 @@
 .row-checkbox:checked,
 .selection-header input[type="checkbox"]:checked,
 .selection-cell input[type="checkbox"]:checked {
-  background: #fff;
-  border: 1.2px solid #5d5fef;
+  background: #5D5FEF;
+  border: 1.2px solid #5D5FEF;
+  border-radius: 4px;
 }
 
 .row-checkbox:checked::after,
@@ -67,14 +113,14 @@
 .selection-cell input[type="checkbox"]:checked::after {
   content: "";
   position: absolute;
-  left: 5px;
-  top: 2.5px;
+  left: 50%;
+  top: 50%;
   width: 4px;
   height: 8px;
-  border: solid #5d5fef;
+  border: solid #ffffff;
   border-width: 0 2px 2px 0;
   border-radius: 1px;
-  transform: rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
   display: block;
   box-sizing: border-box;
 }
@@ -90,8 +136,130 @@
   border-bottom: 1px solid #f1f1f3;
   padding: 18px 16px;
   vertical-align: middle;
+  box-sizing: border-box;
 }
 
 .main-table-container tr:last-child td {
   border-bottom: none;
+}
+
+/* Nested row styling - no extra padding */
+.table-row-nested td {
+  background-color: #fafafa;
+}
+
+/* Remove any extra padding for nested cells */
+.table-cell-nested {
+  padding-left: 16px !important;
+}
+
+/* Ensure actions column maintains consistent spacing across all row levels */
+.main-table-container td:nth-child(6) {
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* Ensure action buttons are properly aligned in nested rows */
+.table-row-nested td:nth-child(6) {
+  padding-right: 24px;
+}
+
+/* Search bar styles */
+.search-bar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.search-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.search-bar-right {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.table-title-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.table-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  font-family: 'DM Sans', sans-serif;
+  color: #667085;
+  opacity: 0.7;
+}
+
+.search-input-container {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  min-width: 0;
+  max-width: 400px;
+  flex: 1;
+}
+
+.search-input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+}
+
+.search-input {
+  width: 100%;
+  height: 48px;
+  border-radius: 8px;
+  gap: 8px;
+  opacity: 1;
+  padding: 4px 12px 4px 44px;
+  border: 1px solid;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  border: 1.5px solid #D9D9D9;
+}
+
+.search-input::placeholder {
+  color: #D9D9D9;
+  opacity: 1;
+}
+
+/* Responsive design with better breakpoints */
+@media (max-width: 768px) {
+  .search-bar-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-bar-left {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-input-container {
+    max-width: none;
+  }
+  
+  .search-bar-right {
+    justify-content: center;
+  }
 }
