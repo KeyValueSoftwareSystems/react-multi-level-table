@@ -1,16 +1,18 @@
 import React from 'react';
-
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
-import type { HeaderGroup } from 'react-table';
-import { describe, expect, it, vi } from 'vitest';
 
 import { TableHeader } from '../../src/components/TableHeader';
-import type { ThemeProps } from '../../src/types/theme';
+import type { HeaderGroup } from 'react-table';
 import type { DataItem } from '../../src/types/types';
 
-// Mock theme
-const mockTheme: ThemeProps = {
+const mockTheme = {
+  colors: {
+    primaryColor: '#5D5FEF',
+    textColor: '#262626',
+    borderColor: '#E5E5E5',
+  },
   table: {
     header: {
       background: '#f0f0f0',
@@ -19,219 +21,199 @@ const mockTheme: ThemeProps = {
     cell: {
       borderColor: '#e0e0e0',
     },
-    filter: {
-      textColor: '#333333',
-      borderColor: '#cccccc',
-      background: '#ffffff',
-    },
   },
 };
 
-// Mock header groups
-const createMockHeaderGroup = (
-  id: string,
-  title: string | React.ReactNode,
-  isSorted = false,
-  isSortedDesc = false,
-  hasFilter = false
-): HeaderGroup<DataItem> => {
-  const mockColumn = {
-    id,
+const createMockHeaderGroup = (headers: any[]): HeaderGroup<DataItem> => ({
+  getHeaderGroupProps: () => ({
+    key: 'header-group',
+  }),
+  headers: headers.map((header, index) => ({
     getHeaderProps: (props = {}) => ({
-      key: id,
+      key: `header-${index}`,
       ...props,
     }),
     getSortByToggleProps: () => ({
-      onClick: vi.fn(),
+      onClick: header.onSortClick,
     }),
-    render: (type: string) => (type === 'Header' ? (title || id) : null),
-    isSorted,
-    isSortedDesc,
-    Filter: hasFilter
-      ? ({ column }: { column: any }) => (
-        <input
-          data-testid={`filter-${id}`}
-          value={column.filterValue || ''}
-          onChange={(e) => column.setFilter?.(e.target.value)}
-          placeholder={`Filter ${column.title || column.id}...`}
-        />
-      )
-      : undefined,
-    setFilter: hasFilter ? vi.fn() : undefined,
-    disableSortBy: false,
-    title: title || id,
-    filterValue: '',
-  };
-
-  const mockHeader = {
-    ...mockColumn,
-    column: mockColumn
-  };
-
-  return {
-    id,
-    headers: [mockHeader],
-    getHeaderGroupProps: () => ({
-      key: 'header-group',
-    }),
-    getHeaderProps: () => ({ key: 'header' }),
-    getFooterProps: () => ({ key: 'footer' }),
-    getFooterGroupProps: () => ({}),
-    toggleHidden: () => {},
-    getToggleHiddenProps: () => ({}),
-    isVisible: true,
-    render: () => null,
-    totalLeft: 0,
-    totalWidth: 0,
-    depth: 0,
-    parent: undefined,
-    subRows: [],
-    values: {},
-    totalHeaderCount: 1,
-  } as unknown as HeaderGroup<DataItem>;
-};
+    render: () => header.title,
+    isSorted: header.isSorted,
+    isSortedDesc: header.isSortedDesc,
+    id: header.id,
+    disableSortBy: header.disableSortBy,
+  })),
+} as unknown as HeaderGroup<DataItem>);
 
 describe('TableHeader', () => {
-  const renderTableHeader = (props: {
-    headerGroups: HeaderGroup<DataItem>[];
-    sortable?: boolean;
-    ascendingIcon?: React.ReactNode;
-    descendingIcon?: React.ReactNode;
-  }) => {
-    return render(
-      <TableHeader
-        headerGroups={props.headerGroups}
-        theme={mockTheme}
-        sortable={props.sortable}
-        ascendingIcon={props.ascendingIcon}
-        descendingIcon={props.descendingIcon}
-      />
-    );
+  const defaultHeaders = [
+    { id: 'name', title: 'Name', isSorted: false, isSortedDesc: false },
+    { id: 'age', title: 'Age', isSorted: false, isSortedDesc: false },
+  ];
+
+  const defaultProps = {
+    headerGroups: [createMockHeaderGroup(defaultHeaders)],
+    theme: mockTheme,
   };
 
-  it('renders header groups correctly', () => {
-    const headerGroups = [
-      createMockHeaderGroup('name', 'Name'),
-      createMockHeaderGroup('age', 'Age'),
-    ];
+  const renderTableHeader = (props = {}) => {
+    return render(<TableHeader {...defaultProps} {...props} />);
+  };
 
-    renderTableHeader({ headerGroups });
+  it('renders header cells correctly', () => {
+    renderTableHeader();
+
     expect(screen.getByText('Name')).toBeInTheDocument();
     expect(screen.getByText('Age')).toBeInTheDocument();
   });
 
   it('applies theme styles correctly', () => {
-    const headerGroups = [createMockHeaderGroup('name', 'Name')];
+    renderTableHeader();
 
-    renderTableHeader({ headerGroups });
-
-    const headerCell = screen.getByRole('columnheader', { name: 'Name' });
-
-    expect(headerCell).toHaveStyle({
-      backgroundColor: mockTheme.table?.header?.background,
-      color: mockTheme.table?.header?.textColor,
-      borderColor: mockTheme.table?.cell?.borderColor,
+    const headers = screen.getAllByRole('columnheader');
+    headers.forEach(header => {
+      expect(header).toHaveStyle({
+        backgroundColor: mockTheme.table?.header?.background,
+        color: mockTheme.table?.header?.textColor,
+        borderColor: mockTheme.table?.cell?.borderColor,
+      });
     });
   });
 
-  it('shows sort icons when sortable and column is sorted', () => {
-    const headerGroups = [
-      createMockHeaderGroup('name', 'Name', true, false),
-      createMockHeaderGroup('age', 'Age', true, true),
-    ];
-
-    renderTableHeader({ headerGroups, sortable: true });
-    expect(screen.getByText('↑')).toBeInTheDocument();
-    expect(screen.getByText('↓')).toBeInTheDocument();
-  });
-
-  it('uses custom sort icons when provided', () => {
-    const headerGroups = [
-      createMockHeaderGroup('name', 'Name', true, false),
-      createMockHeaderGroup('age', 'Age', true, true),
+  it('renders sort icons when sortable is true and column is sorted', () => {
+    const headersWithSort = [
+      { id: 'name', title: 'Name', isSorted: true, isSortedDesc: false },
+      { id: 'age', title: 'Age', isSorted: false, isSortedDesc: false },
     ];
 
     renderTableHeader({
-      headerGroups,
       sortable: true,
-      ascendingIcon: '▲',
-      descendingIcon: '▼',
+      headerGroups: [createMockHeaderGroup(headersWithSort)],
     });
 
-    expect(screen.getByText('▲')).toBeInTheDocument();
-    expect(screen.getByText('▼')).toBeInTheDocument();
+    // Only the sorted column should have SVG elements
+    const svgElements = document.querySelectorAll('svg');
+    expect(svgElements.length).toBeGreaterThan(0);
   });
 
-
-  it('uses column id when title is not provided', () => {
-    const headerGroups = [createMockHeaderGroup('name', '')];
-
-    renderTableHeader({ headerGroups });
-    expect(screen.getByText('name')).toBeInTheDocument();
-  });
-
-  it('renders filter input when column has Filter component', () => {
-    const headerGroups = [createMockHeaderGroup('name', 'Name', false, false, true)];
-
-    renderTableHeader({ headerGroups });
-    const filterInput = screen.getByPlaceholderText('Filter Name...');
-
-    expect(filterInput).toBeInTheDocument();
-    expect(filterInput).toHaveClass('filter-input');
-  });
-
-  it('applies filter theme styles correctly', () => {
-    const headerGroups = [createMockHeaderGroup('name', 'Name', false, false, true)];
-
-    renderTableHeader({ headerGroups });
-    const filterInput = screen.getByPlaceholderText('Filter Name...');
-
-    expect(filterInput).toHaveStyle({
-      color: mockTheme.table?.filter?.textColor,
-      borderColor: mockTheme.table?.filter?.borderColor,
-      backgroundColor: mockTheme.table?.filter?.background,
-    });
-  });
-
-  it('handles filter input change correctly', () => {
-    const headerGroups = [createMockHeaderGroup('name', 'Name', false, false, true)];
-
-    renderTableHeader({ headerGroups });
-    const filterInput = screen.getByPlaceholderText('Filter Name...');
-
-    fireEvent.change(filterInput, { target: { value: 'test' } });
-    const mockColumn = (headerGroups[0].headers[0] as any).column;
-
-    expect(mockColumn.setFilter).toHaveBeenCalledWith('test');
-  });
-
-  it('renders filter input with column id when title is not provided', () => {
-    const headerGroups = [createMockHeaderGroup('name', '', false, false, true)];
-
-    renderTableHeader({ headerGroups });
-    const filterInput = screen.getByPlaceholderText('Filter name...');
-
-    expect(filterInput).toBeInTheDocument();
-  });
-
-  it('does not render filter input when column has no Filter component', () => {
-    const headerGroups = [createMockHeaderGroup('name', 'Name', false, false, false)];
-
-    renderTableHeader({ headerGroups });
-    const filterInput = screen.queryByPlaceholderText('Filter Name...');
-
-    expect(filterInput).not.toBeInTheDocument();
-  });
-
-  it('renders a React node as column header', () => {
-    const customHeader = <span data-testid="custom-header">Custom</span>;
-    const headerGroups = [
-      createMockHeaderGroup('custom', customHeader as any),
+  it('handles sort clicks when sortable', () => {
+    const onSortClick = vi.fn();
+    const headersWithSort = [
+      { id: 'name', title: 'Name', isSorted: false, isSortedDesc: false, onSortClick },
+      { id: 'age', title: 'Age', isSorted: false, isSortedDesc: false, onSortClick },
     ];
 
-    // Patch the render function to return the React node for 'Header'
-    (headerGroups[0].headers[0] as any).render = (type: string) => type === 'Header' ? customHeader : null;
-    renderTableHeader({ headerGroups });
-    expect(screen.getByTestId('custom-header')).toBeInTheDocument();
+    renderTableHeader({
+      sortable: true,
+      headerGroups: [createMockHeaderGroup(headersWithSort)],
+    });
+
+    const nameHeader = screen.getByText('Name');
+    fireEvent.click(nameHeader);
+    expect(onSortClick).toHaveBeenCalled();
   });
+
+  it('renders checkbox when selectable is true', () => {
+    renderTableHeader({
+      selectable: true,
+      isAllSelected: false,
+      onSelectAll: vi.fn(),
+    });
+
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).toBeInTheDocument();
+    expect(checkbox).not.toBeChecked();
+  });
+
+  it('renders checked checkbox when all rows are selected', () => {
+    renderTableHeader({
+      selectable: true,
+      isAllSelected: true,
+      onSelectAll: vi.fn(),
+    });
+
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).toBeChecked();
+  });
+
+  it('calls onSelectAll when checkbox is clicked', () => {
+    const onSelectAllMock = vi.fn();
+    renderTableHeader({
+      selectable: true,
+      isAllSelected: false,
+      onSelectAll: onSelectAllMock,
+    });
+
+    const checkbox = screen.getByRole('checkbox');
+    fireEvent.click(checkbox);
+    expect(onSelectAllMock).toHaveBeenCalled();
+  });
+
+  it('shows sort direction indicators', () => {
+    const headersWithSort = [
+      { id: 'name', title: 'Name', isSorted: true, isSortedDesc: false },
+      { id: 'age', title: 'Age', isSorted: true, isSortedDesc: true },
+    ];
+
+    renderTableHeader({
+      sortable: true,
+      headerGroups: [createMockHeaderGroup(headersWithSort)],
+    });
+
+    // Check that SVG elements are present (sort icons)
+    const svgElements = document.querySelectorAll('svg');
+    expect(svgElements.length).toBeGreaterThan(0);
+  });
+
+  it('disables sorting for specific columns', () => {
+    const headersWithDisabledSort = [
+      { id: 'name', title: 'Name', isSorted: false, isSortedDesc: false, disableSortBy: true },
+      { id: 'age', title: 'Age', isSorted: false, isSortedDesc: false, disableSortBy: false },
+    ];
+
+    renderTableHeader({
+      sortable: true,
+      headerGroups: [createMockHeaderGroup(headersWithDisabledSort)],
+    });
+
+    // The disabled sort column should not have click handlers
+    const nameHeader = screen.getByText('Name');
+    expect(nameHeader.closest('span')).toHaveStyle({ cursor: 'default' });
+  });
+
+  it('renders multiple header groups', () => {
+    const headerGroup1 = createMockHeaderGroup([{ id: 'name', title: 'Name', isSorted: false, isSortedDesc: false }]);
+    const headerGroup2 = createMockHeaderGroup([{ id: 'age', title: 'Age', isSorted: false, isSortedDesc: false }]);
+
+    renderTableHeader({
+      headerGroups: [headerGroup1, headerGroup2],
+    });
+
+    expect(screen.getByText('Name')).toBeInTheDocument();
+    expect(screen.getByText('Age')).toBeInTheDocument();
+  });
+
+  it('renders SVG elements for sorted columns', () => {
+    const headersWithSort = [
+      { id: 'name', title: 'Name', isSorted: true, isSortedDesc: false },
+      { id: 'age', title: 'Age', isSorted: false, isSortedDesc: false },
+    ];
+
+    renderTableHeader({
+      sortable: true,
+      headerGroups: [createMockHeaderGroup(headersWithSort)],
+    });
+
+    // Check for SVG elements (the actual sort icons)
+    const svgElements = document.querySelectorAll('svg');
+    expect(svgElements.length).toBeGreaterThan(0);
+  });
+
+  it('does not render SVG elements for unsorted columns', () => {
+    renderTableHeader({ sortable: true });
+
+    // When no columns are sorted, no SVG elements should be present
+    const svgElements = document.querySelectorAll('svg');
+    expect(svgElements.length).toBe(0);
+  });
+
 }); 

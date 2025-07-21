@@ -13,27 +13,27 @@ describe('defaultTheme', () => {
   });
 
   it('should have valid color values', () => {
-    expect(theme.colors!.primaryColor).toBe('#2c3e50');
-    expect(theme.colors!.textColor).toBe('#2c3e50');
-    expect(theme.colors!.borderColor).toBe('#e0e0e0');
+    expect(theme.colors!.primaryColor).toBe('#5D5FEF');
+    expect(theme.colors!.textColor).toBe('#262626');
+    expect(theme.colors!.borderColor).toBe('#262626');
     expect(theme.colors!.background).toBe('#ffffff');
   });
 
   it('should have valid table configuration', () => {
-    expect(theme.table!.header!.background).toBe('#2c3e50');
-    expect(theme.table!.header!.textColor).toBe('#ffffff');
+    expect(theme.table!.header!.background).toBe('#ffffff');
+    expect(theme.table!.header!.textColor).toBe('#000000');
     expect(theme.table!.row!.levelColors).toHaveLength(3);
     expect(theme.table!.cell!.nestedPadding).toBe('16px');
   });
 
   it('should have valid pagination configuration', () => {
-    expect(theme.pagination!.button!.background).toBe('#2c3e50');
-    expect(theme.pagination!.button!.textColor).toBe('#ffffff');
+    expect(theme.pagination!.button!.background).toBe('#ffffff');
+    expect(theme.pagination!.button!.textColor).toBe('#262626');
     expect(theme.pagination!.button!.disabledOpacity).toBe('0.5');
     expect(theme.pagination!.select!.background).toBe('#ffffff');
   });
 
   it('should have valid expand icon configuration', () => {
-    expect(theme.expandIcon!.color).toBe('#2c3e50');
+    expect(theme.expandIcon!.color).toBe('#262626');
   });
 }); 

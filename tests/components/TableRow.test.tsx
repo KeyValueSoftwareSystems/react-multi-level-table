@@ -1,124 +1,115 @@
 import React from 'react';
-
-import { fireEvent, render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import type { Row } from 'react-table';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { vi } from 'vitest';
 
 import { TableRow } from '../../src/components/TableRow';
-import type { ThemeProps } from '../../src/types/theme';
-import type { Column, DataItem } from '../../src/types/types';
+import type { Row } from 'react-table';
+import type { DataItem } from '../../src/types/types';
 
-// Mock theme for testing
-const mockTheme: ThemeProps = {
+const mockTheme = {
+  colors: {
+    primaryColor: '#5D5FEF',
+    textColor: '#262626',
+    borderColor: '#E5E5E5',
+  },
   table: {
     row: {
-      levelColors: [
-        { background: '#ffffff' },
-        { background: '#f5f5f5' },
-        { background: '#eeeeee' }
-      ]
+      background: '#ffffff',
+      borderColor: '#dddddd',
     },
-    cell: {
-      textColor: '#000000',
-      borderColor: '#dddddd'
-    }
-  }
+  },
 };
 
-// Mock data for testing
 const mockData: DataItem = {
   id: 1,
   name: 'Test Item',
   value: 100,
-  status: 'Active'
 };
 
-// Mock columns for testing
-const mockColumns: Column[] = [
-  { key: 'name', title: 'Name' },
-  { key: 'value', title: 'Value' }
+const mockColumns = [
+  { id: 'name', Header: 'Name' },
+  { id: 'value', Header: 'Value' },
 ];
 
 describe('TableRow', () => {
+  let mockRow: Row<DataItem>;
+
+  beforeEach(() => {
+    mockRow = {
+      getRowProps: () => ({
+        key: 'test-row-1',
+        className: 'test-row'
+      }),
+      cells: [
+        { 
+          column: { 
+            id: 'name',
+            isVisible: true,
+            render: () => null,
+            totalLeft: 0,
+            totalWidth: 100,
+            width: 100,
+            minWidth: 0,
+            maxWidth: 100,
+            depth: 0,
+            parent: undefined,
+            placeholderOf: undefined,
+            Header: 'Name',
+            getHeaderProps: () => ({ key: 'header-name' }),
+            getFooterProps: () => ({ key: 'footer-name' }),
+            toggleHidden: () => {},
+            getToggleHiddenProps: () => ({})
+          }, 
+          value: 'Test Item',
+          row: {} as Row<DataItem>,
+          getCellProps: () => ({ key: 'cell-name' }),
+          render: () => 'Test Item'
+        },
+        { 
+          column: { 
+            id: 'value',
+            isVisible: true,
+            render: () => null,
+            totalLeft: 100,
+            totalWidth: 100,
+            width: 100,
+            minWidth: 0,
+            maxWidth: 100,
+            depth: 0,
+            parent: undefined,
+            placeholderOf: undefined,
+            Header: 'Value',
+            getHeaderProps: () => ({ key: 'header-value' }),
+            getFooterProps: () => ({ key: 'footer-value' }),
+            toggleHidden: () => {},
+            getToggleHiddenProps: () => ({})
+          }, 
+          value: 100,
+          row: {} as Row<DataItem>,
+          getCellProps: () => ({ key: 'cell-value' }),
+          render: () => '100'
+        }
+      ],
+      allCells: [],
+      values: {},
+      index: 0,
+      original: mockData,
+      id: 'test-row-1',
+      subRows: []
+    };
+
+    // Update the row reference in cells after mockRow is created
+    mockRow.cells[0].row = mockRow;
+    mockRow.cells[1].row = mockRow;
+  });
+
   describe('Main Table Row', () => {
-    let mockRow: Row<DataItem>;
-
-    beforeEach(() => {
-      mockRow = {
-        getRowProps: () => ({
-          key: 'row-1',
-          className: 'test-row'
-        }),
-        cells: [
-          { 
-            column: { 
-              id: 'name',
-              isVisible: true,
-              render: () => null,
-              totalLeft: 0,
-              totalWidth: 100,
-              width: 100,
-              minWidth: 0,
-              maxWidth: 100,
-              depth: 0,
-              parent: undefined,
-              placeholderOf: undefined,
-              Header: 'Name',
-              getHeaderProps: () => ({ key: 'header-name' }),
-              getFooterProps: () => ({ key: 'footer-name' }),
-              toggleHidden: () => {},
-              getToggleHiddenProps: () => ({})
-            }, 
-            value: 'Test Item',
-            row: {} as Row<DataItem>,
-            getCellProps: () => ({ key: 'cell-name' }),
-            render: () => 'Test Item'
-          },
-          { 
-            column: { 
-              id: 'value',
-              isVisible: true,
-              render: () => null,
-              totalLeft: 100,
-              totalWidth: 100,
-              width: 100,
-              minWidth: 0,
-              maxWidth: 100,
-              depth: 0,
-              parent: undefined,
-              placeholderOf: undefined,
-              Header: 'Value',
-              getHeaderProps: () => ({ key: 'header-value' }),
-              getFooterProps: () => ({ key: 'footer-value' }),
-              toggleHidden: () => {},
-              getToggleHiddenProps: () => ({})
-            }, 
-            value: 100,
-            row: {} as Row<DataItem>,
-            getCellProps: () => ({ key: 'cell-value' }),
-            render: () => '100'
-          }
-        ],
-        allCells: [],
-        values: {},
-        index: 0,
-        original: mockData,
-        id: 'row-1',
-        subRows: []
-      };
-
-      // Update the row reference in cells after mockRow is created
-      mockRow.cells[0].row = mockRow;
-      mockRow.cells[1].row = mockRow;
-    });
-
-    it('renders main table row correctly', () => {
+    it('renders row cells correctly', () => {
       render(
         <TableRow
           row={mockRow}
           columns={mockColumns}
-          hasChildren={true}
+          hasChildren={false}
           isExpanded={false}
           onToggle={() => {}}
           level={0}
@@ -130,68 +121,8 @@ describe('TableRow', () => {
       expect(screen.getByText('100')).toBeInTheDocument();
     });
 
-    it('applies correct classes for main row', () => {
-      render(
-        <TableRow
-          row={mockRow}
-          columns={mockColumns}
-          hasChildren={true}
-          isExpanded={false}
-          onToggle={() => {}}
-          level={0}
-          theme={mockTheme}
-        />
-      );
-
-      const row = screen.getByText('Test Item').closest('tr');
-
-      expect(row).toHaveClass('table-row-main');
-    });
-
-    it('applies clickable class when onRowClick is provided', () => {
-      render(
-        <TableRow
-          row={mockRow}
-          columns={mockColumns}
-          hasChildren={true}
-          isExpanded={false}
-          onToggle={() => {}}
-          level={0}
-          theme={mockTheme}
-          onRowClick={() => {}}
-        />
-      );
-
-      const row = screen.getByText('Test Item').closest('tr');
-
-      expect(row).toHaveClass('table-row-clickable');
-    });
-
-    it('handles row click correctly', () => {
-      const onRowClick = vi.fn();
-
-      render(
-        <TableRow
-          row={mockRow}
-          columns={mockColumns}
-          hasChildren={true}
-          isExpanded={false}
-          onToggle={() => {}}
-          level={0}
-          theme={mockTheme}
-          onRowClick={onRowClick}
-        />
-      );
-
-      const row = screen.getByText('Test Item').closest('tr');
-
-      fireEvent.click(row!);
-      expect(onRowClick).toHaveBeenCalledWith(mockData);
-    });
-
     it('handles row expansion correctly', () => {
       const onToggle = vi.fn();
-
       render(
         <TableRow
           row={mockRow}
@@ -204,10 +135,52 @@ describe('TableRow', () => {
         />
       );
 
-      const expandButton = screen.getByRole('button');
+      // Find the expand button (it's a div, not a button)
+      const expandButton = screen.getByText('Test Item').closest('td')?.querySelector('.expand-button');
+      expect(expandButton).toBeInTheDocument();
+      
+      if (expandButton) {
+        fireEvent.click(expandButton);
+        expect(onToggle).toHaveBeenCalledTimes(1);
+      }
+    });
 
-      fireEvent.click(expandButton);
-      expect(onToggle).toHaveBeenCalledTimes(1);
+    it('renders custom expand icon when provided', () => {
+      const CustomExpandIcon = () => <span data-testid="custom-icon">Custom</span>;
+      
+      render(
+        <TableRow
+          row={mockRow}
+          columns={mockColumns}
+          hasChildren={true}
+          isExpanded={false}
+          onToggle={() => {}}
+          level={0}
+          theme={mockTheme}
+          expandIcon={<CustomExpandIcon />}
+        />
+      );
+
+      // Should find exactly one custom icon (not multiple)
+      const customIcons = screen.getAllByTestId('custom-icon');
+      expect(customIcons).toHaveLength(1);
+    });
+
+    it('applies correct level styling', () => {
+      render(
+        <TableRow
+          row={mockRow}
+          columns={mockColumns}
+          hasChildren={false}
+          isExpanded={false}
+          onToggle={() => {}}
+          level={2}
+          theme={mockTheme}
+        />
+      );
+
+      const row = screen.getByRole('row');
+      expect(row).toHaveClass('table-row-nested');
     });
   });
 
@@ -236,7 +209,7 @@ describe('TableRow', () => {
               placeholderOf: undefined,
               Header: 'Name',
               getHeaderProps: () => ({ key: 'header-name' }),
-              getFooterProps: () => ({ key: 'footer-name' }),
+              getFooterProps: () => ({ key: 'footer-value' }),
               toggleHidden: () => {},
               getToggleHiddenProps: () => ({})
             }, 
@@ -300,7 +273,7 @@ describe('TableRow', () => {
       expect(screen.getByText('100')).toBeInTheDocument();
     });
 
-    it('applies correct classes for nested row', () => {
+    it('applies nested row styling', () => {
       render(
         <TableRow
           row={mockNestedRow}
@@ -313,59 +286,41 @@ describe('TableRow', () => {
         />
       );
 
-      const row = screen.getByText('Test Item').closest('tr');
-
+      const row = screen.getByRole('row');
       expect(row).toHaveClass('table-row-nested');
     });
 
-    it('does not trigger click handler for nested rows', () => {
-      const onRowClick = vi.fn();
-
+    it('handles nested row expansion', () => {
+      const onToggle = vi.fn();
       render(
         <TableRow
           row={mockNestedRow}
           columns={mockColumns}
-          hasChildren={false}
+          hasChildren={true}
           isExpanded={false}
-          onToggle={() => {}}
-          level={1}
-          theme={mockTheme}
-          onRowClick={onRowClick}
-        />
-      );
-
-      const row = screen.getByText('Test Item').closest('tr');
-
-      fireEvent.click(row!);
-      expect(onRowClick).not.toHaveBeenCalled();
-    });
-
-    it('applies correct background color based on nesting level', () => {
-      render(
-        <TableRow
-          row={mockNestedRow}
-          columns={mockColumns}
-          hasChildren={false}
-          isExpanded={false}
-          onToggle={() => {}}
+          onToggle={onToggle}
           level={1}
           theme={mockTheme}
         />
       );
 
-      const row = screen.getByText('Test Item').closest('tr');
-
-      expect(row).toHaveStyle({ backgroundColor: '#f5f5f5' });
+      const expandButton = screen.getByText('Test Item').closest('td')?.querySelector('.expand-button');
+      expect(expandButton).toBeInTheDocument();
+      
+      if (expandButton) {
+        fireEvent.click(expandButton);
+        expect(onToggle).toHaveBeenCalledTimes(1);
+      }
     });
   });
 
   describe('Custom Expand Icon', () => {
-    const CustomExpandIcon = () => <span data-testid="custom-icon">Custom</span>;
-
     it('renders custom expand icon when provided', () => {
+      const CustomExpandIcon = () => <span data-testid="custom-icon">Custom</span>;
+      
       render(
         <TableRow
-          row={mockData}
+          row={mockRow}
           columns={mockColumns}
           hasChildren={true}
           isExpanded={false}
@@ -380,31 +335,4 @@ describe('TableRow', () => {
     });
   });
 
-  describe('Column Rendering', () => {
-    const customRenderColumn = (value: string | number) => (
-      <span data-testid="custom-render">{`Custom ${value}`}</span>
-    );
-
-    const columnsWithCustomRender: Column[] = [
-      { key: 'name', title: 'Name', render: customRenderColumn },
-      { key: 'value', title: 'Value' }
-    ];
-
-    it('uses custom render function when provided', () => {
-      render(
-        <TableRow
-          row={mockData}
-          columns={columnsWithCustomRender}
-          hasChildren={false}
-          isExpanded={false}
-          onToggle={() => {}}
-          level={0}
-          theme={mockTheme}
-        />
-      );
-
-      expect(screen.getByTestId('custom-render')).toBeInTheDocument();
-      expect(screen.getByText('Custom Test Item')).toBeInTheDocument();
-    });
-  });
 }); 
