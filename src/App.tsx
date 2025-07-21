@@ -1027,7 +1027,7 @@ const App: React.FC = () => {
       key: 'resourceType',
       title: 'Resource Type',
       filterable: true,
-      render: (value: string | number, item: any) => (
+      render: (value: string | number, item: DataItem) => (
         <ResourceTypeCell 
           value={value as string} 
           imageURL={item.imageURL}
@@ -1063,7 +1063,7 @@ const App: React.FC = () => {
       title: 'Actions',
       filterable: false,
       sortable: false,
-      render: (value: string | number, item: any) => (
+      render: (value: string | number, item: DataItem) => (
         <ActionsCell item={item} onDeleteClick={handleDeleteClick} onEditClick={handleEditClick} />
       ),
     },

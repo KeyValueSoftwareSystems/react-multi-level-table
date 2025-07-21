@@ -44,32 +44,38 @@
 .main-table-container th:nth-child(1),
 .main-table-container td:nth-child(1) {
   width: 22%; /* Resource Type - reduced slightly */
+  text-align: left;
 }
 
 .main-table-container th:nth-child(2),
 .main-table-container td:nth-child(2) {
   width: 18%; /* Name - reduced slightly */
+  text-align: left;
 }
 
 .main-table-container th:nth-child(3),
 .main-table-container td:nth-child(3) {
   width: 18%; /* Date & Time - reduced slightly */
+  text-align: left;
 }
 
 .main-table-container th:nth-child(4),
 .main-table-container td:nth-child(4) {
   width: 12%; /* Status - reduced slightly */
+  text-align: left;
 }
 
 .main-table-container th:nth-child(5),
 .main-table-container td:nth-child(5) {
   width: 12%; /* Orchestration - reduced slightly */
+  text-align: left;
 }
 
 .main-table-container th:nth-child(6),
 .main-table-container td:nth-child(6) {
   width: 8%; /* Actions - increased for better spacing */
   padding-right: 24px; /* Add end spacing to actions column */
+  text-align: left;
 }
 
 .selection-header,
@@ -137,6 +143,7 @@
   padding: 18px 16px;
   vertical-align: middle;
   box-sizing: border-box;
+  text-align: left;
 }
 
 .main-table-container tr:last-child td {

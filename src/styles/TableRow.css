@@ -63,8 +63,11 @@
 }
 
 .placeholder-spacer {
-  width: 24px;
-  margin-right: -16px;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 .delete-button {
@@ -90,6 +93,7 @@
   margin: 0 8px 0 0;
   vertical-align: middle;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .row-checkbox:checked {

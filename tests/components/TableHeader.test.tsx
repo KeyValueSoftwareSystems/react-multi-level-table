@@ -1,10 +1,11 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+
+import { fireEvent, render, screen } from '@testing-library/react';
+import type { HeaderGroup } from 'react-table';
+import { describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
 
 import { TableHeader } from '../../src/components/TableHeader';
-import type { HeaderGroup } from 'react-table';
 import type { DataItem } from '../../src/types/types';
 
 const mockTheme = {
@@ -70,6 +71,7 @@ describe('TableHeader', () => {
     renderTableHeader();
 
     const headers = screen.getAllByRole('columnheader');
+
     headers.forEach(header => {
       expect(header).toHaveStyle({
         backgroundColor: mockTheme.table?.header?.background,
@@ -92,6 +94,7 @@ describe('TableHeader', () => {
 
     // Only the sorted column should have SVG elements
     const svgElements = document.querySelectorAll('svg');
+
     expect(svgElements.length).toBeGreaterThan(0);
   });
 
@@ -108,6 +111,7 @@ describe('TableHeader', () => {
     });
 
     const nameHeader = screen.getByText('Name');
+
     fireEvent.click(nameHeader);
     expect(onSortClick).toHaveBeenCalled();
   });
@@ -120,6 +124,7 @@ describe('TableHeader', () => {
     });
 
     const checkbox = screen.getByRole('checkbox');
+
     expect(checkbox).toBeInTheDocument();
     expect(checkbox).not.toBeChecked();
   });
@@ -132,11 +137,13 @@ describe('TableHeader', () => {
     });
 
     const checkbox = screen.getByRole('checkbox');
+
     expect(checkbox).toBeChecked();
   });
 
   it('calls onSelectAll when checkbox is clicked', () => {
     const onSelectAllMock = vi.fn();
+
     renderTableHeader({
       selectable: true,
       isAllSelected: false,
@@ -144,6 +151,7 @@ describe('TableHeader', () => {
     });
 
     const checkbox = screen.getByRole('checkbox');
+
     fireEvent.click(checkbox);
     expect(onSelectAllMock).toHaveBeenCalled();
   });
@@ -161,6 +169,7 @@ describe('TableHeader', () => {
 
     // Check that SVG elements are present (sort icons)
     const svgElements = document.querySelectorAll('svg');
+
     expect(svgElements.length).toBeGreaterThan(0);
   });
 
@@ -177,6 +186,7 @@ describe('TableHeader', () => {
 
     // The disabled sort column should not have click handlers
     const nameHeader = screen.getByText('Name');
+
     expect(nameHeader.closest('span')).toHaveStyle({ cursor: 'default' });
   });
 
@@ -205,6 +215,7 @@ describe('TableHeader', () => {
 
     // Check for SVG elements (the actual sort icons)
     const svgElements = document.querySelectorAll('svg');
+
     expect(svgElements.length).toBeGreaterThan(0);
   });
 
@@ -213,6 +224,7 @@ describe('TableHeader', () => {
 
     // When no columns are sorted, no SVG elements should be present
     const svgElements = document.querySelectorAll('svg');
+
     expect(svgElements.length).toBe(0);
   });
 

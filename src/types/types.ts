@@ -55,6 +55,37 @@ export interface SelectionState {
   isAllSelected: boolean;
 }
 
+import type { ThemeProps } from './theme';
+
+export interface DropdownProps {
+  isOpen?: boolean;
+  onClose: () => void;
+  onToggle?: (isOpen: boolean) => void;
+  selectedValues?: Set<string | number>;
+  onFilterChange?: (values: Set<string | number>) => void;
+  options?: FilterOption[];
+  theme?: ThemeProps;
+  // Common filter props
+  tempSelectedValues?: Set<string | number>;
+  selectedCategory?: string | null;
+  categories?: Array<{
+    key: string;
+    title: string;
+    count: number;
+  }>;
+  categoryFilterOptions?: FilterOption[];
+  onApply?: (values: Set<string | number>) => void;
+  onCancel?: () => void;
+  onReset?: () => void;
+  onCategoryChange?: (categoryKey: string) => void;
+  onSelectAll?: () => void;
+  onOptionChange?: (value: string | number) => void;
+  // Export props
+  handleExportCSV?: () => void;
+  // Additional properties
+  [key: string]: unknown;
+}
+
 export interface ButtonConfig {
   id: string;
   icon: React.ComponentType<{ width?: number; height?: number }>;
@@ -69,6 +100,6 @@ export interface ButtonConfig {
   customStyle?: React.CSSProperties;
   dropdown?: {
     component: React.ComponentType<any>;
-    props: Record<string, any>;
+    props: Record<string, unknown>;
   };
 } 

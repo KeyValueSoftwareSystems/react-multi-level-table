@@ -1,9 +1,10 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { vi } from 'vitest';
+
+import { fireEvent, render, screen } from '@testing-library/react';
+import type { Cell } from 'react-table';
+import { describe, expect, it, vi } from 'vitest';
 
 import { TableCell } from '../../src/components/TableCell';
-import type { Cell } from 'react-table';
 import type { DataItem } from '../../src/types/types';
 
 const mockTheme = {
@@ -20,7 +21,7 @@ const mockTheme = {
   },
 };
 
-const mockCell: Cell<DataItem> = {
+const mockCell = {
   getCellProps: () => ({
     key: 'test-cell',
     role: 'cell',
@@ -28,8 +29,30 @@ const mockCell: Cell<DataItem> = {
   render: () => 'Test Cell Content',
   column: {
     id: 'test',
+    Header: 'Test Column',
+    accessor: 'test',
+    disableSortBy: false,
+    disableFilters: false,
   },
-} as Cell<DataItem>;
+  row: {
+    id: '1',
+    original: {
+      id: 1,
+      name: 'Test Item',
+      status: 'active',
+      resourceType: 'Application',
+      dateTime: '2024-01-01',
+      orchestration: 'ECS',
+    },
+    index: 0,
+    subRows: [],
+    depth: 0,
+    values: {},
+    getRowProps: () => ({}),
+    cells: [],
+  },
+  value: 'Test Cell Content',
+} as unknown as Cell<DataItem>;
 
 describe('TableCell', () => {
   const defaultProps = {
@@ -56,22 +79,25 @@ describe('TableCell', () => {
     });
 
     const expandButton = screen.getByText('Test Cell Content').closest('td')?.querySelector('.expand-button');
+
     expect(expandButton).toBeInTheDocument();
   });
 
   it('calls onToggle when expand button is clicked', () => {
     const onToggleMock = vi.fn();
+
     renderTableCell({
       hasChildren: true,
       onToggle: onToggleMock,
     });
 
     const expandButton = screen.getByText('Test Cell Content').closest('td')?.querySelector('.expand-button');
+
     expect(expandButton).toBeInTheDocument();
     
     if (expandButton) {
-      fireEvent.click(expandButton);
-      expect(onToggleMock).toHaveBeenCalledTimes(1);
+    fireEvent.click(expandButton);
+    expect(onToggleMock).toHaveBeenCalledTimes(1);
     }
   });
 
@@ -84,6 +110,7 @@ describe('TableCell', () => {
     });
 
     const checkbox = screen.getByRole('checkbox');
+
     expect(checkbox).toBeInTheDocument();
     expect(checkbox).not.toBeChecked();
   });
@@ -97,11 +124,13 @@ describe('TableCell', () => {
     });
 
     const checkbox = screen.getByRole('checkbox');
+
     expect(checkbox).toBeChecked();
   });
 
   it('calls onRowSelect when checkbox is clicked', () => {
     const onRowSelectMock = vi.fn();
+
     renderTableCell({
       selectable: true,
       isRowSelected: false,
@@ -110,6 +139,7 @@ describe('TableCell', () => {
     });
 
     const checkbox = screen.getByRole('checkbox');
+
     fireEvent.click(checkbox);
     expect(onRowSelectMock).toHaveBeenCalledWith(1);
   });
@@ -132,6 +162,7 @@ describe('TableCell', () => {
 
     const cell = screen.getByRole('cell');
     const placeholder = cell.querySelector('.placeholder-spacer');
+
     expect(placeholder).toBeInTheDocument();
   });
 
@@ -143,6 +174,7 @@ describe('TableCell', () => {
 
     const cell = screen.getByRole('cell');
     const placeholder = cell.querySelector('.placeholder-spacer');
+
     expect(placeholder).not.toBeInTheDocument();
   });
 
@@ -153,6 +185,7 @@ describe('TableCell', () => {
 
     const cell = screen.getByRole('cell');
     const placeholder = cell.querySelector('.placeholder-spacer');
+
     expect(placeholder).not.toBeInTheDocument();
   });
 
@@ -160,6 +193,7 @@ describe('TableCell', () => {
     renderTableCell();
 
     const cell = screen.getByRole('cell');
+
     expect(cell).toHaveStyle({
       color: mockTheme.table?.cell?.textColor,
       borderColor: mockTheme.table?.cell?.borderColor,

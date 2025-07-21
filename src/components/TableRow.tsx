@@ -128,7 +128,7 @@ export const TableRow: React.FC<TableRowProps> = ({
               }}
             >
               <div className="table-cell-content" style={tableRowTypography}>
-                {index === 0 && selectable && (
+                {index === 0 && selectable && level === 0 && (
                   <input
                     type="checkbox"
                     checked={isRowSelected}
@@ -144,7 +144,7 @@ export const TableRow: React.FC<TableRowProps> = ({
                 )}
 
                 {/* Add placeholder for child rows to maintain alignment with parent rows */}
-                {index === 0 && !selectable && (
+                {index === 0 && (level > 0 || !selectable) && (
                   <div className="placeholder-spacer" />
                 )}
 

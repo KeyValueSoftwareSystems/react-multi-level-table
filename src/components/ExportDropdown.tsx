@@ -5,7 +5,7 @@ import '../styles/ExportDropdown.css';
 
 interface ExportDropdownProps {
   onClose: () => void;
-  handleExportCSV: () => void;
+  handleExportCSV?: () => void;
   theme?: {
     colors?: {
       background?: string;
@@ -33,7 +33,9 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({
   }, [onClose]);
 
   const handleExportCSVClick = () => {
-    handleExportCSV();
+    if (handleExportCSV) 
+      handleExportCSV();
+    
     onClose();
   };
 

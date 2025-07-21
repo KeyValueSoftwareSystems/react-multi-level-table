@@ -1023,24 +1023,24 @@ const App: React.FC = () => {
   };
 
   const columns: Column[] = [
-    {
-      key: 'resourceType',
-      title: 'Resource Type',
-      filterable: true,
-      render: (value: string | number, item: any) => (
+  {
+    key: 'resourceType',
+    title: 'Resource Type',
+    filterable: true,
+      render: (value: string | number, item: DataItem) => (
         <ResourceTypeCell 
           value={value as string} 
           imageURL={item.imageURL}
           subtext={item.subtext}
         />
       ),
-    },
-    {
-      key: 'name',
-      title: 'Name',
-      filterable: true,
-    },
-    {
+  },
+  {
+    key: 'name',
+    title: 'Name',
+    filterable: true,
+  },
+  {
       key: 'dateTime',
       title: 'Date & Time',
       filterable: true,
@@ -1048,22 +1048,22 @@ const App: React.FC = () => {
     {
       key: "status",
       title: "Status",
-      filterable: true,
-      render: (value: string | number) => (
+    filterable: true,
+    render: (value: string | number) => (
         <StatusCell value={value as string} theme={theme} />
-      ),
-    },
-    {
-      key: 'orchestration',
-      title: 'Orchestration',
-      filterable: true,
-    },
+    ),
+  },
+  {
+    key: 'orchestration',
+    title: 'Orchestration',
+    filterable: true,
+  },
     {
       key: 'actions',
       title: 'Actions',
       filterable: false,
       sortable: false,
-      render: (value: string | number, item: any) => (
+      render: (_value: string | number, item: DataItem) => (
         <ActionsCell item={item} onDeleteClick={handleDeleteClick} onEditClick={handleEditClick} />
       ),
     },
@@ -1126,7 +1126,7 @@ const App: React.FC = () => {
         {/* {selectedRows.size > 0 && (
           <div className="selection-info" >
             Selected rows: {Array.from(selectedRows).join(', ')}
-          </div>
+      </div>
         )} */}
       </main>
 
@@ -1161,7 +1161,7 @@ const App: React.FC = () => {
         isOpen={showSidePanel}
         onClose={handleSidePanelClose}
         item={selectedItem}
-        theme={theme}
+          theme={theme}
         isNameEditable={true}
         isDateTimeEditable={true}
         isOrchestrationEditable={true}
@@ -1174,8 +1174,8 @@ const App: React.FC = () => {
         onClose={handleRowDetailsPopupClose}
         item={selectedRowItem}
         theme={theme}
-      />
-    </div>
+        />
+      </div>
   );
 };
 

@@ -104,7 +104,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                           style={{ marginRight: 8, cursor: "pointer" }}
                         />
                       )}
-                      <span style={{width: "12px"}}/>
+                      <span style={{width: "16px"}}/>
                       <span
                         style={{
                           display: "inline-flex",
