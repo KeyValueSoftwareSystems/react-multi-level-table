@@ -2,8 +2,9 @@ import React, { useMemo } from "react";
 
 import type { Cell, Row } from "react-table";
 
-import { ExpandIcon } from "./ExpandIcon";
+import { ExpandIcon } from "./icons";
 import { TableCell } from "./TableCell";
+import { tableRowTypography } from "../styles/style";
 import type { ThemeProps } from "../types/theme";
 import type { Column, DataItem } from "../types/types";
 
@@ -38,6 +39,8 @@ interface TableRowProps {
   isRowSelected?: boolean;
   onRowSelect?: (rowId: number) => void;
   onRowClick?: (row: DataItem) => void;
+  onDelete?: (rowId: string | number, itemName: string) => void;
+  isParentRow?: boolean;
 }
 
 /**
@@ -59,6 +62,7 @@ export const TableRow: React.FC<TableRowProps> = ({
   isRowSelected = false,
   onRowSelect,
   onRowClick,
+  isParentRow = false,
 }) => {
   const getRowClassName = useMemo(() => {
     const classes = [];
@@ -116,24 +120,36 @@ export const TableRow: React.FC<TableRowProps> = ({
                 borderColor: theme.table?.cell?.borderColor,
               }}
             >
-              <div className="table-cell-content">
-                {index === 0 && selectable && (
+              <div className="table-cell-content" style={tableRowTypography}>
+                {index === 0 && selectable && level === 0 && (
                   <input
                     type="checkbox"
                     checked={isRowSelected}
-                    onChange={() => onRowSelect?.(dataItem.id)}
-                    style={{ marginRight: 8, cursor: 'pointer' }}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      onRowSelect?.(dataItem.id);
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="row-checkbox checkbox-wrapper"
                   />
                 )}
-                {hasChildren && index === 0 ? (
-                  <button onClick={handleExpandClick} className="expand-button">
-                    {expandIcon || (
-                      <ExpandIcon isExpanded={isExpanded} theme={theme} />
-                    )}
-                  </button>
-                ) : (
-                  <div className="expand-button" />
+
+                {/* Add placeholder for child rows to maintain alignment with parent rows */}
+                {index === 0 && (level > 0 || !selectable) && (
+                  <div className="placeholder-spacer" />
                 )}
+
+                <div 
+                  onClick={handleExpandClick}
+                  className={`expand-button ${isParentRow || index !== 0 ? 'parent-row-expand-button' : 'nested-row-expand-button'} ${hasChildren && index === 0 ? 'expand-button-visible' : 'expand-button-hidden'}`}
+                >
+                  {expandIcon || (
+                    <ExpandIcon isExpanded={isExpanded} theme={theme} mode="expand" />
+                  )}
+                </div>
+                
                 {column.render 
                   ? column.render(displayValue, dataItem)
                   : String(displayValue)}
@@ -164,13 +180,13 @@ export const TableRow: React.FC<TableRowProps> = ({
           hasChildren={hasChildren && index === 0}
           isExpanded={isExpanded}
           onToggle={onToggle}
-          paddingLeft={level > 0 ? 32 + level * 16 : 0}
           theme={theme}
           expandIcon={expandIcon}
           selectable={selectable && index === 0}
           isRowSelected={isRowSelected}
           onRowSelect={onRowSelect}
           rowId={tableRow.original.id}
+          index={index}
         />
       ))}
     </tr>

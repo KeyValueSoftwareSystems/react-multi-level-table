@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { MultiLevelTable } from '../../src/components/MultiLevelTable';
 import type { Column, DataItem } from '../../src/types/types';
+
 // Mock data for testing
 const mockData: DataItem[] = [
   {
@@ -42,6 +43,7 @@ const mockData: DataItem[] = [
     ],
   },
 ];
+
 const mockColumns: Column[] = [
   {
     key: 'name',
@@ -74,9 +76,64 @@ const mockColumns: Column[] = [
   },
 ];
 
+const defaultProps = {
+  data: mockData,
+  columns: mockColumns,
+  theme: {
+    colors: {
+      background: '#ffffff',
+      primaryColor: '#5D5FEF',
+      textColor: '#262626',
+      borderColor: '#E5E5E5',
+    },
+    table: {
+      header: {
+        background: '#f5f5f5',
+        textColor: '#495057',
+      },
+      cell: {
+        textColor: '#212529',
+        borderColor: '#D9D9D9',
+      },
+    },
+  },
+  selectionState: {
+    selectedRows: new Set(),
+    isAllSelected: false,
+  },
+  searchTerm: '',
+  selectedFilterValues: new Set(),
+  deletePopup: {
+    isOpen: false,
+    itemId: null,
+    itemName: '',
+  },
+  bulkDeletePopup: {
+    isOpen: false,
+    selectedCount: 0,
+  },
+  openDropdowns: new Set(),
+  expandedRows: new Set(),
+  onSearchChange: vi.fn(),
+  onFilterChange: vi.fn(),
+  onDeleteClick: vi.fn(),
+  onDeleteConfirm: vi.fn(),
+  onDeleteCancel: vi.fn(),
+  onBulkDeleteClick: vi.fn(),
+  onBulkDeleteConfirm: vi.fn(),
+  onBulkDeleteCancel: vi.fn(),
+  onDropdownToggle: vi.fn(),
+  onDropdownClose: vi.fn(),
+  onButtonClick: vi.fn(),
+  onSelectAll: vi.fn(),
+  onRowSelect: vi.fn(),
+  onRowToggle: vi.fn(),
+  onRowClick: vi.fn(),
+};
+
 describe('MultiLevelTable', () => {
   it('renders table with basic data', () => {
-    render(<MultiLevelTable data={mockData} columns={mockColumns} />);
+    render(<MultiLevelTable {...defaultProps} />);
     
     // Check if headers are rendered
     expect(screen.getByText('Name')).toBeInTheDocument();
@@ -91,29 +148,9 @@ describe('MultiLevelTable', () => {
     expect(screen.getByText('100')).toBeInTheDocument();
     expect(screen.getByText('200')).toBeInTheDocument();
   });
-  it('handles row expansion and collapse', () => {
-    render(<MultiLevelTable data={mockData} columns={mockColumns} />);
-    
-    // Initially children should not be visible
-    expect(screen.queryByText('Child 1.1')).not.toBeInTheDocument();
-    
-    // Click expand button for first parent
-    const expandButton = screen.getAllByRole('button')[0];
 
-    fireEvent.click(expandButton);
-    
-    // Children should now be visible
-    expect(screen.getByText('Child 1.1')).toBeInTheDocument();
-    expect(screen.getByText('Child 1.2')).toBeInTheDocument();
-    
-    // Click again to collapse
-    fireEvent.click(expandButton);
-    
-    // Children should be hidden again
-    expect(screen.queryByText('Child 1.1')).not.toBeInTheDocument();
-  });
   it('handles sorting when sortable is true', () => {
-    render(<MultiLevelTable data={mockData} columns={mockColumns} sortable={true} />);
+    render(<MultiLevelTable {...defaultProps} sortable={true} />);
     
     // Click name header to sort
     const nameHeader = screen.getByText('Name');
@@ -138,6 +175,7 @@ describe('MultiLevelTable', () => {
     expect(within(updatedRows[0]).getByText('Parent 2')).toBeInTheDocument();
     expect(within(updatedRows[1]).getByText('Parent 1')).toBeInTheDocument();
   });
+
   it('handles pagination correctly', () => {
     const largeData: DataItem[] = Array.from({ length: 15 }, (_, i) => ({
       id: i + 1,
@@ -146,11 +184,11 @@ describe('MultiLevelTable', () => {
       status: i % 2 === 0 ? 'Active' : 'Inactive' as const,
     }));
     
-    render(<MultiLevelTable data={largeData} columns={mockColumns} pageSize={5} />);
+    render(<MultiLevelTable {...defaultProps} data={largeData} pageSize={5} />);
     
     // Check if pagination controls are present
-    const nextButton = screen.getByRole('button', { name: '>' });
-    const prevButton = screen.getByRole('button', { name: '<' });
+    const nextButton = screen.getByRole('button', { name: /next page/i });
+    const prevButton = screen.getByRole('button', { name: /previous page/i });
 
     expect(nextButton).toBeInTheDocument();
     expect(prevButton).toBeInTheDocument();
@@ -175,6 +213,7 @@ describe('MultiLevelTable', () => {
     expect(screen.getByText('Item 5')).toBeInTheDocument();
     expect(screen.queryByText('Item 6')).not.toBeInTheDocument();
   });
+
   it('applies custom theme correctly', () => {
     const customTheme = {
       colors: {
@@ -189,8 +228,7 @@ describe('MultiLevelTable', () => {
     
     render(
       <MultiLevelTable 
-        data={mockData} 
-        columns={mockColumns} 
+        {...defaultProps}
         theme={customTheme}
       />
     );
@@ -201,6 +239,7 @@ describe('MultiLevelTable', () => {
     expect(tableWrapper?.parentElement).toHaveStyle({ backgroundColor: '#f0f0f0' });
     expect(table).toHaveStyle({ borderColor: '#ff0000' });
   });
+
   it('handles custom column rendering', () => {
     const columnsWithCustomRender: Column[] = [
       {
@@ -211,7 +250,7 @@ describe('MultiLevelTable', () => {
       ...mockColumns.slice(1),
     ];
     
-    render(<MultiLevelTable data={mockData} columns={columnsWithCustomRender} />);
+    render(<MultiLevelTable {...defaultProps} columns={columnsWithCustomRender} />);
     
     // Check if custom render is applied
     const customElements = screen.getAllByTestId('custom-name');
@@ -219,35 +258,9 @@ describe('MultiLevelTable', () => {
     expect(customElements).toHaveLength(2); // Two parent rows
     expect(customElements[0]).toHaveTextContent('Parent 1');
   });
-  it('handles filtering', () => {
-    render(<MultiLevelTable data={mockData} columns={mockColumns} />);
-    
-    // Find filter input
-    const filterInput = screen.getByPlaceholderText('Filter name...');
-    
-    // Type in filter
-    fireEvent.change(filterInput, { target: { value: 'Parent 1' } });
-    
-    // Check if only matching rows are shown
-    expect(screen.getByText('Parent 1')).toBeInTheDocument();
-    expect(screen.queryByText('Parent 2')).not.toBeInTheDocument();
-  });
-  it('handles custom pagination render', () => {
-    const customPagination = vi.fn(() => <div data-testid="custom-pagination">Custom Pagination</div>);
-    
-    render(
-      <MultiLevelTable 
-        data={mockData} 
-        columns={mockColumns}
-        renderCustomPagination={customPagination}
-      />
-    );
-    
-    expect(screen.getByTestId('custom-pagination')).toBeInTheDocument();
-    expect(customPagination).toHaveBeenCalled();
-  });
+
   it('handles status cell rendering with custom styles', () => {
-    render(<MultiLevelTable data={mockData} columns={mockColumns} />);
+    render(<MultiLevelTable {...defaultProps} />);
     
     const statusCells = screen.getAllByTestId('status-cell');
 

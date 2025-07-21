@@ -2,6 +2,7 @@ import React from "react";
 
 import type { HeaderGroup } from "react-table";
 
+import { ExpandIcon } from "./icons";
 import type { ThemeProps } from "../types/theme";
 import type { DataItem } from "../types/types";
 
@@ -43,7 +44,6 @@ type ColumnWithSorting = {
   render: (type: string) => React.ReactNode;
   isSorted?: boolean;
   isSortedDesc?: boolean;
-  Filter?: React.ComponentType<{ column: ColumnWithSorting }>;
   id: string;
   disableSortBy?: boolean;
   title?: string | React.ReactNode;
@@ -61,8 +61,6 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   headerGroups,
   theme,
   sortable = false,
-  ascendingIcon,
-  descendingIcon,
   selectable = false,
   isAllSelected = false,
   onSelectAll,
@@ -82,11 +80,14 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                   ? column.getHeaderProps(column.getSortByToggleProps())
                   : column.getHeaderProps();
 
-                const sortProps = isColumnSortable ? column.getSortByToggleProps() : {};
-                
+                const sortProps = isColumnSortable
+                  ? column.getSortByToggleProps()
+                  : {};
+
                 return (
                   <th
                     key={columnKey}
+                    className="fixed-width-col"
                     style={{
                       backgroundColor: theme.table?.header?.background,
                       color: theme.table?.header?.textColor,
@@ -99,37 +100,45 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                           type="checkbox"
                           checked={isAllSelected}
                           onChange={onSelectAll}
-                          style={{ marginRight: 8, cursor: 'pointer' }}
+                          className="row-checkbox"
+                          style={{ marginRight: 8, cursor: "pointer" }}
                         />
                       )}
+                      <span style={{width: "16px"}}/>
                       <span
-                        style={{ display: 'inline-flex', alignItems: 'center', cursor: isColumnSortable ? 'pointer' : 'default', userSelect: 'none' }}
-                        onClick={isColumnSortable ? (e: React.MouseEvent) => { e.stopPropagation(); (sortProps.onClick as (e: React.MouseEvent) => void)?.(e); } : undefined}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          cursor: isColumnSortable ? "pointer" : "default",
+                          userSelect: "none",
+                        }}
+                        onClick={
+                          isColumnSortable
+                            ? (e: React.MouseEvent) => {
+                              e.stopPropagation();
+                              (
+                                  sortProps.onClick as (
+                                    e: React.MouseEvent
+                                  ) => void
+                              )?.(e);
+                            }
+                            : undefined
+                        }
                       >
-                        {column.render('Header')}
-                        <span className="sort-icon" style={{ marginLeft: 4 }}>
-                          {column.isSorted
-                            ? column.isSortedDesc
-                              ? descendingIcon || "↓"
-                              : ascendingIcon || "↑"
-                            : " "}
-                        </span>
+                        {column.render("Header")}
+                        <ExpandIcon
+                          isExpanded={false}
+                          theme={theme}
+                          mode="sort"
+                          sortDirection={
+                            column.isSorted
+                              ? column.isSortedDesc
+                                ? 'desc'
+                                : 'asc'
+                              : undefined
+                          }
+                        />
                       </span>
-                      {column.Filter && (
-                        <div className="filter-container">
-                          <input
-                            className="filter-input"
-                            value={column.filterValue || ""}
-                            onChange={(e) => column.setFilter?.(e.target.value)}
-                            placeholder={`Filter ${typeof column.title === 'string' ? column.title : column.id}...`}
-                            style={{
-                              color: theme.table?.filter?.textColor,
-                              borderColor: theme.table?.filter?.borderColor,
-                              backgroundColor: theme.table?.filter?.background,
-                            }}
-                          />
-                        </div>
-                      )}
                     </div>
                   </th>
                 );

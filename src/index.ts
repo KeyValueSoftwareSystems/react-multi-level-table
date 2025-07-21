@@ -1,5 +1,9 @@
 export { MultiLevelTable } from './components/MultiLevelTable';
 export type { MultiLevelTableProps } from './components/MultiLevelTable'; 
+export { Button } from './components/Button';
+export { ButtonGroup } from './components/ButtonGroup';
+export { Popup } from './components/Popup';
+export { SidePanel } from './components/SidePanel';
 export type { DataItem } from './types/types';
 export type { Column } from './types/types';
 export type { TableStateWithPagination } from './types/types';

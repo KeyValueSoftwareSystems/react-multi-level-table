@@ -2,16 +2,16 @@ import type { ThemeProps } from "../types/theme";
 
 export const defaultTheme: ThemeProps = {
   colors: {
-    primaryColor: "#2c3e50",
-    textColor: "#2c3e50",
-    borderColor: "#e0e0e0",
+    primaryColor: "#5D5FEF",
+    textColor: "#262626",
+    borderColor: "#262626",
     background: "#ffffff",
   },
   table: {
     header: {
-      background: "#2c3e50",
-      textColor: "#ffffff",
-      borderColor: "#e0e0e0",
+      background: "#ffffff",
+      textColor: "#000000",
+      borderColor: "#262626",
     },
     row: {
       levelColors: [
@@ -21,27 +21,27 @@ export const defaultTheme: ThemeProps = {
       ],
     },
     cell: {
-      textColor: "#2c3e50",
-      borderColor: "#e0e0e0",
+      textColor: "#262626",
+      borderColor: "#D9D9D9",
       nestedPadding: "16px",
     },
   },
   pagination: {
     button: {
-      background: "#2c3e50",
-      textColor: "#ffffff",
+      background: "#ffffff",
+      textColor: "#262626",
       disabledOpacity: "0.5",
     },
     select: {
       background: "#ffffff",
-      textColor: "#2c3e50",
-      borderColor: "#e0e0e0",
+      textColor: "#262626",
+      borderColor: "#262626",
     },
     info: {
-      textColor: "#2c3e50",
+      textColor: "#000000",
     },
   },
   expandIcon: {
-    color: "#2c3e50",
+    color: "#262626",
   },
 };

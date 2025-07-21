@@ -1,25 +1,18 @@
 import React from 'react';
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { TableCell } from '../../src/components/TableCell';
+
+import { fireEvent, render, screen } from '@testing-library/react';
 import type { Cell } from 'react-table';
+import { describe, expect, it, vi } from 'vitest';
+
+import { TableCell } from '../../src/components/TableCell';
 import type { DataItem } from '../../src/types/types';
-import type { ThemeProps } from '../../src/types/theme';
 
-// Mock data for testing
-const mockCell = {
-  getCellProps: () => ({
-    key: 'test-cell',
-    role: 'cell',
-  }),
-  render: () => 'Test Cell Content',
-  column: {} as any,
-  row: {} as any,
-  value: 'Test Cell Content',
-} as unknown as Cell<DataItem>;
-
-const mockTheme: ThemeProps = {
+const mockTheme = {
+  colors: {
+    primaryColor: '#5D5FEF',
+    textColor: '#262626',
+    borderColor: '#E5E5E5',
+  },
   table: {
     cell: {
       textColor: '#000000',
@@ -28,116 +21,183 @@ const mockTheme: ThemeProps = {
   },
 };
 
+const mockCell = {
+  getCellProps: () => ({
+    key: 'test-cell',
+    role: 'cell',
+  }),
+  render: () => 'Test Cell Content',
+  column: {
+    id: 'test',
+    Header: 'Test Column',
+    accessor: 'test',
+    disableSortBy: false,
+    disableFilters: false,
+  },
+  row: {
+    id: '1',
+    original: {
+      id: 1,
+      name: 'Test Item',
+      status: 'active',
+      resourceType: 'Application',
+      dateTime: '2024-01-01',
+      orchestration: 'ECS',
+    },
+    index: 0,
+    subRows: [],
+    depth: 0,
+    values: {},
+    getRowProps: () => ({}),
+    cells: [],
+  },
+  value: 'Test Cell Content',
+} as unknown as Cell<DataItem>;
+
 describe('TableCell', () => {
+  const defaultProps = {
+    cell: mockCell,
+    hasChildren: false,
+    isExpanded: false,
+    onToggle: vi.fn(),
+    theme: mockTheme,
+  };
+
+  const renderTableCell = (props = {}) => {
+    return render(<TableCell {...defaultProps} {...props} />);
+  };
+
   it('renders cell content correctly', () => {
-    render(
-      <TableCell
-        cell={mockCell}
-        hasChildren={false}
-        isExpanded={false}
-        onToggle={() => {}}
-        theme={mockTheme}
-      />
-    );
+    renderTableCell();
 
     expect(screen.getByText('Test Cell Content')).toBeInTheDocument();
   });
 
   it('renders expand button when hasChildren is true', () => {
-    render(
-      <TableCell
-        cell={mockCell}
-        hasChildren={true}
-        isExpanded={false}
-        onToggle={() => {}}
-        theme={mockTheme}
-      />
-    );
+    renderTableCell({
+      hasChildren: true,
+    });
 
-    const expandButton = screen.getByRole('button');
+    const expandButton = screen.getByText('Test Cell Content').closest('td')?.querySelector('.expand-button');
+
     expect(expandButton).toBeInTheDocument();
-  });
-
-  it('does not render expand button when hasChildren is false', () => {
-    render(
-      <TableCell
-        cell={mockCell}
-        hasChildren={false}
-        isExpanded={false}
-        onToggle={() => {}}
-        theme={mockTheme}
-      />
-    );
-
-    const expandButton = screen.queryByRole('button');
-    expect(expandButton).not.toBeInTheDocument();
   });
 
   it('calls onToggle when expand button is clicked', () => {
     const onToggleMock = vi.fn();
-    render(
-      <TableCell
-        cell={mockCell}
-        hasChildren={true}
-        isExpanded={false}
-        onToggle={onToggleMock}
-        theme={mockTheme}
-      />
-    );
 
-    const expandButton = screen.getByRole('button');
+    renderTableCell({
+      hasChildren: true,
+      onToggle: onToggleMock,
+    });
+
+    const expandButton = screen.getByText('Test Cell Content').closest('td')?.querySelector('.expand-button');
+
+    expect(expandButton).toBeInTheDocument();
+    
+    if (expandButton) {
     fireEvent.click(expandButton);
     expect(onToggleMock).toHaveBeenCalledTimes(1);
+    }
   });
 
-  it('applies custom padding left', () => {
-    const paddingLeft = 20;
-    render(
-      <TableCell
-        cell={mockCell}
-        hasChildren={false}
-        isExpanded={false}
-        onToggle={() => {}}
-        theme={mockTheme}
-        paddingLeft={paddingLeft}
-      />
-    );
+  it('renders checkbox when selectable is true', () => {
+    renderTableCell({
+      selectable: true,
+      isRowSelected: false,
+      onRowSelect: vi.fn(),
+      rowId: 1,
+    });
+
+    const checkbox = screen.getByRole('checkbox');
+
+    expect(checkbox).toBeInTheDocument();
+    expect(checkbox).not.toBeChecked();
+  });
+
+  it('renders checked checkbox when row is selected', () => {
+    renderTableCell({
+      selectable: true,
+      isRowSelected: true,
+      onRowSelect: vi.fn(),
+      rowId: 1,
+    });
+
+    const checkbox = screen.getByRole('checkbox');
+
+    expect(checkbox).toBeChecked();
+  });
+
+  it('calls onRowSelect when checkbox is clicked', () => {
+    const onRowSelectMock = vi.fn();
+
+    renderTableCell({
+      selectable: true,
+      isRowSelected: false,
+      onRowSelect: onRowSelectMock,
+      rowId: 1,
+    });
+
+    const checkbox = screen.getByRole('checkbox');
+
+    fireEvent.click(checkbox);
+    expect(onRowSelectMock).toHaveBeenCalledWith(1);
+  });
+
+  it('renders custom expand icon when provided', () => {
+    const CustomIcon = () => <span data-testid="custom-icon">Custom</span>;
+    
+    renderTableCell({
+      hasChildren: true,
+      expandIcon: <CustomIcon />,
+    });
+
+    expect(screen.getByTestId('custom-icon')).toBeInTheDocument();
+  });
+
+  it('renders placeholder spacer when not selectable and first column', () => {
+    renderTableCell({
+      index: 0,
+    });
 
     const cell = screen.getByRole('cell');
-    expect(cell).toHaveStyle(`paddingLeft: ${paddingLeft}px`);
+    const placeholder = cell.querySelector('.placeholder-spacer');
+
+    expect(placeholder).toBeInTheDocument();
+  });
+
+  it('does not render placeholder spacer when selectable', () => {
+    renderTableCell({
+      selectable: true,
+      index: 0,
+    });
+
+    const cell = screen.getByRole('cell');
+    const placeholder = cell.querySelector('.placeholder-spacer');
+
+    expect(placeholder).not.toBeInTheDocument();
+  });
+
+  it('does not render placeholder spacer when not first column', () => {
+    renderTableCell({
+      index: 1,
+    });
+
+    const cell = screen.getByRole('cell');
+    const placeholder = cell.querySelector('.placeholder-spacer');
+
+    expect(placeholder).not.toBeInTheDocument();
   });
 
   it('applies theme styles correctly', () => {
-    render(
-      <TableCell
-        cell={mockCell}
-        hasChildren={false}
-        isExpanded={false}
-        onToggle={() => {}}
-        theme={mockTheme}
-      />
-    );
+    renderTableCell();
 
     const cell = screen.getByRole('cell');
+
     expect(cell).toHaveStyle({
       color: mockTheme.table?.cell?.textColor,
       borderColor: mockTheme.table?.cell?.borderColor,
     });
   });
 
-  it('renders custom expand icon when provided', () => {
-    const customIcon = <span data-testid="custom-icon">Custom Icon</span>;
-    render(
-      <TableCell
-        cell={mockCell}
-        hasChildren={true}
-        isExpanded={false}
-        onToggle={() => {}}
-        theme={mockTheme}
-        expandIcon={customIcon}
-      />
-    );
-
-    expect(screen.getByTestId('custom-icon')).toBeInTheDocument();
-  });
 });

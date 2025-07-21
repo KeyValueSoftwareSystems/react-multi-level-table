@@ -1,57 +1,95 @@
 import React from 'react';
-import { describe, it, expect } from 'vitest';
+
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+
 import '@testing-library/jest-dom';
 
-import { ExpandIcon } from '../../src/components/ExpandIcon';
+import { ExpandIcon } from '../../src/components/icons/ExpandIcon';
 import type { ThemeProps } from '../../src/types/theme';
 
-describe('ExpandIcon', () => {
-  const mockTheme: ThemeProps = {
-    expandIcon: {
-      color: '#000000',
-    },
-  };
+const mockTheme: ThemeProps = {
+  colors: {
+    primaryColor: '#5D5FEF',
+    textColor: '#262626',
+    borderColor: '#E5E5E5',
+  },
+  expandIcon: {
+    color: '#000000',
+  },
+};
 
-  it('renders expanded icon (▼) when isExpanded is true', () => {
-    render(<ExpandIcon isExpanded theme={mockTheme} />);
-    const icon = screen.getByText('▼');
-    expect(icon).toBeInTheDocument();
-    expect(icon).toHaveClass('expand-icon');
-    expect(icon).toHaveStyle({ color: '#000000' });
+describe('ExpandIcon', () => {
+  it('applies correct transform for expanded state', () => {
+    render(<ExpandIcon isExpanded theme={mockTheme} mode="expand" />);
+    
+    const expandIcon = document.querySelector('.expand-icon');
+    expect(expandIcon).toHaveStyle({ transform: 'rotate(90deg)' });
   });
 
-  it('renders collapsed icon (▶) when isExpanded is false', () => {
-    render(<ExpandIcon isExpanded={false} theme={mockTheme} />);
+  it('applies correct transform for collapsed state', () => {
+    render(<ExpandIcon isExpanded={false} theme={mockTheme} mode="expand" />);
+    
+    const expandIcon = document.querySelector('.expand-icon');
+    expect(expandIcon).toHaveStyle({ transform: 'rotate(0deg)' });
+  });
 
-    const icon = screen.getByText('▶');
-    expect(icon).toBeInTheDocument();
-    expect(icon).toHaveClass('expand-icon');
-    expect(icon).toHaveStyle({ color: '#000000' });
+  it('renders SVG element', () => {
+    render(<ExpandIcon isExpanded theme={mockTheme} mode="expand" />);
+    
+    const svg = document.querySelector('svg');
+    expect(svg).toBeInTheDocument();
+    expect(svg).toHaveAttribute('viewBox', '0 0 24 24');
+  });
+
+  it('renders expand icon with SVG', () => {
+    render(<ExpandIcon isExpanded theme={mockTheme} mode="expand" />);
+    
+    const svg = document.querySelector('svg');
+    expect(svg).toBeInTheDocument();
+    expect(svg).toHaveAttribute('width', '24');
+    expect(svg).toHaveAttribute('height', '24');
+  });
+
+  it('renders collapsed icon with SVG', () => {
+    render(<ExpandIcon isExpanded={false} theme={mockTheme} mode="expand" />);
+    
+    const svg = document.querySelector('svg');
+    expect(svg).toBeInTheDocument();
+    expect(svg).toHaveAttribute('width', '24');
+    expect(svg).toHaveAttribute('height', '24');
   });
 
   it('applies custom theme color when provided', () => {
     const customTheme: ThemeProps = {
+      ...mockTheme,
       expandIcon: {
         color: '#FF0000',
       },
     };
 
-    render(<ExpandIcon isExpanded theme={customTheme} />);
-
-    const icon = screen.getByText('▼');
-    expect(icon).toHaveStyle({ color: '#FF0000' });
+    render(<ExpandIcon isExpanded theme={customTheme} mode="expand" />);
+    
+    const svg = document.querySelector('svg');
+    expect(svg).toBeInTheDocument();
+    expect(svg).toHaveAttribute('width', '24');
+    expect(svg).toHaveAttribute('height', '24');
   });
 
   it('renders without theme color when not provided', () => {
-    const themeWithoutColor: ThemeProps = {};
+    const themeWithoutColor: ThemeProps = {
+      colors: {
+        primaryColor: '#5D5FEF',
+        textColor: '#262626',
+        borderColor: '#E5E5E5',
+      },
+    };
 
-    render(<ExpandIcon isExpanded theme={themeWithoutColor} />);
-
-    const icon = screen.getByText('▼');
-    expect(icon).toBeInTheDocument();
-    expect(icon).toHaveClass('expand-icon');
-    // Style should be empty or undefined when no color is provided
-    expect(icon.style.color).toBe('');
+    render(<ExpandIcon isExpanded theme={themeWithoutColor} mode="expand" />);
+    
+    const svg = document.querySelector('svg');
+    expect(svg).toBeInTheDocument();
+    expect(svg).toHaveAttribute('width', '24');
+    expect(svg).toHaveAttribute('height', '24');
   });
 }); 

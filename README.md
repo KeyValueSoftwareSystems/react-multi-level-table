@@ -82,17 +82,23 @@ const columns = [
     key: 'name',
     title: 'Name',
     filterable: true,
+      sortable: true,
+      width: '25%',
   },
   {
     key: 'value',
     title: 'Value',
     filterable: true,
+      sortable: true,
+      width: '20%',
     render: (value) => `$${value}`,
   },
   {
     key: 'status',
     title: 'Status',
     filterable: true,
+      sortable: true,
+      width: '15%',
     render: (value) => (
       <span style={{ 
         padding: '4px 8px',
@@ -136,6 +142,13 @@ The MultiLevelTable component accepts the following props:
 | expandIcon | ReactNode | No | - | Custom icon for expanding rows |
 | selectable | boolean | No | false | Enable/disable row selection |
 | onSelectionChange | function | No | - | Callback function when selection changes |
+| onRowClick | function | No | - | Callback function when a parent row is clicked |
+| onDelete | function | No | - | Callback function for row deletion |
+| searchable | boolean | No | true | Enable/disable global search functionality |
+| filterable | boolean | No | true | Enable/disable column filtering |
+| exportable | boolean | No | false | Enable/disable data export functionality |
+| exportFormats | array | No | ['csv', 'excel'] | Available export formats |
+| onExport | function | No | - | Custom export handler function |
 
 ## 3. Customization
 
@@ -151,6 +164,12 @@ Each column object should have the following properties:
 | filterable | boolean | No | Whether the column can be filtered |
 | sortable | boolean | No | Whether the column can be sorted |
 | customSortFn | function | No | Custom sorting function. Receives (rowA: DataItem, rowB: DataItem, columnId: string) as parameters |
+| width | string | No | Column width (e.g., '150px', '20%') |
+| minWidth | string | No | Minimum column width |
+| maxWidth | string | No | Maximum column width |
+| align | string | No | Text alignment ('left', 'center', 'right') |
+| className | string | No | Custom CSS class for the column |
+| style | object | No | Custom inline styles for the column |
 
 ### 3.2 Expand Icon Customization
 
@@ -186,6 +205,8 @@ The table supports row selection with the following props:
 | selectable | boolean | Enable/disable row selection functionality |
 | onSelectionChange | function | Callback function that receives a Set of selected row IDs |
 
+**Note**: Child rows (nested rows) do not display checkboxes. They automatically show placeholder spacers to maintain alignment with parent rows.
+
 ### 3.4 Sort Icons
 
 You can customize the sort icons for ascending and descending states:
@@ -205,7 +226,86 @@ You can customize the sort icons for ascending and descending states:
 | ascendingIcon | ReactNode | Custom icon component for ascending sort state |
 | descendingIcon | ReactNode | Custom icon component for descending sort state |
 
-### 3.5 Pagination
+### 3.5 Search and Filter Features
+
+The table provides comprehensive search and filtering capabilities:
+
+#### Global Search
+- **Searchable**: Enable/disable global search across all columns
+- **Search Input**: Real-time search with debounced input
+- **Search Icon**: Customizable search icon with proper positioning
+- **Placeholder Text**: Customizable placeholder text for search input
+
+#### Column Filtering
+- **Filterable Columns**: Individual columns can be marked as filterable
+- **Filter Dropdowns**: Dropdown-based filtering with multiple selection
+- **Filter Options**: Custom filter options for each column
+- **Filter State**: Maintains filter state across pagination
+
+**Important Note**: Search and filter features are currently implemented at the parent level only. Child rows (nested rows) are not included in search results or filter operations. This ensures consistent behavior and performance.
+
+#### Filter Configuration
+```tsx
+const columns = [
+  {
+    key: 'status',
+    title: 'Status',
+    filterable: true,
+    filterOptions: [
+      { label: 'Active', value: 'active' },
+      { label: 'Pending', value: 'pending' },
+      { label: 'Completed', value: 'completed' }
+    ]
+  }
+];
+```
+
+### 3.6 Export Functionality
+
+The table supports data export with customizable options:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| exportable | boolean | Enable/disable export functionality |
+| exportFormats | array | Available export formats (csv, excel, json) |
+| onExport | function | Custom export handler function |
+
+```tsx
+<MultiLevelTable
+  data={data}
+  columns={columns}
+  exportable={true}
+  exportFormats={['csv', 'excel']}
+  onExport={(data, format) => {
+    // Custom export logic
+    console.log('Exporting:', data, format);
+  }}
+/>
+```
+
+### 3.7 Row Actions
+
+The table supports row-level actions:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| onRowClick | function | Callback when parent row is clicked |
+| onDelete | function | Callback for row deletion with confirmation |
+
+```tsx
+<MultiLevelTable
+  data={data}
+  columns={columns}
+  onRowClick={(row) => {
+    console.log('Row clicked:', row);
+  }}
+  onDelete={(rowId, rowName) => {
+    console.log('Delete row:', rowId, rowName);
+  }}
+/>
+```
+
+### 3.8 Pagination
 
 The table component provides comprehensive pagination functionality. You can either use the default pagination or create a custom one using the pagination props:
 
@@ -274,9 +374,9 @@ const CustomPagination = ({
 />
 ```
 
-### 3.6 Theme Customization
+### 3.9 Theme Customization
 
-The table component supports theme customization through the `theme` prop. Here's the complete theme interface:
+The table component supports comprehensive theme customization through the `theme` prop. Here's the complete theme interface:
 
 ```tsx
 interface ThemeProps {
@@ -394,18 +494,78 @@ const theme = {
 ```
 
 The theme customization allows you to:
-- Customize global colors for the table
-- Style table components (header, cells, rows)
-- Configure nested level appearances
-- Customize filter and pagination components
-- Style the expand icon
+- **Global Colors**: Customize background, primary, text, and border colors
+- **Table Components**: Style headers, cells, and rows with custom colors and borders
+- **Nested Levels**: Configure different background colors for each nesting level
+- **Filter Components**: Customize filter dropdowns, inputs, and focus states
+- **Pagination**: Style pagination buttons, selects, and info text
+- **Icons**: Customize expand, sort, and action icon colors
+- **Responsive Design**: All theme properties support responsive breakpoints
+- **CSS Variables**: Theme properties can use CSS custom properties for dynamic theming
 
-## 4. Development
+## 4. Component Features and Customization
+
+### 4.1 MultiLevelTable Component
+- **Hierarchical Data**: Supports unlimited nesting levels with automatic indentation
+- **Responsive Design**: Percentage-based column widths with fixed table layout
+- **Performance Optimized**: Virtual scrolling support for large datasets
+- **Accessibility**: ARIA labels, keyboard navigation, and screen reader support
+- **Customizable Icons**: Replace default expand, sort, and action icons
+- **Event Handling**: Comprehensive callback system for all user interactions
+
+### 4.2 TableRow Component
+- **Level-based Styling**: Different background colors for each nesting level
+- **Expand/Collapse**: Smooth animations for row expansion and collapse
+- **Selection State**: Visual feedback for selected rows
+- **Click Handlers**: Support for row click and action button clicks
+- **Custom Rendering**: Flexible cell content rendering with custom components
+
+### 4.3 TableCell Component
+- **Flexible Content**: Support for text, numbers, custom components, and HTML
+- **Alignment Options**: Left, center, and right text alignment
+- **Custom Styling**: Inline styles and CSS classes for individual cells
+- **Icon Integration**: Built-in support for expand, sort, and action icons
+- **Responsive Behavior**: Automatic text truncation and ellipsis
+
+### 4.4 TableHeader Component
+- **Sortable Columns**: Click-to-sort functionality with custom sort icons
+- **Filter Integration**: Dropdown filters with multi-select capability
+- **Custom Styling**: Theme-based header styling with hover effects
+- **Accessibility**: Proper ARIA labels and keyboard navigation
+- **Responsive Design**: Adaptive header layout for mobile devices
+
+### 4.5 Pagination Component
+- **Page Navigation**: Previous/next buttons with page number display
+- **Page Size Selection**: Dropdown to change items per page
+- **Custom Rendering**: Complete pagination component replacement
+- **State Management**: Automatic page state handling
+- **Responsive Layout**: Mobile-friendly pagination controls
+
+### 4.6 Filter Components
+- **Dropdown Filters**: Multi-select dropdown with search capability
+- **Global Search**: Real-time search across all columns
+- **Filter State**: Persistent filter state across pagination
+- **Custom Options**: Configurable filter options per column
+- **Outside Click**: Automatic dropdown closure on outside clicks
+
+### 4.7 Export Components
+- **Multiple Formats**: CSV, Excel, and JSON export support
+- **Custom Handlers**: Flexible export function customization
+- **Data Filtering**: Export only visible or selected data
+- **Progress Feedback**: Export progress indicators
+- **Error Handling**: Comprehensive error handling for export operations
+
+## 5. Development
 
 ### 4.1 Project Structure
 - `src/App.tsx` - A demo component that showcases the MultiLevelTable with sample data
 - `src/main.tsx` - The entry point for the development environment
 - `src/index.css` - Basic styling for the table component
+- `src/components/` - All table components (MultiLevelTable, TableRow, TableCell, etc.)
+- `src/styles/` - CSS files for styling individual components
+- `src/types/` - TypeScript type definitions
+- `src/constants/` - Theme and configuration constants
+- `example/` - Complete example application with all features
 
 ### 4.2 Development Commands
 ```bash
@@ -420,15 +580,18 @@ npm run lint
 ```
 
 ### 4.3 Development Features
-- Hot Module Replacement (HMR) for instant feedback
-- TypeScript support with type checking
-- ESLint configuration for code quality
-- Sample data and configurations for testing
-- Basic styling for quick visualization
+- **Hot Module Replacement (HMR)**: Instant feedback during development
+- **TypeScript Support**: Full type checking and IntelliSense support
+- **ESLint Configuration**: Code quality and consistency enforcement
+- **Sample Data**: Comprehensive test data with nested structures
+- **Component Testing**: Unit tests for all major components
+- **Responsive Design**: Mobile-first responsive design patterns
+- **Accessibility**: ARIA labels and keyboard navigation support
+- **Performance**: Optimized rendering with React.memo and useMemo
 
-## 5. Example
+## 6. Example
 
-Here's a complete example showing how to use the component with custom styling and rendering:
+Here's a complete example showing how to use the component with all features enabled:
 
 ```tsx
 import React from 'react';
@@ -489,12 +652,54 @@ function App() {
     },
   ];
 
+  const theme = {
+    colors: {
+      background: '#ffffff',
+      primaryColor: '#1976d2',
+      textColor: '#333333',
+      borderColor: '#e0e0e0'
+    },
+    table: {
+      header: {
+        background: '#f5f5f5',
+        textColor: '#333333',
+        borderColor: '#e0e0e0'
+      },
+      cell: {
+        textColor: '#333333',
+        borderColor: '#e0e0e0'
+      },
+      row: {
+        levelColors: [
+          { background: '#ffffff' },
+          { background: '#f8f8f8' },
+          { background: '#f5f5f5' }
+        ]
+      }
+    }
+  };
+
   return (
     <div>
       <MultiLevelTable 
         data={data} 
         columns={columns}
         pageSize={10}
+        theme={theme}
+        sortable={true}
+        selectable={true}
+        searchable={true}
+        filterable={true}
+        exportable={true}
+        onSelectionChange={(selectedRows) => {
+          console.log('Selected rows:', selectedRows);
+        }}
+        onRowClick={(row) => {
+          console.log('Row clicked:', row);
+        }}
+        onDelete={(rowId, rowName) => {
+          console.log('Delete row:', rowId, rowName);
+        }}
       />
     </div>
   );
