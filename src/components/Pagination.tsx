@@ -125,6 +125,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             }}
             onClick={() => canPreviousPage && previousPage()}
             disabled={!canPreviousPage}
+            aria-label="Previous page"
           >
             <ArrowIcon direction="left" width={16} height={16} color={colors.borderDark} />
           </button>
@@ -161,6 +162,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             }}
             onClick={() => canNextPage && nextPage()}
             disabled={!canNextPage}
+            aria-label="Next page"
           >
             <ArrowIcon direction="right" width={16} height={16} color={colors.borderDark} />
           </button>

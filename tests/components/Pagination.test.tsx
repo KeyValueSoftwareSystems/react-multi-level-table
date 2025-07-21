@@ -50,13 +50,13 @@ describe('Pagination', () => {
     renderPagination();
     
     // Test previous page button (left arrow)
-    const prevButton = screen.getByRole('button', { name: /arrow left/i });
+    const prevButton = screen.getByRole('button', { name: /previous page/i });
 
     fireEvent.click(prevButton);
     expect(defaultProps.previousPage).toHaveBeenCalled();
     
     // Test next page button (right arrow)
-    const nextButton = screen.getByRole('button', { name: /arrow right/i });
+    const nextButton = screen.getByRole('button', { name: /next page/i });
 
     fireEvent.click(nextButton);
     expect(defaultProps.nextPage).toHaveBeenCalled();
@@ -68,8 +68,8 @@ describe('Pagination', () => {
       canNextPage: false,
     });
     
-    const prevButton = screen.getByRole('button', { name: /arrow left/i });
-    const nextButton = screen.getByRole('button', { name: /arrow right/i });
+    const prevButton = screen.getByRole('button', { name: /previous page/i });
+    const nextButton = screen.getByRole('button', { name: /next page/i });
     
     expect(prevButton).toBeDisabled();
     expect(nextButton).toBeDisabled();
@@ -107,7 +107,7 @@ describe('Pagination', () => {
     expect(select).toHaveValue(pageSize.toString());
     
     // Navigate to next page
-    const nextButton = screen.getByRole('button', { name: /arrow right/i });
+    const nextButton = screen.getByRole('button', { name: /next page/i });
 
     fireEvent.click(nextButton);
     

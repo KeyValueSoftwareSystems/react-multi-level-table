@@ -187,8 +187,8 @@ describe('MultiLevelTable', () => {
     render(<MultiLevelTable {...defaultProps} data={largeData} pageSize={5} />);
     
     // Check if pagination controls are present
-    const nextButton = screen.getByRole('button', { name: /arrow right/i });
-    const prevButton = screen.getByRole('button', { name: /arrow left/i });
+    const nextButton = screen.getByRole('button', { name: /next page/i });
+    const prevButton = screen.getByRole('button', { name: /previous page/i });
 
     expect(nextButton).toBeInTheDocument();
     expect(prevButton).toBeInTheDocument();

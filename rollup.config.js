@@ -5,6 +5,7 @@ import dts from 'rollup-plugin-dts';
 import { defineConfig } from 'rollup';
 import { readFileSync } from 'fs';
 import postcss from 'rollup-plugin-postcss';
+import url from '@rollup/plugin-url';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
 
@@ -45,6 +46,10 @@ export default defineConfig([
     plugins: [
       resolve(),
       commonjs(),
+      url({
+        include: ['**/*.svg'],
+        limit: Infinity
+      }),
       postcss({
         extensions: ['.css'],
         minimize: true,

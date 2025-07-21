@@ -142,6 +142,7 @@ const data: DataItem[] = [
     dateTime: "12-Jun-2024, 08:20 AM",
     status: "Pending",
     orchestration: "ECS",
+    showActionButtons: true,
   },
   {
     id: 5,
@@ -150,6 +151,7 @@ const data: DataItem[] = [
     dateTime: "12-Jun-2024, 14:30 PM",
     status: "Active",
     orchestration: "ECS",
+    showActionButtons: true,
     children: [
       {
         id: 501,
@@ -168,6 +170,7 @@ const data: DataItem[] = [
     dateTime: "12-Jun-2024, 13:45 PM",
     status: "Processing",
     orchestration: "ECS",
+    showActionButtons: true,
     children: [
       {
         id: 601,
@@ -213,6 +216,7 @@ const data: DataItem[] = [
     dateTime: "12-Jun-2024, 16:20 PM",
     status: "Inactive",
     orchestration: "ECS",
+    showActionButtons: true,
     children: [
       {
         id: 801,
@@ -266,6 +270,7 @@ const data: DataItem[] = [
     dateTime: "12-Jun-2024, 12:00 PM",
     status: "Active",
     orchestration: "ECS",
+    showActionButtons: true,
     children: [
       {
         id: 1001,
@@ -286,6 +291,7 @@ const data: DataItem[] = [
     orchestration: "ECS",
     imageURL: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
     subtext: "High-performance cache",
+    showActionButtons: true,
     children: [
       {
         id: 1101,
@@ -1063,7 +1069,7 @@ const App: React.FC = () => {
       title: 'Actions',
       filterable: false,
       sortable: false,
-      render: (value: string | number, item: DataItem) => (
+      render: (_value: string | number, item: DataItem) => (
         <ActionsCell item={item} onDeleteClick={handleDeleteClick} onEditClick={handleEditClick} />
       ),
     },
