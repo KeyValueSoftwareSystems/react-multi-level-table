@@ -36,6 +36,8 @@
   /* Ensure proper height */
   height: auto;
   min-height: 0;
+  /* Ensure horizontal scroll works properly */
+  white-space: nowrap;
 }
 
 /* Custom scrollbar styling */
@@ -86,7 +88,7 @@
   border-radius: 12px;
   overflow: hidden;
   table-layout: fixed;
-  min-width: 900px; /* Ensure minimum width to prevent content trimming */
+  min-width: 1200px; /* Increased minimum width to ensure all content fits properly */
   margin: 0; /* Remove any margin */
   padding: 0; /* Remove any padding */
 }
@@ -97,6 +99,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* Prevent content from being truncated */
+  min-width: 0;
 }
 
 /* Column width distribution - spread across full width with end spacing for actions */
@@ -206,7 +210,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 100px; /* Minimum width to prevent content trimming */
+  min-width: 120px; /* Increased minimum width to prevent content trimming */
 }
 
 .main-table-container tr:last-child td {
@@ -347,7 +351,7 @@
   /* Ensure table scrolls horizontally on mobile */
   .table-responsive-container {
     overflow-x: auto;
-    min-width: 900px; /* Match table minimum width */
+    min-width: 1200px; /* Match table minimum width */
   }
   
   /* Ensure table headers and cells don't break */
@@ -359,35 +363,35 @@
     min-width: 120px; /* Minimum width for mobile */
   }
   
-  /* Adjust column widths for mobile */
+  /* Adjust column widths for mobile - maintain exact same proportions */
   .main-table-container th:nth-child(1),
   .main-table-container td:nth-child(1) {
-    min-width: 150px; /* Resource Type */
+    min-width: 264px; /* Resource Type - 22% of 1200px */
   }
   
   .main-table-container th:nth-child(2),
   .main-table-container td:nth-child(2) {
-    min-width: 120px; /* Name */
+    min-width: 216px; /* Name - 18% of 1200px */
   }
   
   .main-table-container th:nth-child(3),
   .main-table-container td:nth-child(3) {
-    min-width: 140px; /* Date & Time */
+    min-width: 216px; /* Date & Time - 18% of 1200px */
   }
   
   .main-table-container th:nth-child(4),
   .main-table-container td:nth-child(4) {
-    min-width: 100px; /* Status */
+    min-width: 144px; /* Status - 12% of 1200px */
   }
   
   .main-table-container th:nth-child(5),
   .main-table-container td:nth-child(5) {
-    min-width: 120px; /* Orchestration */
+    min-width: 144px; /* Orchestration - 12% of 1200px */
   }
   
   .main-table-container th:nth-child(6),
   .main-table-container td:nth-child(6) {
-    min-width: 100px; /* Actions */
+    min-width: 96px; /* Actions - 8% of 1200px */
   }
 }
 
@@ -482,6 +486,7 @@
   
   .table-responsive-container {
     overflow-x: auto;
+    min-width: 1200px; /* Match table minimum width */
   }
   
   .main-table-container th,
