@@ -2,13 +2,13 @@ import React, { useState } from "react";
 
 import { DeleteIcon, EditIcon } from "./components/icons";
 import { MultiLevelTable } from "./components/MultiLevelTable";
-import { Popup } from "./components/Popup";
-import { RowDetailsPopup } from "./components/RowDetailsPopup";
-import { SidePanel } from "./components/SidePanel";
 import { getStatusStyle, tableRowTypography } from "./styles/style";
 import { darkTheme, lightTheme } from "./themes";
 import type { ThemeProps } from "./types/theme";
 import type { ButtonConfig, Column, DataItem } from "./types/types";
+import { Popup } from "../example/src/components/Popup";
+import { RowDetailsPopup } from "../example/src/components/RowDetailsPopup";
+import { SidePanel } from "../example/src/components/SidePanel";
 
 import "./App.css";
 import "./styles/App.css";

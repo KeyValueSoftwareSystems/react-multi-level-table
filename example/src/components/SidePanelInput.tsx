@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { ThemeProps } from '../types/theme';
-
 import '../styles/SidePanelInput.css';
 
 interface SidePanelInputProps {

@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 
 import { DetailRow } from './DetailRow';
-import { getStatusStyle, tableRowTypography } from '../styles/style';
-import type { ThemeProps } from '../types/theme';
 import type { DataItem } from '../types/types';
-
+import type { ThemeProps } from '../types/theme';
+import { getStatusStyle, tableRowTypography } from '../styles/style';
 import '../styles/RowDetailsPopup.css';
 
 interface RowDetailsPopupProps {
