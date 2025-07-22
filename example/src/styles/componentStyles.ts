@@ -348,8 +348,6 @@ export const createComponentStyles = (colors: any, theme: ThemeProps = {}) => {
         alignItems: 'center',
         gap: '24px',
         position: 'absolute',
-        left: '50%',
-        transform: 'translateX(-50%)',
       },
       totalItems: {
         fontSize: '0.875rem',

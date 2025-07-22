@@ -77,6 +77,9 @@
 .table-wrapper > div:last-child {
   margin-bottom: 0;
   padding-bottom: 0;
+  /* Ensure pagination maintains its layout on smaller screens */
+  min-width: 1200px; /* Match table minimum width */
+  overflow-x: auto; /* Allow horizontal scroll if needed */
 }
 
 .main-table-container {
