@@ -105,9 +105,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         display: 'flex', 
         alignItems: 'center', 
         gap: '24px',
-        position: 'absolute',
-        left: '50%',
-        transform: 'translateX(-50%)'
+        position: 'absolute'
       }}>
         {/* Total Items Text */}
         <div style={{ ...componentStyles.pagination.totalItems, position: 'static' }}>

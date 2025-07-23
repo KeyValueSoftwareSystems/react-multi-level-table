@@ -745,23 +745,25 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
             </div>
           </div>
         )}
-        <table
-          {...getTableProps()}
-          className="main-table-container"
-          style={{ borderColor: mergedTheme.table?.cell?.borderColor }}
-        >
-          <TableHeader
-            headerGroups={headerGroups}
-            theme={mergedTheme}
-            sortable={sortable}
-            ascendingIcon={ascendingIcon}
-            descendingIcon={descendingIcon}
-            selectable={selectable}
-            isAllSelected={selectionState.isAllSelected}
-            onSelectAll={onSelectAll}
-          />
-          {renderTableBody()}
-        </table>
+        <div className="table-responsive-container">
+          <table
+            {...getTableProps()}
+            className="main-table-container"
+            style={{ borderColor: mergedTheme.table?.cell?.borderColor }}
+          >
+            <TableHeader
+              headerGroups={headerGroups}
+              theme={mergedTheme}
+              sortable={sortable}
+              ascendingIcon={ascendingIcon}
+              descendingIcon={descendingIcon}
+              selectable={selectable}
+              isAllSelected={selectionState.isAllSelected}
+              onSelectAll={onSelectAll}
+            />
+            {renderTableBody()}
+          </table>
+        </div>
 
         {renderPagination()}
       </div>
