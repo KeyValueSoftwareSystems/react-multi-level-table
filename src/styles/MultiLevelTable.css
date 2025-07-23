@@ -38,6 +38,8 @@
   min-height: 0;
   /* Ensure horizontal scroll works properly */
   white-space: nowrap;
+  /* Force horizontal scroll for all screen sizes below 1200px */
+  min-width: 0;
 }
 
 /* Custom scrollbar styling */
@@ -78,7 +80,7 @@
   margin-bottom: 0;
   padding-bottom: 0;
   /* Ensure pagination maintains its layout on smaller screens */
-  min-width: 1200px; /* Match table minimum width */
+  width: 100%;
   overflow-x: auto; /* Allow horizontal scroll if needed */
 }
 
@@ -91,9 +93,11 @@
   border-radius: 12px;
   overflow: hidden;
   table-layout: fixed;
-  min-width: 1200px; /* Increased minimum width to ensure all content fits properly */
+  min-width: 1200px; /* Minimum width to ensure all content fits properly */
   margin: 0; /* Remove any margin */
   padding: 0; /* Remove any padding */
+  /* Ensure table doesn't shrink below minimum width */
+  flex-shrink: 0;
 }
 
 /* Ensure table cells don't wrap content */
@@ -350,11 +354,11 @@
     flex: 1;
   }
   
-  
   /* Ensure table scrolls horizontally on mobile */
   .table-responsive-container {
     overflow-x: auto;
-    min-width: 1200px; /* Match table minimum width */
+    min-width: 0; /* Allow container to shrink */
+    width: 100%;
   }
   
   /* Ensure table headers and cells don't break */
@@ -425,6 +429,18 @@
     height: 44px;
     font-size: 13px;
   }
+  
+  /* Ensure horizontal scrolling works on very small screens */
+  .table-responsive-container {
+    overflow-x: auto !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  
+  .main-table-container {
+    min-width: 1200px !important;
+    width: 1200px !important;
+  }
 }
 
 /* ≤ 1024 px – turn the whole header into a 2‑row grid */
@@ -489,7 +505,8 @@
   
   .table-responsive-container {
     overflow-x: auto;
-    min-width: 1200px; /* Match table minimum width */
+    min-width: 0; /* Allow container to shrink */
+    width: 100%;
   }
   
   .main-table-container th,
@@ -497,5 +514,19 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+/* Ensure horizontal scrolling for all screen sizes below 1200px */
+@media (max-width: 1199px) {
+  .table-responsive-container {
+    overflow-x: auto !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  
+  .main-table-container {
+    min-width: 1200px !important;
+    width: 1200px !important;
   }
 }
