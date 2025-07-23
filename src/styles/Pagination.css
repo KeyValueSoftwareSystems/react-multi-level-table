@@ -87,18 +87,19 @@
   }
 }
 
-@media (max-width: 768px) {
-  .pagination-container {
-    min-width: 1200px; /* Maintain minimum width */
-    overflow-x: auto; /* Enable horizontal scroll */
-  }
-  
-  .pagination-container > div {
-    min-width: 600px; /* Maintain minimum width for content */
+/* Show total items text on screens 798px and wider */
+@media (min-width: 798px) {
+  .pagination-total-items {
+    display: block;
   }
 }
 
-@media (max-width: 480px) {
+/* Hide total items text on screens smaller than 798px */
+@media (max-width: 797px) {
+  .pagination-total-items {
+    display: none;
+  }
+  
   .pagination-container {
     min-width: 1200px; /* Maintain minimum width */
     overflow-x: auto; /* Enable horizontal scroll */
