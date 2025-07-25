@@ -704,43 +704,41 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
       <div className="table-wrapper">
         {showSearchBar && (
           <div className="search-bar-container">
-            <div className="search-bar-left">
-              {tableTitle && (
-                <div className="table-title-container">
-                  <h2 style={componentStyles.title.table}>
-                    {tableTitle}
-                  </h2>
-                  {tableSubtitle && (
-                    <p 
-                      className="table-subtitle"
-                      style={{
-                        color: mergedTheme.colors?.textColor || colors.textSecondary,
-                      }}
-                    >
-                      {tableSubtitle}
-                    </p>
-                  )}
-                </div>
-              )}
-              <div className="search-input-container">
-                <span className="search-input-icon">
-                  <SearchIcon width={24} height={24} />
-                </span>
-                <input
-                  className="search-input"
-                  type="text"
-                  placeholder="Search"
-                  value={searchTerm}
-                  onChange={e => onSearchChange?.(e.target.value)}
-                  style={{
-                    borderColor: mergedTheme.table?.cell?.borderColor || colors.searchBorder,
-                    backgroundColor: mergedTheme.colors?.background || colors.backgroundWhite,
-                    color: mergedTheme.colors?.textColor || colors.textPrimary,
-                  }}
-                />
+            {tableTitle && (
+              <div className="table-title-container">
+                <h2 style={componentStyles.title.table}>
+                  {tableTitle}
+                </h2>
+                {tableSubtitle && (
+                  <p 
+                    className="table-subtitle"
+                    style={{
+                      color: mergedTheme.colors?.textColor || colors.textSecondary,
+                    }}
+                  >
+                    {tableSubtitle}
+                  </p>
+                )}
               </div>
+            )}
+            <div className="search-input-container">
+              <span className="search-input-icon">
+                <SearchIcon width={24} height={24} />
+              </span>
+              <input
+                className="search-input"
+                type="text"
+                placeholder="Search"
+                value={searchTerm}
+                onChange={e => onSearchChange?.(e.target.value)}
+                style={{
+                  borderColor: mergedTheme.table?.cell?.borderColor || colors.searchBorder,
+                  backgroundColor: mergedTheme.colors?.background || colors.backgroundWhite,
+                  color: mergedTheme.colors?.textColor || colors.textPrimary,
+                }}
+              />
             </div>
-            <div className="search-bar-right">
+            <div className="action-buttons-container">
               {renderActionButtons()}
             </div>
           </div>

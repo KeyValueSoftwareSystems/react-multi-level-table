@@ -62,9 +62,9 @@ export const ButtonGroup: React.FC<ButtonGroupProps> = ({
   };
 
   return (
-    <div style={{ display: "flex", gap: "0.5rem", flexShrink: 0 }}>
+    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
       {buttons.map((button) => (
-        <div key={button.id} style={{ position: 'relative' }}>
+        <div key={button.id} style={{ position: 'relative', flexShrink: 0 }}>
           <Button
             icon={button.icon}
             text={button.text}
