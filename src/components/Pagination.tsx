@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { ArrowIcon } from './icons';
 import { PAGE_SIZE_OPTIONS } from '../constants/pagination';
@@ -55,40 +55,90 @@ export const Pagination: React.FC<PaginationProps> = ({
   setPageSize,
   totalItems
 }) => {
-  // Generate page numbers to show
+  // Track screen width for responsive pagination
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  // Update screen width on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Generate page numbers to show based on screen size
   const getVisiblePages = () => {
     const pages: number[] = [];
     
-    // If 5 or fewer pages, show all
-    if (pageCount <= 5) {
+    // Determine how many page numbers to show based on screen width
+    let maxVisiblePages: number;
+    let showPageNumbers = true;
+
+    if (screenWidth <= 374) 
+      // Very small screens: show only 2 page numbers + ellipsis
+      maxVisiblePages = 2;
+    else if (screenWidth <= 542) 
+      // Small screens: show 3 page numbers + ellipsis
+      maxVisiblePages = 3;
+    else if (screenWidth < 1228) 
+      // Medium screens: show 4 page numbers + ellipsis
+      maxVisiblePages = 4;
+    else 
+      // Large screens: show up to 6 page numbers
+      maxVisiblePages = 6;
+
+    // For very small screens, don't show page numbers at all
+    if (screenWidth <= 415) 
+      showPageNumbers = false;
+    
+    // If not showing page numbers, return empty array (only arrows will show)
+    if (!showPageNumbers) 
+      return pages;
+    
+    // If total pages is less than or equal to max visible pages, show all
+    if (pageCount <= maxVisiblePages) {
       for (let i = 0; i < pageCount; i++) 
         pages.push(i);
       
       return pages;
     }
     
-    // For more than 5 pages, show smart pagination
-    if (pageIndex <= 2) {
-      // Near start: show 1, 2, 3, 4, 5, ..., last
-      for (let i = 0; i < 5; i++) 
+    // Calculate how many pages to show on each side of current page
+    const sidePages = Math.floor((maxVisiblePages - 1) / 2);
+    
+    // Near start
+    if (pageIndex <= sidePages) {
+      // Show first few pages + ellipsis + last page
+      for (let i = 0; i < maxVisiblePages - 1; i++) 
         pages.push(i);
 
       pages.push(-1); // Ellipsis marker
       pages.push(pageCount - 1);
-    } else if (pageIndex >= pageCount - 3) {
-      // Near end: show 1, ..., last-4, last-3, last-2, last-1, last
+    } 
+    // Near end
+    else if (pageIndex >= pageCount - sidePages - 1) {
+      // Show first page + ellipsis + last few pages
       pages.push(0);
       pages.push(-1); // Ellipsis marker
-      for (let i = pageCount - 5; i < pageCount; i++) 
+
+      for (let i = pageCount - (maxVisiblePages - 1); i < pageCount; i++) 
+        pages.push(i);
+    } 
+    // Middle
+    else {
+      // Show first page + ellipsis + current and neighbors + ellipsis + last page
+      pages.push(0);
+      pages.push(-1); // Ellipsis marker
+
+      for (let i = pageIndex - sidePages; i <= pageIndex + sidePages; i++) 
         pages.push(i);
 
-    } else {
-      // Middle: show 1, ..., current-1, current, current+1, ..., last
-      pages.push(0);
-      pages.push(-1); // Ellipsis marker
-      pages.push(pageIndex - 1);
-      pages.push(pageIndex);
-      pages.push(pageIndex + 1);
       pages.push(-1); // Ellipsis marker
       pages.push(pageCount - 1);
     }
@@ -108,7 +158,10 @@ export const Pagination: React.FC<PaginationProps> = ({
         position: 'absolute'
       }}>
         {/* Total Items Text */}
-        <div style={{ ...componentStyles.pagination.totalItems, position: 'static' }}>
+        <div 
+          className="pagination-total-items"
+          style={{ ...componentStyles.pagination.totalItems, position: 'static' }}
+        >
           Total {totalItems} items
         </div>
         
