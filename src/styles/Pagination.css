@@ -92,14 +92,14 @@
   .pagination-total-items {
     display: block;
   }
-}
-
+  }
+  
 /* Hide total items text on screens smaller than 798px */
 @media (max-width: 797px) {
   .pagination-total-items {
     display: none;
-  }
-  
+}
+
   .pagination-container {
     min-width: 1200px; /* Maintain minimum width */
     overflow-x: auto; /* Enable horizontal scroll */
