@@ -1,7 +1,6 @@
 .filter-dropdown {
   position: absolute;
   top: calc(100% + 8px);
-  right: 0;
   min-width: 400px;
   max-width: 500px;
   max-height: 500px;
@@ -12,6 +11,13 @@
   z-index: 1000;
   overflow: hidden;
   font-family: 'DM Sans', sans-serif;
+}
+
+/* Add right: 0 only for screens greater than 700px */
+@media (min-width: 701px) {
+  .filter-dropdown {
+    right: 0;
+  }
 }
 
 .filter-dropdown-header {
