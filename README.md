@@ -129,26 +129,61 @@ function App() {
 
 The MultiLevelTable component accepts the following props:
 
+#### Data and Configuration Props
 | Prop | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
-| data | array | Yes | - | Array of data objects to display in the table |
-| columns | array | Yes | - | Array of column configurations |
+| data | DataItem[] | Yes | - | Array of data objects to display in the table |
+| columns | Column[] | Yes | - | Array of column configurations |
 | pageSize | number | No | 10 | Number of rows to display per page |
-| theme | object | No | - | Custom theme object for styling the table |
+| theme | ThemeProps | No | - | Custom theme object for styling the table |
 | renderCustomPagination | function | No | null | Custom pagination component render function |
 | sortable | boolean | No | false | Enable/disable sorting functionality |
 | ascendingIcon | ReactNode | No | - | Custom icon for ascending sort |
 | descendingIcon | ReactNode | No | - | Custom icon for descending sort |
 | expandIcon | ReactNode | No | - | Custom icon for expanding rows |
 | selectable | boolean | No | false | Enable/disable row selection |
-| onSelectionChange | function | No | - | Callback function when selection changes |
-| onRowClick | function | No | - | Callback function when a parent row is clicked |
-| onDelete | function | No | - | Callback function for row deletion |
-| searchable | boolean | No | true | Enable/disable global search functionality |
-| filterable | boolean | No | true | Enable/disable column filtering |
-| exportable | boolean | No | false | Enable/disable data export functionality |
-| exportFormats | array | No | ['csv', 'excel'] | Available export formats |
-| onExport | function | No | - | Custom export handler function |
+
+#### State Props
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| selectionState | SelectionState | Yes | Current selection state with selected rows and all selected flag |
+| searchTerm | string | Yes | Current search term for filtering data |
+| selectedFilterValues | Set<string \| number> | Yes | Currently selected filter values |
+| deletePopup | object | Yes | Delete confirmation popup state (isOpen, itemId, itemName) |
+| bulkDeletePopup | object | Yes | Bulk delete confirmation popup state (isOpen, selectedCount) |
+| openDropdowns | Set<string> | Yes | Set of currently open dropdown IDs |
+| expandedRows | Set<string \| number> | Yes | Set of currently expanded row IDs |
+
+#### Handler Props
+| Prop | Type | Description |
+|------|------|-------------|
+| onSearchChange | (searchTerm: string) => void | Updates the search term for filtering data |
+| onFilterChange | (values: Set<string \| number>) => void | Updates the selected filter values |
+| onDeleteClick | (itemId: string \| number, itemName: string) => void | Handles delete button click for a specific row |
+| onDeleteConfirm | () => void | Confirms the delete action for the selected row |
+| onDeleteCancel | () => void | Cancels the delete action and closes popup |
+| onBulkDeleteClick | () => void | Handles bulk delete button click for selected rows |
+| onBulkDeleteConfirm | () => void | Confirms the bulk delete action for selected rows |
+| onBulkDeleteCancel | () => void | Cancels the bulk delete action and closes popup |
+| onDropdownToggle | (buttonId: string, isOpen: boolean) => void | Toggles dropdown open/close state for action buttons |
+| onDropdownClose | (buttonId: string) => void | Closes a specific dropdown by ID |
+| onButtonClick | (button: ButtonConfig) => void | Handles click events for action buttons (export, filter, etc.) |
+| onSelectAll | () => void | Handles select all checkbox click to select/deselect all rows |
+| onRowSelect | (rowId: string \| number) => void | Handles individual row selection checkbox click |
+| onRowToggle | (rowId: string \| number) => void | Handles row expand/collapse toggle for nested rows |
+
+#### Additional Props
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| onRowClick | (row: DataItem) => void | - | Callback function when a parent row is clicked |
+| searchableColumns | string[] | - | Array of column keys to search in |
+| showSearchBar | boolean | true | Whether to show the search bar |
+| filterColumn | string | - | The column to filter by |
+| tableTitle | string | - | Title displayed above the table |
+| tableSubtitle | string | - | Subtitle displayed below the table title |
+| showDarkMode | boolean | false | Whether to show dark mode toggle button |
+| isDarkMode | boolean | false | Current dark mode state |
+| onToggleTheme | () => void | - | Callback function to toggle between light/dark themes |
 
 ## 3. Customization
 
