@@ -12,6 +12,13 @@
   font-family: 'DM Sans', sans-serif;
 }
 
+/* Add left: 0px for screens less than or equal to 700px */
+@media (max-width: 700px) {
+  .export-dropdown {
+    left: 0px;
+  }
+}
+
 .export-dropdown-content {
   padding: 8px 0;
 }
