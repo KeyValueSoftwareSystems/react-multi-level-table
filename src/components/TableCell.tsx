@@ -108,14 +108,17 @@ export const TableCell: React.FC<TableCellProps> = ({
           cell.render('Cell')
         ) : (
           <>
-            {hasChildren ? (
+            {/* Only show expand button in the first column when row has children */}
+            {index === 0 && hasChildren ? (
               <div
                 onClick={handleExpandClick}
                 className="expand-button"
               >
                 {expandIcon || <ExpandIcon isExpanded={isExpanded} theme={theme} mode="expand" />}
               </div>
-            ) : <div className="expand-button" />}
+            ) : index === 0 ? (
+              <div className="expand-button" />
+            ) : null}
             {cell.render('Cell')}
           </>
         )}

@@ -141,14 +141,19 @@ export const TableRow: React.FC<TableRowProps> = ({
                   <div className="placeholder-spacer" />
                 )}
 
-                <div 
-                  onClick={handleExpandClick}
-                  className={`expand-button ${isParentRow || index !== 0 ? 'parent-row-expand-button' : 'nested-row-expand-button'} ${hasChildren && index === 0 ? 'expand-button-visible' : 'expand-button-hidden'}`}
-                >
-                  {expandIcon || (
-                    <ExpandIcon isExpanded={isExpanded} theme={theme} mode="expand" />
-                  )}
-                </div>
+                {/* Only show expand button in the first column when row has children */}
+                {index === 0 && (
+                  <div 
+                    onClick={handleExpandClick}
+                    className={`expand-button ${isParentRow || index !== 0 ? 'parent-row-expand-button' : 'nested-row-expand-button'} ${hasChildren ? 'expand-button-visible' : 'expand-button-hidden'}`}
+                  >
+                    {hasChildren ? (
+                      expandIcon || (
+                        <ExpandIcon isExpanded={isExpanded} theme={theme} mode="expand" />
+                      )
+                    ) : null}
+                  </div>
+                )}
                 
                 {column.render 
                   ? column.render(displayValue, dataItem)

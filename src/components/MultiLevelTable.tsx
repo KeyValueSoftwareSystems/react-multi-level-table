@@ -438,22 +438,25 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
     if (!children || !expandedRows.has(parentId)) return null;
 
     return children.map((child) => (
-      <TableRow
-        key={child.id}
-        row={child}
-        columns={columns}
-        hasChildren={!!child.children && child.children.length > 0}
-        isExpanded={expandedRows.has(child.id)}
-        onToggle={() => onRowToggle(child.id)}
-        level={level}
-        theme={mergedTheme}
-        selectable={selectable}
-        isRowSelected={selectionState.selectedRows.has(child.id)}
-        onRowSelect={() => onRowSelect(child.id)}
-        onRowClick={onRowClick}
-        onDelete={handleDeleteClick}
-        expandIcon={expandIcon}
-      />
+      <React.Fragment key={child.id}>
+        <TableRow
+          row={child}
+          columns={columns}
+          hasChildren={!!child.children && child.children.length > 0}
+          isExpanded={expandedRows.has(child.id)}
+          onToggle={() => onRowToggle(child.id)}
+          level={level}
+          theme={mergedTheme}
+          selectable={selectable}
+          isRowSelected={selectionState.selectedRows.has(child.id)}
+          onRowSelect={() => onRowSelect(child.id)}
+          onRowClick={onRowClick}
+          onDelete={handleDeleteClick}
+          expandIcon={expandIcon}
+        />
+        {/* Recursively render nested children */}
+        {child.children && child.children.length > 0 && renderNestedRows(child.id, level + 1)}
+      </React.Fragment>
     ));
   };
 
