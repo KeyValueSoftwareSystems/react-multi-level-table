@@ -104,13 +104,13 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                           style={{ marginRight: 8, cursor: "pointer" }}
                         />
                       )}
-                      <span style={{width: "16px"}}/>
                       <span
                         style={{
                           display: "inline-flex",
                           alignItems: "center",
                           cursor: isColumnSortable ? "pointer" : "default",
                           userSelect: "none",
+                          marginLeft: index === 0 ? "16px" : "0px",
                         }}
                         onClick={
                           isColumnSortable
