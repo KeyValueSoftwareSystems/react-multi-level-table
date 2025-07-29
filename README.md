@@ -356,6 +356,7 @@ interface PaginationProps {
   previousPage: () => void;          // Go to previous page
   setPageSize: (pageSize: number) => void;  // Change page size
   state: TableStateWithPagination<T>;  // Current table state
+  theme?: ThemeProps;                // Optional theme for styling
 }
 ```
 

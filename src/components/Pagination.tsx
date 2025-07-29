@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowIcon } from './icons';
 import { PAGE_SIZE_OPTIONS } from '../constants/pagination';
 import { colors, componentStyles } from '../styles/style';
+import type { ThemeProps } from '../types/theme';
 import '../styles/Pagination.css';
 
 /**
@@ -33,6 +34,7 @@ export interface PaginationProps {
   pageSize: number;
   setPageSize: (size: number) => void;
   totalItems: number;
+  theme?: ThemeProps;
 }
 
 /**
@@ -51,7 +53,8 @@ export const Pagination: React.FC<PaginationProps> = ({
   previousPage,
   pageSize,
   setPageSize,
-  totalItems
+  totalItems,
+  theme
 }) => {
   // Track screen width for responsive pagination
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -146,6 +149,12 @@ export const Pagination: React.FC<PaginationProps> = ({
 
   const visiblePages = getVisiblePages();
 
+  // Use theme colors if provided, otherwise use default colors
+  const themeColors = theme?.colors || {};
+  const textColor = themeColors.textColor || colors.textPrimary;
+  const borderColor = themeColors.borderColor || colors.borderDark;
+  const backgroundColor = themeColors.background || colors.backgroundWhite;
+
   return (
     <div style={{ ...componentStyles.pagination.container, position: 'relative' as const }}>
       {/* Centered Content Container */}
@@ -158,7 +167,11 @@ export const Pagination: React.FC<PaginationProps> = ({
         {/* Total Items Text */}
         <div 
           className="pagination-total-items"
-          style={{ ...componentStyles.pagination.totalItems, position: 'static' }}
+          style={{ 
+            ...componentStyles.pagination.totalItems, 
+            position: 'static',
+            color: textColor
+          }}
         >
           Total {totalItems} items
         </div>
@@ -169,14 +182,15 @@ export const Pagination: React.FC<PaginationProps> = ({
           <button
             style={{
               ...componentStyles.pagination.arrowButton,
-              opacity: canPreviousPage ? 1 : 0.5,
-              cursor: canPreviousPage ? 'pointer' : 'not-allowed'
+              cursor: canPreviousPage ? 'pointer' : 'not-allowed',
+              backgroundColor: backgroundColor,
+              border: 'none'
             }}
             onClick={() => canPreviousPage && previousPage()}
             disabled={!canPreviousPage}
             aria-label="Previous page"
           >
-            <ArrowIcon direction="left" width={16} height={16} color={colors.borderDark} />
+            <ArrowIcon direction="left" width={16} height={16} color={canPreviousPage ? '#595959' : '#D9D9D9'} />
           </button>
           
           {/* Page Numbers */}
@@ -206,14 +220,15 @@ export const Pagination: React.FC<PaginationProps> = ({
           <button
             style={{
               ...componentStyles.pagination.arrowButton,
-              opacity: canNextPage ? 1 : 0.5,
-              cursor: canNextPage ? 'pointer' : 'not-allowed'
+              cursor: canNextPage ? 'pointer' : 'not-allowed',
+              backgroundColor: backgroundColor,
+              border: 'none'
             }}
             onClick={() => canNextPage && nextPage()}
             disabled={!canNextPage}
             aria-label="Next page"
           >
-            <ArrowIcon direction="right" width={16} height={16} color={colors.borderDark} />
+            <ArrowIcon direction="right" width={16} height={16} color={canNextPage ? '#595959' : '#D9D9D9'} />
           </button>
         </div>
         
@@ -221,12 +236,14 @@ export const Pagination: React.FC<PaginationProps> = ({
         <div style={{ 
           ...componentStyles.pagination.pageSizeSelect, 
           position: 'relative',
-          border: '1px solid #E5E5E5',
+          border: `1px solid ${borderColor}`,
           borderRadius: '4px',
-          padding: '4px 8px'
+          padding: '4px 8px',
+          backgroundColor: backgroundColor,
+          color: textColor
         }}>
           <span>{pageSize} / page</span>
-          <ArrowIcon direction="down" width={16} height={16} color={colors.borderDark} />
+          <ArrowIcon direction="down" width={16} height={16} color={borderColor} />
           <select
             value={pageSize}
             onChange={e => setPageSize(Number(e.target.value))}

@@ -473,8 +473,7 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
         setPageSize,
         pageIndex,
         pageSize: currentPageSize,
-        totalItems: filteredData.length,
-        theme: mergedTheme,
+        totalItems: filteredData.length
       });
 
     return (
