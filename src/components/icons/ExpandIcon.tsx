@@ -12,7 +12,7 @@ import type { ThemeProps } from '../../types/theme';
  */
 interface ExpandIconProps {
   isExpanded: boolean;
-  theme: ThemeProps;
+  theme?: ThemeProps;
   mode?: 'expand' | 'sort';
   sortDirection?: 'asc' | 'desc';
   customStyle?: React.CSSProperties;
@@ -40,7 +40,7 @@ export const ExpandIcon: React.FC<ExpandIconProps> = ({ isExpanded, theme, mode 
     <span
       className="expand-icon"
       style={{
-        color: theme.expandIcon?.color,
+        color: theme?.expandIcon?.color,
         display: 'inline-flex',
         alignItems: 'center',
         transition: 'transform 0.2s',
@@ -60,7 +60,7 @@ export const ExpandIcon: React.FC<ExpandIconProps> = ({ isExpanded, theme, mode 
       >
         <path
           d="M9 18L15 12L9 6"
-          stroke={theme.expandIcon?.color || '#7E7E7E'}
+          stroke={theme?.expandIcon?.color || '#7E7E7E'}
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"

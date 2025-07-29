@@ -1,5 +1,10 @@
 # React Multi Level Table
 
+<div align="center">
+<!-- Screenshot of the table component in action -->
+<img src="./src/assets/table-image.png" alt="Multi Level Table Component Example" width="800" height="400"/>
+</div>
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -144,33 +149,33 @@ The MultiLevelTable component accepts the following props:
 | selectable | boolean | No | false | Enable/disable row selection |
 
 #### State Props
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| selectionState | SelectionState | Yes | Current selection state with selected rows and all selected flag |
-| searchTerm | string | Yes | Current search term for filtering data |
-| selectedFilterValues | Set<string \| number> | Yes | Currently selected filter values |
-| deletePopup | object | Yes | Delete confirmation popup state (isOpen, itemId, itemName) |
-| bulkDeletePopup | object | Yes | Bulk delete confirmation popup state (isOpen, selectedCount) |
-| openDropdowns | Set<string> | Yes | Set of currently open dropdown IDs |
-| expandedRows | Set<string \| number> | Yes | Set of currently expanded row IDs |
+| Prop | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| selectionState | SelectionState | No | { selectedRows: new Set(), isAllSelected: false } | Current selection state with selected rows and all selected flag |
+| searchTerm | string | No | '' | Current search term for filtering data |
+| selectedFilterValues | Set<string \| number> | No | new Set() | Currently selected filter values |
+| deletePopup | object | No | { isOpen: false, itemId: null, itemName: '' } | Delete confirmation popup state (isOpen, itemId, itemName) |
+| bulkDeletePopup | object | No | { isOpen: false, selectedCount: 0 } | Bulk delete confirmation popup state (isOpen, selectedCount) |
+| openDropdowns | Set<string> | No | new Set() | Set of currently open dropdown IDs |
+| expandedRows | Set<string \| number> | No | new Set() | Set of currently expanded row IDs |
 
 #### Handler Props
-| Prop | Type | Description |
-|------|------|-------------|
-| onSearchChange | (searchTerm: string) => void | Updates the search term for filtering data |
-| onFilterChange | (values: Set<string \| number>) => void | Updates the selected filter values |
-| onDeleteClick | (itemId: string \| number, itemName: string) => void | Handles delete button click for a specific row |
-| onDeleteConfirm | () => void | Confirms the delete action for the selected row |
-| onDeleteCancel | () => void | Cancels the delete action and closes popup |
-| onBulkDeleteClick | () => void | Handles bulk delete button click for selected rows |
-| onBulkDeleteConfirm | () => void | Confirms the bulk delete action for selected rows |
-| onBulkDeleteCancel | () => void | Cancels the bulk delete action and closes popup |
-| onDropdownToggle | (buttonId: string, isOpen: boolean) => void | Toggles dropdown open/close state for action buttons |
-| onDropdownClose | (buttonId: string) => void | Closes a specific dropdown by ID |
-| onButtonClick | (button: ButtonConfig) => void | Handles click events for action buttons (export, filter, etc.) |
-| onSelectAll | () => void | Handles select all checkbox click to select/deselect all rows |
-| onRowSelect | (rowId: string \| number) => void | Handles individual row selection checkbox click |
-| onRowToggle | (rowId: string \| number) => void | Handles row expand/collapse toggle for nested rows |
+| Prop | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| onSearchChange | (searchTerm: string) => void | No | - | Updates the search term for filtering data |
+| onFilterChange | (values: Set<string \| number>) => void | No | - | Updates the selected filter values |
+| onDeleteClick | (itemId: string \| number, itemName: string) => void | No | - | Handles delete button click for a specific row |
+| onDeleteConfirm | () => void | No | - | Confirms the delete action for the selected row |
+| onDeleteCancel | () => void | No | - | Cancels the delete action and closes popup |
+| onBulkDeleteClick | () => void | No | - | Handles bulk delete button click for selected rows |
+| onBulkDeleteConfirm | () => void | No | - | Confirms the bulk delete action for selected rows |
+| onBulkDeleteCancel | () => void | No | - | Cancels the bulk delete action and closes popup |
+| onDropdownToggle | (buttonId: string, isOpen: boolean) => void | No | - | Toggles dropdown open/close state for action buttons |
+| onDropdownClose | (buttonId: string) => void | No | - | Closes a specific dropdown by ID |
+| onButtonClick | (button: ButtonConfig) => void | No | - | Handles click events for action buttons (export, filter, etc.) |
+| onSelectAll | () => void | No | - | Handles select all checkbox click to select/deselect all rows |
+| onRowSelect | (rowId: string \| number) => void | No | - | Handles individual row selection checkbox click |
+| onRowToggle | (rowId: string \| number) => void | No | - | Handles row expand/collapse toggle for nested rows |
 
 #### Additional Props
 | Prop | Type | Default | Description |
@@ -356,6 +361,7 @@ interface PaginationProps {
   previousPage: () => void;          // Go to previous page
   setPageSize: (pageSize: number) => void;  // Change page size
   state: TableStateWithPagination<T>;  // Current table state
+  theme?: ThemeProps;                // Optional theme for styling
 }
 ```
 

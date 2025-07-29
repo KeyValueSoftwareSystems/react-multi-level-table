@@ -8,9 +8,9 @@ import '../styles/SidePanel.css';
 
 interface SidePanelProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   item: DataItem | null;
-  theme: ThemeProps;
+  theme?: ThemeProps;
   // Editability props for each field
   isNameEditable?: boolean;
   isDateTimeEditable?: boolean;
@@ -240,7 +240,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
             }}
             onMouseLeave={(e) => {
               if (hasChanges) 
-                e.currentTarget.style.backgroundColor = theme.colors?.primaryColor || '#1976d2';
+                e.currentTarget.style.backgroundColor = theme?.colors?.primaryColor || '#1976d2';
             }}
           >
             Save Changes

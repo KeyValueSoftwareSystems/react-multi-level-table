@@ -31,7 +31,7 @@ interface TableCellProps {
   hasChildren: boolean;
   isExpanded: boolean;
   onToggle: () => void;
-  theme: ThemeProps;
+  theme?: ThemeProps;
   expandIcon?: React.ReactNode;
   selectable?: boolean;
   isRowSelected?: boolean;
@@ -79,8 +79,8 @@ export const TableCell: React.FC<TableCellProps> = ({
       {...cellProps}
       className={"table-cell fixed-width-col"}
       style={{
-        color: theme.table?.cell?.textColor,
-        borderColor: theme.table?.cell?.borderColor,
+        color: theme?.table?.cell?.textColor,
+        borderColor: theme?.table?.cell?.borderColor,
       }}
     >
       <div className="table-cell-content" style={tableRowTypography}>

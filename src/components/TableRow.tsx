@@ -33,7 +33,7 @@ interface TableRowProps {
   isExpanded: boolean;
   onToggle: () => void;
   level?: number;
-  theme: ThemeProps;
+  theme?: ThemeProps;
   expandIcon?: React.ReactNode;
   selectable?: boolean;
   isRowSelected?: boolean;
@@ -76,12 +76,12 @@ export const TableRow: React.FC<TableRowProps> = ({
   }, [isExpanded, level, onRowClick]);
 
   const getRowStyle = useMemo(() => {
-    const rowShades = theme.table?.row?.levelColors || [];
+    const rowShades = theme?.table?.row?.levelColors || [];
     // Use the level to determine which shade to use, defaulting to the lightest shade for deeper nesting
     const shadeIndex = Math.min(level, rowShades.length - 1);
     
     return { backgroundColor: rowShades[shadeIndex]?.background };
-  }, [level, theme.table?.row?.levelColors]);
+  }, [level, theme?.table?.row?.levelColors]);
 
   const handleExpandClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -116,8 +116,8 @@ export const TableRow: React.FC<TableRowProps> = ({
               key={column.key}
               className={`table-cell ${level > 0 ? "table-cell-nested" : ""}`}
               style={{
-                color: theme.table?.cell?.textColor,
-                borderColor: theme.table?.cell?.borderColor,
+                color: theme?.table?.cell?.textColor,
+                borderColor: theme?.table?.cell?.borderColor,
               }}
             >
               <div className="table-cell-content" style={tableRowTypography}>

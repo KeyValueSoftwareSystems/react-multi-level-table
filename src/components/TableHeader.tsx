@@ -22,7 +22,7 @@ import "../styles/TableHeader.css";
  */
 interface TableHeaderProps {
   headerGroups: HeaderGroup<DataItem>[];
-  theme: ThemeProps;
+  theme?: ThemeProps;
   sortable?: boolean;
   ascendingIcon?: React.ReactNode;
   descendingIcon?: React.ReactNode;
@@ -89,9 +89,9 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                     key={columnKey}
                     className="fixed-width-col"
                     style={{
-                      backgroundColor: theme.table?.header?.background,
-                      color: theme.table?.header?.textColor,
-                      borderColor: theme.table?.cell?.borderColor,
+                      backgroundColor: theme?.table?.header?.background,
+                      color: theme?.table?.header?.textColor,
+                      borderColor: theme?.table?.cell?.borderColor,
                     }}
                   >
                     <div className="table-header-cell">
