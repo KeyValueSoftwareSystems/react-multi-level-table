@@ -1,5 +1,10 @@
 # React Multi Level Table
 
+<div align="center">
+<!-- Screenshot of the table component in action -->
+<img src="./src/assets/table-image.png" alt="Multi Level Table Component Example" width="800" height="400"/>
+</div>
+
 ## Table of Contents
 
 - [Overview](#overview)
