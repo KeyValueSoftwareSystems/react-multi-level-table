@@ -4,7 +4,7 @@ import { colors } from '../styles/style';
 import '../styles/ExportDropdown.css';
 
 interface ExportDropdownProps {
-  onClose: () => void;
+  onClose?: () => void;
   handleExportCSV?: () => void;
   theme?: {
     colors?: {
@@ -24,7 +24,7 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) 
-        onClose();
+        onClose?.();
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -36,7 +36,7 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({
     if (handleExportCSV) 
       handleExportCSV();
     
-    onClose();
+    onClose?.();
   };
 
   return (

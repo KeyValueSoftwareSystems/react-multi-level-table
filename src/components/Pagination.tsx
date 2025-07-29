@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { ArrowIcon } from './icons';
 import { PAGE_SIZE_OPTIONS } from '../constants/pagination';
 import { colors, componentStyles } from '../styles/style';
-import type { ThemeProps } from '../types/theme';
 import '../styles/Pagination.css';
 
 /**
@@ -34,7 +33,6 @@ export interface PaginationProps {
   pageSize: number;
   setPageSize: (size: number) => void;
   totalItems: number;
-  theme: ThemeProps;
 }
 
 /**

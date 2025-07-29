@@ -69,36 +69,36 @@ export interface MultiLevelTableProps {
   selectable?: boolean;
   
   // State props
-  selectionState: SelectionState;
-  searchTerm: string;
-  selectedFilterValues: Set<string | number>;
-  deletePopup: {
+  selectionState?: SelectionState;
+  searchTerm?: string;
+  selectedFilterValues?: Set<string | number>;
+  deletePopup?: {
     isOpen: boolean;
     itemId: string | number | null;
     itemName: string;
   };
-  bulkDeletePopup: {
+  bulkDeletePopup?: {
     isOpen: boolean;
     selectedCount: number;
   };
-  openDropdowns: Set<string>;
-  expandedRows: Set<string | number>;
+  openDropdowns?: Set<string>;
+  expandedRows?: Set<string | number>;
   
   // Handler props
-  onSearchChange: (searchTerm: string) => void;
-  onFilterChange: (values: Set<string | number>) => void;
-  onDeleteClick: (itemId: string | number, itemName: string) => void;
-  onDeleteConfirm: () => void;
-  onDeleteCancel: () => void;
-  onBulkDeleteClick: () => void;
-  onBulkDeleteConfirm: () => void;
-  onBulkDeleteCancel: () => void;
-  onDropdownToggle: (buttonId: string, isOpen: boolean) => void;
-  onDropdownClose: (buttonId: string) => void;
-  onButtonClick: (button: ButtonConfig) => void;
-  onSelectAll: () => void;
-  onRowSelect: (rowId: string | number) => void;
-  onRowToggle: (rowId: string | number) => void;
+  onSearchChange?: (searchTerm: string) => void;
+  onFilterChange?: (values: Set<string | number>) => void;
+  onDeleteClick?: (itemId: string | number, itemName: string) => void;
+  onDeleteConfirm?: () => void;
+  onDeleteCancel?: () => void;
+  onBulkDeleteClick?: () => void;
+  onBulkDeleteConfirm?: () => void;
+  onBulkDeleteCancel?: () => void;
+  onDropdownToggle?: (buttonId: string, isOpen: boolean) => void;
+  onDropdownClose?: (buttonId: string) => void;
+  onButtonClick?: (button: ButtonConfig) => void;
+  onSelectAll?: () => void;
+  onRowSelect?: (rowId: string | number) => void;
+  onRowToggle?: (rowId: string | number) => void;
   
   // Other props
   onRowClick?: (row: DataItem) => void;
@@ -131,13 +131,13 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
   selectable = false,
   
   // State props
-  selectionState,
-  searchTerm,
-  selectedFilterValues,
-  deletePopup,
-  bulkDeletePopup,
-  openDropdowns,
-  expandedRows,
+  selectionState = { selectedRows: new Set(), isAllSelected: false },
+  searchTerm = '',
+  selectedFilterValues = new Set(),
+  deletePopup = { isOpen: false, itemId: null, itemName: '' },
+  bulkDeletePopup = { isOpen: false, selectedCount: 0 },
+  openDropdowns = new Set(),
+  expandedRows = new Set(),
   
   // Handler props
   onSearchChange,
@@ -444,12 +444,12 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
           columns={columns}
           hasChildren={!!child.children && child.children.length > 0}
           isExpanded={expandedRows.has(child.id)}
-          onToggle={() => onRowToggle(child.id)}
+          onToggle={() => onRowToggle?.(child.id)}
           level={level}
           theme={mergedTheme}
           selectable={selectable}
           isRowSelected={selectionState.selectedRows.has(child.id)}
-          onRowSelect={() => onRowSelect(child.id)}
+          onRowSelect={() => onRowSelect?.(child.id)}
           onRowClick={onRowClick}
           onDelete={handleDeleteClick}
           expandIcon={expandIcon}
@@ -510,12 +510,12 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
                 columns={columns}
                 hasChildren={hasChildren}
                 isExpanded={expandedRows.has(parentId)}
-                onToggle={() => hasChildren && onRowToggle(parentId)}
+                onToggle={() => hasChildren && onRowToggle?.(parentId)}
                 level={0}
                 theme={mergedTheme}
                 selectable={selectable}
                 isRowSelected={selectionState.selectedRows.has(parentId)}
-                onRowSelect={() => onRowSelect(parentId)}
+                onRowSelect={() => onRowSelect?.(parentId)}
                 onRowClick={onRowClick}
                 onDelete={handleDeleteClick}
                 expandIcon={expandIcon}
@@ -657,12 +657,12 @@ export const MultiLevelTable: React.FC<MultiLevelTableProps> = ({
             selectedCategory: selectedCategory,
             categories: processedCategories,
             categoryFilterOptions: categoryFilterOptions,
-            onClose: () => onDropdownClose('filter'),
+            onClose: () => onDropdownClose?.('filter'),
             onApply: (values: Set<string | number>) => {
               handleFilterChange(values);
             },
             onCancel: () => {
-              onDropdownClose('filter');
+              onDropdownClose?.('filter');
             },
             onReset: () => {
               onFilterChange?.(new Set());

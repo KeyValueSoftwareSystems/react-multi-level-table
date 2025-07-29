@@ -6,18 +6,18 @@ import '../styles/Popup.css';
 
 interface PopupButton {
   text: string;
-  onClick: () => void;
+  onClick?: () => void;
   variant?: 'primary' | 'secondary';
   disabled?: boolean;
 }
 
 interface PopupProps {
   isOpen: boolean;
-  onClose: () => void;
-  icon: React.ComponentType<{ width?: number; height?: number }>;
+  onClose?: () => void;
+  icon?: React.ComponentType<{ width?: number; height?: number }>;
   title?: string;
-  text: string;
-  buttons: PopupButton[];
+  text?: string;
+  buttons?: PopupButton[];
   theme?: ThemeProps;
 }
 
@@ -27,7 +27,7 @@ export const Popup: React.FC<PopupProps> = ({
   icon: Icon,
   title,
   text,
-  buttons,
+  buttons = [],
   theme,
 }) => {
   const popupRef = useRef<HTMLDivElement>(null);
@@ -35,12 +35,12 @@ export const Popup: React.FC<PopupProps> = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (popupRef.current && !popupRef.current.contains(event.target as Node)) 
-        onClose();
+        onClose?.();
     };
 
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') 
-        onClose();
+        onClose?.();
     };
 
     if (isOpen) {
@@ -57,7 +57,7 @@ export const Popup: React.FC<PopupProps> = ({
   }, [isOpen, onClose]);
 
   const renderIcon = () => {
-    return <Icon width={48} height={48} />;
+    return Icon ? <Icon width={48} height={48} /> : null;
   };
 
   if (!isOpen) return null;
@@ -84,9 +84,11 @@ export const Popup: React.FC<PopupProps> = ({
         </div>
         
         <div className="popup-content">
-          <p className="popup-text" style={{ color: theme?.colors?.textColor || colors.borderDark }}>
-            {text}
-          </p>
+          {text && (
+            <p className="popup-text" style={{ color: theme?.colors?.textColor || colors.borderDark }}>
+              {text}
+            </p>
+          )}
         </div>
         
         <div className="popup-footer">
@@ -99,11 +101,11 @@ export const Popup: React.FC<PopupProps> = ({
               style={{
                 backgroundColor: button.variant === 'primary' 
                   ? (theme?.colors?.primaryColor || colors.primary)
-                  : (theme?.colors?.background || colors.backgroundWhite),
+                  : 'transparent',
                 color: button.variant === 'primary' 
                   ? '#ffffff'
                   : (theme?.colors?.textColor || colors.borderDark),
-                borderColor: theme?.colors?.borderColor || colors.borderDark,
+                borderColor: theme?.colors?.borderColor || colors.borderFilter,
               }}
             >
               {button.text}

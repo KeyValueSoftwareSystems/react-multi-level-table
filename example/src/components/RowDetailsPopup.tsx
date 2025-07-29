@@ -8,9 +8,9 @@ import '../styles/RowDetailsPopup.css';
 
 interface RowDetailsPopupProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   item: DataItem | null;
-  theme: ThemeProps;
+  theme?: ThemeProps;
 }
 
 export const RowDetailsPopup: React.FC<RowDetailsPopupProps> = ({
@@ -80,20 +80,20 @@ export const RowDetailsPopup: React.FC<RowDetailsPopupProps> = ({
       <div 
         className="row-details-popup"
         style={{
-          backgroundColor: theme.colors?.background || '#ffffff',
+          backgroundColor: theme?.colors?.background || '#ffffff',
         }}
       >
         {/* Header */}
         <div 
           className="row-details-popup-header"
           style={{
-            borderBottomColor: theme.colors?.borderColor || '#e0e0e0',
+            borderBottomColor: theme?.colors?.borderColor || '#e0e0e0',
           }}
         >
           <h2 
             className="row-details-popup-title"
             style={{
-              color: theme.colors?.textColor || '#333333',
+              color: theme?.colors?.textColor || '#333333',
             }}
           >
             Resource Details
@@ -102,7 +102,7 @@ export const RowDetailsPopup: React.FC<RowDetailsPopupProps> = ({
             onClick={onClose}
             className="row-details-popup-close-button"
             style={{
-              color: theme.colors?.textColor || '#333333',
+              color: theme?.colors?.textColor || '#333333',
             }}
           >
             ×
@@ -125,7 +125,7 @@ export const RowDetailsPopup: React.FC<RowDetailsPopupProps> = ({
               <span 
                 className="detail-row-value-monospace"
                 style={{
-                  color: theme.colors?.textColor || '#666666',
+                  color: theme?.colors?.textColor || '#666666',
                 }}
               >
                 {item.id}
@@ -170,7 +170,7 @@ export const RowDetailsPopup: React.FC<RowDetailsPopupProps> = ({
                 <span 
                   className="detail-row-value-small"
                   style={{
-                    color: theme.colors?.textColor || '#666666',
+                    color: theme?.colors?.textColor || '#666666',
                   }}
                 >
                   {item.children.length} item{item.children.length !== 1 ? 's' : ''}
@@ -196,15 +196,15 @@ export const RowDetailsPopup: React.FC<RowDetailsPopupProps> = ({
         <div 
           className="row-details-popup-footer"
           style={{
-            borderTopColor: theme.colors?.borderColor || '#e0e0e0',
+            borderTopColor: theme?.colors?.borderColor || '#e0e0e0',
           }}
         >
           <button
             onClick={onClose}
             className="row-details-popup-close-action"
             style={{
-              color: theme.colors?.textColor || '#666666',
-              borderColor: theme.colors?.borderColor || '#e0e0e0',
+              color: theme?.colors?.textColor || '#666666',
+              borderColor: theme?.colors?.borderColor || '#e0e0e0',
             }}
           >
             Close

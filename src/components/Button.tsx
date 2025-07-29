@@ -6,7 +6,7 @@ import type { ThemeProps } from '../types/theme';
 import '../styles/Button.css';
 
 interface ButtonProps {
-  icon: React.ComponentType<{ width?: number; height?: number }>;
+  icon?: React.ComponentType<{ width?: number; height?: number }>;
   text: string;
   onClick: () => void;
   theme?: ThemeProps;
@@ -33,7 +33,7 @@ export const Button: React.FC<ButtonProps> = ({
   const mergedTheme = theme || {};
   
   const renderIcon = () => {
-    return <Icon width={16} height={16} />;
+    return Icon ? <Icon width={16} height={16} /> : null;
   };
 
   const renderContent = () => {

@@ -7,9 +7,9 @@ interface SidePanelInputProps {
   label: string;
   value: string;
   onChange?: (value: string) => void;
-  isEditable: boolean;
+  isEditable?: boolean;
   placeholder?: string;
-  theme: ThemeProps;
+  theme?: ThemeProps;
   required?: boolean;
 }
 
@@ -17,7 +17,7 @@ export const SidePanelInput: React.FC<SidePanelInputProps> = ({
   label,
   value,
   onChange,
-  isEditable,
+  isEditable = true,
   placeholder,
   theme,
   required = false,
@@ -27,7 +27,7 @@ export const SidePanelInput: React.FC<SidePanelInputProps> = ({
       <label 
         className="side-panel-input-label"
         style={{
-          color: theme.colors?.textColor || '#333333',
+          color: theme?.colors?.textColor || '#333333',
         }}
       >
         {label}{required && ' *'}
@@ -40,18 +40,18 @@ export const SidePanelInput: React.FC<SidePanelInputProps> = ({
           placeholder={placeholder}
           className="side-panel-input-field"
           style={{
-            color: theme.colors?.textColor || '#333333',
-            backgroundColor: theme.colors?.background || '#ffffff',
-            borderColor: theme.colors?.borderColor || '#e0e0e0',
+            color: theme?.colors?.textColor || '#333333',
+            backgroundColor: theme?.colors?.background || '#ffffff',
+            borderColor: theme?.colors?.borderColor || '#e0e0e0',
           }}
         />
       ) : (
         <div 
           className="side-panel-input-display"
           style={{
-            color: theme.colors?.textColor || '#333333',
-            backgroundColor: theme.colors?.background || '#f5f5f5',
-            borderColor: theme.colors?.borderColor || '#e0e0e0',
+            color: theme?.colors?.textColor || '#333333',
+            backgroundColor: theme?.colors?.background || '#f5f5f5',
+            borderColor: theme?.colors?.borderColor || '#e0e0e0',
           }}
         >
           {value}

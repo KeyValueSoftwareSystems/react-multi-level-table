@@ -5,23 +5,23 @@ import '../styles/FilterDropdown.css';
 
 interface FilterDropdownProps {
   // State props
-  tempSelectedValues: Set<string | number>;
-  selectedCategory: string | null;
-  categories: Array<{
+  tempSelectedValues?: Set<string | number>;
+  selectedCategory?: string | null;
+  categories?: Array<{
     key: string;
     title: string;
     count: number;
   }>;
-  categoryFilterOptions: FilterOption[];
+  categoryFilterOptions?: FilterOption[];
   
   // Handler props
-  onClose: () => void;
-  onApply: (values: Set<string | number>) => void;
-  onCancel: () => void;
-  onReset: () => void;
-  onCategoryChange: (categoryKey: string) => void;
-  onSelectAll: () => void;
-  onOptionChange: (value: string | number) => void;
+  onClose?: () => void;
+  onApply?: (values: Set<string | number>) => void;
+  onCancel?: () => void;
+  onReset?: () => void;
+  onCategoryChange?: (categoryKey: string) => void;
+  onSelectAll?: () => void;
+  onOptionChange?: (value: string | number) => void;
   
   // Configuration props
   title?: string;
@@ -48,10 +48,10 @@ interface FilterDropdownProps {
 
 export const FilterDropdown: React.FC<FilterDropdownProps> = ({
   // State props
-  tempSelectedValues,
-  selectedCategory,
-  categories,
-  categoryFilterOptions,
+  tempSelectedValues = new Set(),
+  selectedCategory = null,
+  categories = [],
+  categoryFilterOptions = [],
   
   // Handler props
   onClose,
@@ -80,7 +80,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node))
-        onClose();
+        onClose?.();
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -91,17 +91,17 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
   }, [onClose]);
 
   const handleApply = () => {
-    onApply(tempSelectedValues);
-    onClose();
+    onApply?.(tempSelectedValues);
+    onClose?.();
   };
 
   const handleCancel = () => {
-    onCancel();
-    onClose();
+    onCancel?.();
+    onClose?.();
   };
 
   const handleResetFilters = () => {
-    onReset();
+    onReset?.();
   };
 
   return (
@@ -169,7 +169,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
                   <div 
                     key={category.key} 
                     className={`category-item ${isSelected ? 'selected' : ''}`}
-                    onClick={() => onCategoryChange(category.key)}
+                    onClick={() => onCategoryChange?.(category.key)}
                     style={{
                       cursor: 'pointer',
                       backgroundColor: isSelected ? '#F3F3FF' : 'transparent',
@@ -209,7 +209,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
                   ref={(input) => {
                     if (input) input.indeterminate = isIndeterminate;
                   }}
-                  onChange={onSelectAll}
+                  onChange={() => onSelectAll?.()}
                   style={{
                     borderColor: theme?.table?.filter?.borderColor || '#E5E7EB',
                   }}
@@ -238,7 +238,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
                     <input
                       type="checkbox"
                       checked={isSelected}
-                      onChange={() => onOptionChange(option.value)}
+                      onChange={() => onOptionChange?.(option.value)}
                       style={{
                         borderColor: theme?.table?.filter?.borderColor || '#E5E7EB',
                       }}
