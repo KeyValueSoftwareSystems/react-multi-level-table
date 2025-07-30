@@ -15,11 +15,19 @@
   - [Component Props](#22-component-props)
 - [Customization](#3-customization)
   - [Column Configuration](#31-column-configuration)
-  - [Expand Icon Customization](#32-expand-icon-customization)
-  - [Selection Props](#33-selection-props)
-  - [Sort Icons](#34-sort-icons)
-  - [Pagination](#35-pagination)
-  - [Theme Customization](#36-theme-customization)
+  - [DataItem Interface](#32-dataitem-interface)
+  - [FilterOption Interface](#33-filteroption-interface)
+  - [Expand Icon Customization](#34-expand-icon-customization)
+  - [Selection Props](#35-selection-props)
+  - [Sort Icons](#36-sort-icons)
+  - [Search and Filter Features](#37-search-and-filter-features)
+  - [Export Functionality](#38-export-functionality)
+  - [Delete Functionality](#39-delete-functionality)
+  - [Dropdown Management](#310-dropdown-management)
+  - [Row Actions](#311-row-actions)
+  - [Row Expansion](#312-row-expansion)
+  - [Pagination](#313-pagination)
+  - [Theme Customization](#314-theme-customization)
 - [Development](#4-development)
   - [Project Structure](#41-project-structure)
   - [Development Commands](#42-development-commands)
@@ -199,19 +207,44 @@ Each column object should have the following properties:
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
 | key | string | Yes | Key to access the data in each row |
-| title | string | Yes | Column header text |
+| title | string \| ReactNode | Yes | Column header text or custom component |
 | render | function | No | Custom render function for the column. Receives (value: string \| number, item: DataItem) as parameters |
 | filterable | boolean | No | Whether the column can be filtered |
 | sortable | boolean | No | Whether the column can be sorted |
 | customSortFn | function | No | Custom sorting function. Receives (rowA: DataItem, rowB: DataItem, columnId: string) as parameters |
-| width | string | No | Column width (e.g., '150px', '20%') |
-| minWidth | string | No | Minimum column width |
-| maxWidth | string | No | Maximum column width |
-| align | string | No | Text alignment ('left', 'center', 'right') |
-| className | string | No | Custom CSS class for the column |
-| style | object | No | Custom inline styles for the column |
+| filterOptions | FilterOption[] | No | Array of filter options for the column |
 
-### 3.2 Expand Icon Customization
+### 3.2 DataItem Interface
+
+The data items should conform to the following interface:
+
+```tsx
+interface DataItem {
+  id: number;
+  resourceType: string;
+  name: string;
+  dateTime: string;
+  status: 'Active' | 'Inactive' | 'Pending' | 'Processing' | 'Provisioning';
+  orchestration: string;
+  imageURL?: string;
+  subtext?: string;
+  showActionButtons?: boolean;
+  children?: DataItem[];
+}
+```
+
+### 3.3 FilterOption Interface
+
+Filter options for columns should conform to:
+
+```tsx
+interface FilterOption {
+  label: string;
+  value: string | number;
+}
+```
+
+### 3.4 Expand Icon Customization
 
 You can customize the expand icon for rows with children using the `expandIcon` prop:
 
@@ -225,7 +258,7 @@ You can customize the expand icon for rows with children using the `expandIcon` 
 
 The expand icon will be displayed for rows that have children. You can provide any React component as the icon.
 
-### 3.3 Selection Props
+### 3.5 Selection Props
 
 The table supports row selection with the following props:
 
@@ -234,8 +267,15 @@ The table supports row selection with the following props:
   data={data}
   columns={columns}
   selectable={true} // Enable row selection
-  onSelectionChange={(selectedRows) => {
-    console.log('Selected rows:', selectedRows);
+  selectionState={{
+    selectedRows: new Set(),
+    isAllSelected: false
+  }}
+  onSelectAll={() => {
+    // Handle select all
+  }}
+  onRowSelect={(rowId) => {
+    // Handle individual row selection
   }}
 />
 ```
@@ -243,11 +283,13 @@ The table supports row selection with the following props:
 | Prop | Type | Description |
 |------|------|-------------|
 | selectable | boolean | Enable/disable row selection functionality |
-| onSelectionChange | function | Callback function that receives a Set of selected row IDs |
+| selectionState | SelectionState | Current selection state with selected rows and all selected flag |
+| onSelectAll | function | Callback function for select all checkbox |
+| onRowSelect | function | Callback function for individual row selection |
 
 **Note**: Child rows (nested rows) do not display checkboxes. They automatically show placeholder spacers to maintain alignment with parent rows.
 
-### 3.4 Sort Icons
+### 3.6 Sort Icons
 
 You can customize the sort icons for ascending and descending states:
 
@@ -266,21 +308,23 @@ You can customize the sort icons for ascending and descending states:
 | ascendingIcon | ReactNode | Custom icon component for ascending sort state |
 | descendingIcon | ReactNode | Custom icon component for descending sort state |
 
-### 3.5 Search and Filter Features
+### 3.7 Search and Filter Features
 
 The table provides comprehensive search and filtering capabilities:
 
 #### Global Search
-- **Searchable**: Enable/disable global search across all columns
+- **Searchable**: Parent level search
 - **Search Input**: Real-time search with debounced input
 - **Search Icon**: Customizable search icon with proper positioning
 - **Placeholder Text**: Customizable placeholder text for search input
+- **Searchable Columns**: Specify which columns to include in search via `searchableColumns` prop
 
 #### Column Filtering
 - **Filterable Columns**: Individual columns can be marked as filterable
 - **Filter Dropdowns**: Dropdown-based filtering with multiple selection
 - **Filter Options**: Custom filter options for each column
 - **Filter State**: Maintains filter state across pagination
+- **Filter Column**: Specify which column to filter via `filterColumn` prop
 
 **Important Note**: Search and filter features are currently implemented at the parent level only. Child rows (nested rows) are not included in search results or filter operations. This ensures consistent behavior and performance.
 
@@ -300,37 +344,93 @@ const columns = [
 ];
 ```
 
-### 3.6 Export Functionality
+### 3.8 Export Functionality
 
-The table supports data export with customizable options:
+The table supports data export through the action buttons. Export functionality is handled through the `onButtonClick` prop when export buttons are clicked.
 
-| Prop | Type | Description |
-|------|------|-------------|
-| exportable | boolean | Enable/disable export functionality |
-| exportFormats | array | Available export formats (csv, excel, json) |
-| onExport | function | Custom export handler function |
+### 3.9 Delete Functionality
+
+The table supports both individual and bulk delete operations:
+
+#### Individual Delete
+- **Delete Buttons**: Action buttons in each row for individual deletion
+- **Delete Confirmation**: Popup confirmation for delete actions
+- **Delete State**: `deletePopup` state manages confirmation popup
+
+#### Bulk Delete
+- **Bulk Selection**: Select multiple rows for bulk operations
+- **Bulk Delete Button**: Action button for bulk deletion
+- **Bulk Delete Confirmation**: Popup confirmation for bulk delete actions
+- **Bulk Delete State**: `bulkDeletePopup` state manages bulk confirmation popup
 
 ```tsx
 <MultiLevelTable
   data={data}
   columns={columns}
-  exportable={true}
-  exportFormats={['csv', 'excel']}
-  onExport={(data, format) => {
-    // Custom export logic
-    console.log('Exporting:', data, format);
+  deletePopup={{
+    isOpen: false,
+    itemId: null,
+    itemName: ''
+  }}
+  bulkDeletePopup={{
+    isOpen: false,
+    selectedCount: 0
+  }}
+  onDeleteClick={(itemId, itemName) => {
+    // Handle individual delete click
+  }}
+  onDeleteConfirm={() => {
+    // Handle delete confirmation
+  }}
+  onDeleteCancel={() => {
+    // Handle delete cancellation
+  }}
+  onBulkDeleteClick={() => {
+    // Handle bulk delete click
+  }}
+  onBulkDeleteConfirm={() => {
+    // Handle bulk delete confirmation
+  }}
+  onBulkDeleteCancel={() => {
+    // Handle bulk delete cancellation
   }}
 />
 ```
 
-### 3.7 Row Actions
+### 3.10 Dropdown Management
 
-The table supports row-level actions:
+The table provides comprehensive dropdown state management:
+
+```tsx
+<MultiLevelTable
+  data={data}
+  columns={columns}
+  openDropdowns={new Set()}
+  onDropdownToggle={(buttonId, isOpen) => {
+    // Handle dropdown toggle
+  }}
+  onDropdownClose={(buttonId) => {
+    // Handle dropdown close
+  }}
+  onButtonClick={(button) => {
+    // Handle button clicks
+  }}
+/>
+```
+
+### 3.11 Row Actions
+
+The table supports row-level actions through customizable action icons and buttons:
 
 | Prop | Type | Description |
 |------|------|-------------|
 | onRowClick | function | Callback when parent row is clicked |
-| onDelete | function | Callback for row deletion with confirmation |
+
+**Action Icons and Functionality:**
+- **showActionButtons**: DataItem property to control action button visibility per row
+- **Customizable Actions**: You can add action icons like edit, delete, view, etc. through the `render` function in columns
+- **Action Handlers**: Handle action clicks through the `onButtonClick` prop or custom render functions
+- **Flexible Implementation**: Actions can be implemented as icons, buttons, or custom components within cell content
 
 ```tsx
 <MultiLevelTable
@@ -339,13 +439,28 @@ The table supports row-level actions:
   onRowClick={(row) => {
     console.log('Row clicked:', row);
   }}
-  onDelete={(rowId, rowName) => {
-    console.log('Delete row:', rowId, rowName);
+  onButtonClick={(button) => {
+    console.log('Action button clicked:', button);
   }}
 />
 ```
 
-### 3.8 Pagination
+### 3.12 Row Expansion
+
+The table supports expandable rows with nested data:
+
+```tsx
+<MultiLevelTable
+  data={data}
+  columns={columns}
+  expandedRows={new Set()}
+  onRowToggle={(rowId) => {
+    // Handle row expansion/collapse
+  }}
+/>
+```
+
+### 3.13 Pagination
 
 The table component provides comprehensive pagination functionality. You can either use the default pagination or create a custom one using the pagination props:
 
@@ -415,7 +530,7 @@ const CustomPagination = ({
 />
 ```
 
-### 3.9 Theme Customization
+### 3.14 Theme Customization
 
 The table component supports comprehensive theme customization through the `theme` prop. Here's the complete theme interface:
 
@@ -635,45 +750,45 @@ npm run lint
 Here's a complete example showing how to use the component with all features enabled:
 
 ```tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { MultiLevelTable } from '@keyvaluesystems/multilevel-table';
 
 function App() {
+  // State management
+  const [selectedRows, setSelectedRows] = useState(new Set());
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedFilterValues, setSelectedFilterValues] = useState(new Set());
+  const [deletePopup, setDeletePopup] = useState({ isOpen: false, itemId: null, itemName: '' });
+  const [bulkDeletePopup, setBulkDeletePopup] = useState({ isOpen: false, selectedCount: 0 });
+  const [openDropdowns, setOpenDropdowns] = useState(new Set());
+  const [expandedRows, setExpandedRows] = useState(new Set());
+
   const data = [
     {
       id: 1,
-      name: 'Parent 1',
-      value: 100,
-      status: 'active',
+      resourceType: 'Application',
+      name: 'web-service',
+      dateTime: '12-Jun-2024, 10:30 AM',
+      status: 'Active',
+      orchestration: 'ECS',
+      showActionButtons: true,
       children: [
         {
-          id: 2,
-          name: 'Child 1',
-          value: 50,
-          status: 'pending',
-        },
-        {
-          id: 3,
-          name: 'Child 2',
-          value: 50,
-          status: 'completed',
+          id: 101,
+          resourceType: 'Service',
+          name: 'api-gateway',
+          dateTime: '12-Jun-2024, 10:30 AM',
+          status: 'Active',
+          orchestration: 'ECS',
         },
       ],
     },
   ];
 
   const columns = [
-    {
-      key: 'name',
-      title: 'Name',
-      filterable: true,
-    },
-    {
-      key: 'value',
-      title: 'Value',
-      filterable: true,
-      render: (value) => `$${value}`,
-    },
+    { key: 'resourceType', title: 'Resource Type', filterable: true },
+    { key: 'name', title: 'Name', filterable: true },
+    { key: 'dateTime', title: 'Date & Time', filterable: true },
     {
       key: 'status',
       title: 'Status',
@@ -682,15 +797,14 @@ function App() {
         <span style={{ 
           padding: '4px 8px',
           borderRadius: '4px',
-          backgroundColor: value === 'active' ? '#e6ffe6' : 
-                          value === 'pending' ? '#fff3e6' : '#e6f3ff',
-          color: value === 'active' ? '#006600' :
-                 value === 'pending' ? '#cc7700' : '#0066cc'
+          backgroundColor: value === 'Active' ? '#e6ffe6' : '#fff3e6',
+          color: value === 'Active' ? '#006600' : '#cc7700'
         }}>
           {value}
         </span>
       ),
     },
+    { key: 'orchestration', title: 'Orchestration', filterable: true },
   ];
 
   const theme = {
@@ -721,28 +835,104 @@ function App() {
   };
 
   return (
-    <div>
-      <MultiLevelTable 
-        data={data} 
-        columns={columns}
-        pageSize={10}
-        theme={theme}
-        sortable={true}
-        selectable={true}
-        searchable={true}
-        filterable={true}
-        exportable={true}
-        onSelectionChange={(selectedRows) => {
-          console.log('Selected rows:', selectedRows);
-        }}
-        onRowClick={(row) => {
-          console.log('Row clicked:', row);
-        }}
-        onDelete={(rowId, rowName) => {
-          console.log('Delete row:', rowId, rowName);
-        }}
-      />
-    </div>
+    <MultiLevelTable 
+      data={data} 
+      columns={columns}
+      pageSize={10}
+      theme={theme}
+      sortable={true}
+      selectable={true}
+      
+      // State props
+      selectionState={{
+        selectedRows,
+        isAllSelected: selectedRows.size === data.length && data.length > 0
+      }}
+      searchTerm={searchTerm}
+      selectedFilterValues={selectedFilterValues}
+      deletePopup={deletePopup}
+      bulkDeletePopup={bulkDeletePopup}
+      openDropdowns={openDropdowns}
+      expandedRows={expandedRows}
+      
+      // Handler props
+      onSearchChange={setSearchTerm}
+      onFilterChange={setSelectedFilterValues}
+      onDeleteClick={(itemId, itemName) => {
+        setDeletePopup({ isOpen: true, itemId, itemName });
+      }}
+      onDeleteConfirm={() => {
+        console.log('Delete confirmed');
+        setDeletePopup({ isOpen: false, itemId: null, itemName: '' });
+      }}
+      onDeleteCancel={() => {
+        setDeletePopup({ isOpen: false, itemId: null, itemName: '' });
+      }}
+      onBulkDeleteClick={() => {
+        setBulkDeletePopup({ isOpen: true, selectedCount: selectedRows.size });
+      }}
+      onBulkDeleteConfirm={() => {
+        console.log('Bulk delete confirmed');
+        setSelectedRows(new Set());
+        setBulkDeletePopup({ isOpen: false, selectedCount: 0 });
+      }}
+      onBulkDeleteCancel={() => {
+        setBulkDeletePopup({ isOpen: false, selectedCount: 0 });
+      }}
+      onDropdownToggle={(buttonId, isOpen) => {
+        const newSet = new Set(openDropdowns);
+        if (isOpen) {
+          newSet.add(buttonId);
+        } else {
+          newSet.delete(buttonId);
+        }
+        setOpenDropdowns(newSet);
+      }}
+      onDropdownClose={(buttonId) => {
+        const newSet = new Set(openDropdowns);
+        newSet.delete(buttonId);
+        setOpenDropdowns(newSet);
+      }}
+      onButtonClick={(button) => {
+        console.log('Button clicked:', button);
+      }}
+      onSelectAll={() => {
+        const newIsAllSelected = selectedRows.size !== data.length;
+        const newSelectedRows = new Set();
+        if (newIsAllSelected) {
+          data.forEach(item => newSelectedRows.add(item.id));
+        }
+        setSelectedRows(newSelectedRows);
+      }}
+      onRowSelect={(rowId) => {
+        const newSet = new Set(selectedRows);
+        if (newSet.has(rowId)) {
+          newSet.delete(rowId);
+        } else {
+          newSet.add(rowId);
+        }
+        setSelectedRows(newSet);
+      }}
+      onRowToggle={(rowId) => {
+        const newSet = new Set(expandedRows);
+        if (newSet.has(rowId)) {
+          newSet.delete(rowId);
+        } else {
+          newSet.add(rowId);
+        }
+        setExpandedRows(newSet);
+      }}
+      
+      // Other props
+      onRowClick={(row) => console.log('Row clicked:', row)}
+      searchableColumns={['resourceType', 'name', 'dateTime', 'orchestration']}
+      filterColumn="status"
+      tableTitle="Multi-Level Table Demo"
+      tableSubtitle="A comprehensive table showing resource management"
+      showDarkMode={false}
+      isDarkMode={false}
+      onToggleTheme={() => console.log('Theme toggled')}
+    />
   );
 }
 
