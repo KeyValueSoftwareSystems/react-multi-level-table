@@ -1,7 +1,7 @@
 {
   "name": "@keyvaluesystems/multilevel-table",
   "private": false,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A flexible and customizable table component built with React and Material-UI",
   "author": "KeyValue Software Systems",
   "license": "MIT",
