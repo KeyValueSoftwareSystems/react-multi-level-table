@@ -1,0 +1,578 @@
+.table-container {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Main container styling to prevent black space */
+.table-wrapper {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Remove overflow-x from wrapper to prevent black space */
+  margin: 0;
+  padding: 0 ;
+  /* Ensure proper height */
+  height: auto;
+  min-height: 0;
+  /* Prevent any overflow issues */
+  overflow: visible;
+}
+
+/* Responsive table container */
+.table-responsive-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  /* Show scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+  /* Prevent extra space */
+  margin: 0;
+  padding: 0;
+  /* Prevent vertical overflow */
+  overflow-y: hidden;
+  /* Ensure proper height */
+  height: auto;
+  min-height: 0;
+  /* Ensure horizontal scroll works properly */
+  white-space: nowrap;
+  /* Force horizontal scroll for all screen sizes below 1200px */
+  min-width: 0;
+}
+
+/* Custom scrollbar styling */
+.table-responsive-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-responsive-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-responsive-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.table-responsive-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Ensure table container maintains proper spacing */
+.table-container {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure no extra space from table elements */
+.main-table-container * {
+  box-sizing: border-box;
+}
+
+/* Ensure pagination doesn't create extra space */
+.table-wrapper > div:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  /* Ensure pagination maintains its layout on smaller screens */
+  width: 100%;
+  overflow-x: auto; /* Allow horizontal scroll if needed */
+}
+
+.main-table-container {
+  width: 100%;
+  border: 1px solid #d9d9d9;
+  border-radius: 10px;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  table-layout: fixed;
+  min-width: 1200px; /* Minimum width to ensure all content fits properly */
+  margin: 0; /* Remove any margin */
+  padding: 0; /* Remove any padding */
+  /* Ensure table doesn't shrink below minimum width */
+  flex-shrink: 0;
+}
+
+/* Ensure table cells don't wrap content */
+.table-container td,
+.table-container th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Prevent content from being truncated */
+  min-width: 0;
+}
+
+/* Column width distribution - spread across full width with end spacing for actions */
+.main-table-container th:nth-child(1),
+.main-table-container td:nth-child(1) {
+  width: 22%; /* Resource Type - reduced slightly */
+  text-align: left;
+}
+
+.main-table-container th:nth-child(2),
+.main-table-container td:nth-child(2) {
+  width: 18%; /* Name - reduced slightly */
+  text-align: left;
+}
+
+.main-table-container th:nth-child(3),
+.main-table-container td:nth-child(3) {
+  width: 18%; /* Date & Time - reduced slightly */
+  text-align: left;
+}
+
+.main-table-container th:nth-child(4),
+.main-table-container td:nth-child(4) {
+  width: 12%; /* Status - reduced slightly */
+  text-align: left;
+}
+
+.main-table-container th:nth-child(5),
+.main-table-container td:nth-child(5) {
+  width: 12%; /* Orchestration - reduced slightly */
+  text-align: left;
+}
+
+.main-table-container th:nth-child(6),
+.main-table-container td:nth-child(6) {
+  width: 8%; /* Actions - increased for better spacing */
+  padding-right: 24px; /* Add end spacing to actions column */
+  text-align: left;
+}
+
+.selection-header,
+.selection-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+/* Custom styled checkbox for selection */
+.row-checkbox,
+.selection-header input[type="checkbox"],
+.selection-cell input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid #BFBFBF;
+  background: #fff;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  margin: 0 8px 0 0;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.row-checkbox:checked,
+.selection-header input[type="checkbox"]:checked,
+.selection-cell input[type="checkbox"]:checked {
+  background: #5D5FEF;
+  border: 1.2px solid #5D5FEF;
+  border-radius: 4px;
+}
+
+.row-checkbox:checked::after,
+.selection-header input[type="checkbox"]:checked::after,
+.selection-cell input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 8px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  border-radius: 1px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  display: block;
+  box-sizing: border-box;
+}
+
+.table-container td {
+  color: #000;
+  font-size: var(--Typeface-Size-lg, 16px);
+  font-style: normal;
+  font-weight: 400;
+  line-height: var(--Typeface-line-height-line-height-500, 20px);
+  letter-spacing: var(--Typeface-letter-spacing--normal, -0.54px);
+  background: #fff;
+  border-bottom: 1px solid #f1f1f3;
+  padding: 18px 16px;
+  vertical-align: middle;
+  box-sizing: border-box;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 120px; /* Increased minimum width to prevent content trimming */
+}
+
+.main-table-container tr:last-child td {
+  border-bottom: none;
+}
+
+/* Nested row styling - no extra padding */
+.table-row-nested td {
+  background-color: #fafafa;
+}
+
+/* Remove any extra padding for nested cells */
+.table-cell-nested {
+  padding-left: 16px !important;
+}
+
+/* Ensure actions column maintains consistent spacing across all row levels */
+.main-table-container td:nth-child(6) {
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* Ensure action buttons are properly aligned in nested rows */
+.table-row-nested td:nth-child(6) {
+  padding-right: 24px;
+}
+
+/* Search bar styles */
+.search-bar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap; /* Allow natural wrapping */
+}
+
+.action-buttons-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap; /* Allow buttons to wrap */
+}
+
+.table-title-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex-shrink: 0; /* Prevent title from shrinking */
+}
+
+.table-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  font-family: 'DM Sans', sans-serif;
+  color: #667085;
+  opacity: 0.7;
+}
+
+.search-input-container {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  min-width: 200px; /* Minimum width for search */
+  max-width: 400px;
+  flex: 1;
+  min-width: 0; /* Allow shrinking below 200px when needed */
+}
+
+.search-input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+}
+
+.search-input {
+  width: 100%;
+  height: 48px;
+  border-radius: 8px;
+  gap: 8px;
+  opacity: 1;
+  padding: 4px 12px 4px 44px;
+  border: 1px solid;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  border: 1.5px solid #D9D9D9;
+}
+
+.search-input::placeholder {
+  color: #D9D9D9;
+  opacity: 1;
+}
+
+/* Responsive design with comprehensive breakpoints */
+@media (max-width: 768px) {
+  /* Tablet and smaller - Title on first line, search bar and buttons on second line */
+  .search-bar-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .action-buttons-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+  }
+
+  .search-input-container {
+    max-width: none;
+    min-width: 200px;
+    flex: 1;
+  }
+  
+  /* Ensure table scrolls horizontally on mobile */
+  .table-responsive-container {
+    overflow-x: auto;
+    min-width: 0; /* Allow container to shrink */
+    width: 100%;
+  }
+  
+  /* Ensure table headers and cells don't break */
+  .main-table-container th,
+  .main-table-container td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 120px; /* Minimum width for mobile */
+  }
+  
+  /* Adjust column widths for mobile - maintain exact same proportions */
+  .main-table-container th:nth-child(1),
+  .main-table-container td:nth-child(1) {
+    min-width: 264px; /* Resource Type - 22% of 1200px */
+  }
+  
+  .main-table-container th:nth-child(2),
+  .main-table-container td:nth-child(2) {
+    min-width: 216px; /* Name - 18% of 1200px */
+  }
+  
+  .main-table-container th:nth-child(3),
+  .main-table-container td:nth-child(3) {
+    min-width: 216px; /* Date & Time - 18% of 1200px */
+  }
+  
+  .main-table-container th:nth-child(4),
+  .main-table-container td:nth-child(4) {
+    min-width: 144px; /* Status - 12% of 1200px */
+  }
+  
+  .main-table-container th:nth-child(5),
+  .main-table-container td:nth-child(5) {
+    min-width: 144px; /* Orchestration - 12% of 1200px */
+  }
+  
+  .main-table-container th:nth-child(6),
+  .main-table-container td:nth-child(6) {
+    min-width: 96px; /* Actions - 8% of 1200px */
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .search-bar-container {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+  
+  .action-buttons-container {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .search-input-container {
+    height: 44px; /* Slightly smaller on very small screens */
+    min-width: 120px; /* Further reduced minimum width for very small screens */
+    flex: 1;
+  }
+  
+  .search-input {
+    height: 44px;
+    font-size: 13px;
+  }
+  
+  /* Ensure horizontal scrolling works on very small screens */
+  .table-responsive-container {
+    overflow-x: auto !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  
+  .main-table-container {
+    min-width: 1200px !important;
+    width: 1200px !important;
+  }
+}
+
+/* ≤ 1024 px – turn the whole header into a 2‑row grid */
+@media (max-width: 1024px) {
+  .search-bar-container {
+    display: grid;
+    grid-template-columns: 1fr auto;     /* search grows, buttons = auto */
+    grid-template-areas:
+      "title   title"                    /* row 1: title full‑width      */
+      "search  buttons";                 /* row 2: search + buttons      */
+    gap: 1rem;
+    align-items: center;
+  }
+
+  /* name each piece */
+  .table-title-container { grid-area: title; }
+  .search-input-container { grid-area: search; }
+
+  /* push buttons to the right */
+  .action-buttons-container {
+    grid-area: buttons;
+    justify-self: end;                   /* align right edge             */
+  }
+}
+
+/* ≤ 700px – 3-line layout for 3+ buttons */
+@media (max-width: 700px) {
+  .search-bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .action-buttons-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+  }
+
+  /* Allow search bar and buttons to share the same line when possible */
+  .search-input-container {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+/* ≤ 527px – 3-line layout for 2 buttons */
+@media (max-width: 527px) {
+  .search-bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .action-buttons-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+  }
+}
+
+/* ≤ 489px – 4-line layout with 2x2 button grid for 3 buttons */
+@media (max-width: 489px) {
+  .search-bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .action-buttons-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  /* Ensure buttons maintain their minimum width and don't break content */
+  .action-buttons-container > * {
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+}
+
+/* Large desktop breakpoint */
+@media (min-width: 1025px) {
+  .search-bar-container {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* Tablet and smaller breakpoint */
+@media (max-width: 1024px) {
+  .search-bar-container > * {
+    margin-bottom: 0.5rem;
+  }
+  
+  .action-buttons-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-input-container {
+    max-width: 350px;
+  }
+}
+
+/* Medium desktop breakpoint */
+@media (max-width: 1200px) and (min-width: 1025px) {
+  .search-input-container {
+    max-width: 350px; /* Slightly reduced for medium screens */
+  }
+  
+  .table-responsive-container {
+    overflow-x: auto;
+    min-width: 0; /* Allow container to shrink */
+    width: 100%;
+  }
+  
+  .main-table-container th,
+  .main-table-container td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Ensure horizontal scrolling for all screen sizes below 1200px */
+@media (max-width: 1199px) {
+  .table-responsive-container {
+    overflow-x: auto !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  
+  .main-table-container {
+    min-width: 1200px !important;
+    width: 1200px !important;
+  }
+}

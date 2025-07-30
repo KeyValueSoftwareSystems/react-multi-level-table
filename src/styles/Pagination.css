@@ -1,0 +1,111 @@
+.pagination-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  /* Ensure pagination doesn't break on smaller screens */
+  min-width: 1200px; /* Match table minimum width */
+  overflow-x: auto; /* Allow horizontal scroll if needed */
+  -webkit-overflow-scrolling: touch;
+  /* Ensure content container has proper width */
+  position: relative;
+}
+
+/* Ensure the centered content container has minimum width */
+.pagination-container > div {
+  min-width: 600px; /* Minimum width for pagination content */
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  position: absolute;
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.pagination-button {
+  padding: 6px 12px;
+  margin: 0 4px;
+  background-color: #2c3e50;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.pagination-info {
+  color: #2c3e50;
+  margin-left: 8px;
+  /* Ensure total items text doesn't break */
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.pagination-select {
+  padding: 6px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #262626;
+  /* Ensure page size selector doesn't break */
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 80px; /* Minimum width for the selector */
+}
+
+.pagination-select option {
+  background-color: #ffffff;
+  color: #262626;
+  padding: 8px 12px;
+}
+
+.pagination-select option:hover,
+.pagination-select option:focus {
+  background-color: #5D5FEF !important;
+  color: #ffffff !important;
+}
+
+.pagination-select option:checked,
+.pagination-select option:selected {
+  background-color: #5D5FEF !important;
+  color: #ffffff !important;
+}
+
+/* Responsive styles to prevent pagination from breaking on smaller screens */
+@media (max-width: 1200px) {
+  .pagination-container {
+    min-width: 1200px; /* Maintain minimum width */
+    overflow-x: auto; /* Enable horizontal scroll */
+  }
+  
+  .pagination-container > div {
+    min-width: 600px; /* Maintain minimum width for content */
+  }
+}
+
+/* Show total items text on screens 798px and wider */
+@media (min-width: 798px) {
+  .pagination-total-items {
+    display: block;
+  }
+  }
+  
+/* Hide total items text on screens smaller than 798px */
+@media (max-width: 797px) {
+  .pagination-total-items {
+    display: none;
+}
+
+  .pagination-container {
+    min-width: 1200px; /* Maintain minimum width */
+    overflow-x: auto; /* Enable horizontal scroll */
+  }
+  
+  .pagination-container > div {
+    min-width: 600px; /* Maintain minimum width for content */
+  }
+}

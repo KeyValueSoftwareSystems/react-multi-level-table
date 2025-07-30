@@ -1,0 +1,251 @@
+.row-details-popup-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.row-details-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: hidden; /* Changed to hidden to prevent overall scroll */
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.row-details-popup-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.row-details-popup-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333333;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.row-details-popup-close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333333;
+  padding: 0.25rem;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.row-details-popup-content {
+  padding: 1.5rem;
+  flex: 1; /* Take remaining space */
+  overflow-y: auto; /* Enable scroll only for content */
+  min-height: 0; /* Allow content to shrink */
+}
+
+.row-details-popup-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-shrink: 0; /* Prevent footer from shrinking */
+}
+
+.row-details-popup-close-action {
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+  color: #666666;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+
+.row-details-popup-close-action:hover {
+  background-color: #f5f5f5;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+}
+
+.detail-row-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #666666;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.detail-row-value {
+  font-size: 16px;
+  color: #333333;
+  font-family: 'DM Sans', sans-serif;
+  text-align: right;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.detail-row-value-monospace {
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: #666666;
+}
+
+.detail-row-value-small {
+  font-size: 0.875rem;
+  color: #666666;
+}
+
+.detail-row-value-status {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.detail-row-value-status-yes {
+  color: #28a745;
+}
+
+.detail-row-value-status-no {
+  color: #dc3545;
+}
+
+.status-badge {
+  font-size: 12px;
+  font-weight: 400;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.resource-type-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.resource-type-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  border: 2px solid;
+}
+
+.resource-type-icon-with-image {
+  background-color: transparent;
+  color: transparent;
+  border: none;
+}
+
+.resource-type-icon-without-image {
+  background-color: #E3F2FD;
+  color: #5D5FEF;
+  border-color: #BBDEFB;
+}
+
+.resource-type-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+} 
+
+/* Disable background scroll when popup is open */
+body.popup-open {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Prevent scrolling on all table containers when popup is open */
+body.popup-open .table-wrapper,
+body.popup-open .table-container,
+body.popup-open .app-content,
+body.popup-open .app {
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Override the table's !important overflow rules when popup is open */
+body.popup-open .table-responsive-container {
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Override all media query rules for table scrolling when popup is open */
+body.popup-open .table-responsive-container,
+body.popup-open .table-responsive-container::-webkit-scrollbar {
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Override the specific media query rules that use !important */
+@media (max-width: 1199px) {
+  body.popup-open .table-responsive-container {
+    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body.popup-open .table-responsive-container {
+    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body.popup-open .table-responsive-container {
+    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+/* Allow scrolling only within the popup */
+body.popup-open .row-details-popup-overlay,
+body.popup-open .row-details-popup {
+  pointer-events: auto !important;
+} 
